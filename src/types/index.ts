@@ -108,9 +108,12 @@ export interface SiteSettings {
     cta_link: string;
   };
   footer: {
-    about: string;
+    about_text: string;
     email: string;
     phone: string;
+    instagram: string;
+    facebook: string;
+    twitter: string;
   };
   social: {
     instagram: string;
@@ -121,6 +124,9 @@ export interface SiteSettings {
     base_price: number;
     free_threshold: number;
     tax_percentage: number;
+  };
+  tax: {
+    rate: number;
   };
 }
 

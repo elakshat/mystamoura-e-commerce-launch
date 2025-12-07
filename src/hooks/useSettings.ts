@@ -29,8 +29,7 @@ export function useUpdateSetting() {
     mutationFn: async ({ key, value }: { key: string; value: Json }) => {
       const { error } = await supabase
         .from('site_settings')
-        .update({ value, updated_at: new Date().toISOString() })
-        .eq('key', key);
+        .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
 
       if (error) throw error;
     },
@@ -43,3 +42,6 @@ export function useUpdateSetting() {
     },
   });
 }
+
+// Alias for backwards compatibility
+export const useUpdateSettings = useUpdateSetting;

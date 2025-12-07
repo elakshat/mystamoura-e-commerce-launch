@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
@@ -22,6 +23,14 @@ import RefundPage from "./pages/RefundPage";
 import TermsPage from "./pages/TermsPage";
 import NotFound from "./pages/NotFound";
 
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminProductForm from "./pages/admin/AdminProductForm";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminCoupons from "./pages/admin/AdminCoupons";
+import AdminSettings from "./pages/admin/AdminSettings";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -33,6 +42,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
+              {/* Customer Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/products/:slug" element={<ProductDetailPage />} />
@@ -48,6 +58,65 @@ const App = () => (
               <Route path="/shipping" element={<ShippingPage />} />
               <Route path="/refund" element={<RefundPage />} />
               <Route path="/terms" element={<TermsPage />} />
+
+              {/* Admin Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <AdminGuard>
+                    <AdminDashboard />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <AdminGuard>
+                    <AdminProducts />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/products/new"
+                element={
+                  <AdminGuard>
+                    <AdminProductForm />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/products/:id/edit"
+                element={
+                  <AdminGuard>
+                    <AdminProductForm />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  <AdminGuard>
+                    <AdminOrders />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/coupons"
+                element={
+                  <AdminGuard>
+                    <AdminCoupons />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/settings"
+                element={
+                  <AdminGuard>
+                    <AdminSettings />
+                  </AdminGuard>
+                }
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

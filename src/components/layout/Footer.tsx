@@ -15,12 +15,12 @@ export function Footer() {
               MYSTAMOURA
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              {settings?.footer?.about || 'Luxury fragrances crafted with passion and precision.'}
+              {settings?.footer?.about_text || 'Luxury fragrances crafted with passion and precision.'}
             </p>
             <div className="flex items-center space-x-4 pt-2">
-              {settings?.social?.instagram && (
+              {(settings?.footer?.instagram || settings?.social?.instagram) && (
                 <a
-                  href={settings.social.instagram}
+                  href={settings?.footer?.instagram || settings?.social?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors"
@@ -28,9 +28,9 @@ export function Footer() {
                   <Instagram className="h-5 w-5" />
                 </a>
               )}
-              {settings?.social?.facebook && (
+              {(settings?.footer?.facebook || settings?.social?.facebook) && (
                 <a
-                  href={settings.social.facebook}
+                  href={settings?.footer?.facebook || settings?.social?.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors"
@@ -38,9 +38,9 @@ export function Footer() {
                   <Facebook className="h-5 w-5" />
                 </a>
               )}
-              {settings?.social?.twitter && (
+              {(settings?.footer?.twitter || settings?.social?.twitter) && (
                 <a
-                  href={settings.social.twitter}
+                  href={settings?.footer?.twitter || settings?.social?.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors"

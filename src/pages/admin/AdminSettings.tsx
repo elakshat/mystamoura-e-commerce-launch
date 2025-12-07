@@ -8,12 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSettings, useUpdateSettings } from '@/hooks/useSettings';
+import { useSettings, useUpdateSetting } from '@/hooks/useSettings';
 import { toast } from 'sonner';
 
 export default function AdminSettings() {
   const { data: settings, isLoading } = useSettings();
-  const updateSettings = useUpdateSettings();
+  const updateSettings = useUpdateSetting();
 
   const [announcement, setAnnouncement] = useState({
     enabled: false,
@@ -57,8 +57,8 @@ export default function AdminSettings() {
       if (settings.shipping) {
         setShipping(settings.shipping);
       }
-      if (settings.tax) {
-        setTax(settings.tax);
+      if ((settings as any).tax) {
+        setTax((settings as any).tax);
       }
     }
   }, [settings]);
