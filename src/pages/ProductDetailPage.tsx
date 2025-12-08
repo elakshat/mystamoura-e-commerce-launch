@@ -6,8 +6,13 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice } from '@/lib/utils';
 import { ProductCard } from '@/components/products/ProductCard';
+import { ProductReviews } from '@/components/reviews/ProductReviews';
+import { ReviewStars } from '@/components/reviews/ReviewStars';
+import { useIsInWishlist, useToggleWishlist } from '@/hooks/useWishlist';
+import { useReviewStats } from '@/hooks/useReviews';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();

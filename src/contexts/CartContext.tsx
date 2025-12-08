@@ -10,6 +10,7 @@ interface CartContextType {
   clearCart: () => void;
   itemCount: number;
   subtotal: number;
+  isAnimating: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -19,12 +20,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem('cart');
     return saved ? JSON.parse(saved) : [];
   });
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
   const addToCart = (product: Product, quantity = 1) => {
+    // Trigger cart icon animation
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 600);
+
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
@@ -87,6 +93,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         itemCount,
         subtotal,
+        isAnimating,
       }}
     >
       {children}

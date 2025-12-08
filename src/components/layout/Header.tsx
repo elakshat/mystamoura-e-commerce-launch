@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/hooks/useSettings';
+import { SearchDialog } from '@/components/search/SearchDialog';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { itemCount } = useCart();
+  const { itemCount, isAnimating } = useCart();
   const { user, isAdmin } = useAuth();
   const { data: settings } = useSettings();
   const navigate = useNavigate();
@@ -69,13 +70,7 @@ export function Header() {
 
             {/* Actions */}
             <div className="flex items-center space-x-2 md:space-x-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden md:flex hover:text-primary"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
+              <SearchDialog />
 
               <Button
                 variant="ghost"
@@ -89,20 +84,46 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hover:text-primary"
-                onClick={() => navigate('/cart')}
+                className="hover:text-primary"
+                onClick={() => navigate(user ? '/account' : '/auth')}
               >
-                <ShoppingBag className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center"
-                  >
-                    {itemCount}
-                  </motion.span>
-                )}
+                <User className="h-5 w-5" />
               </Button>
+
+              {user && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-primary"
+                  onClick={() => navigate('/wishlist')}
+                >
+                  <Heart className="h-5 w-5" />
+                </Button>
+              )}
+
+              <motion.div
+                animate={isAnimating ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 0.3 }}
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative hover:text-primary"
+                  onClick={() => navigate('/cart')}
+                >
+                  <ShoppingBag className="h-5 w-5" />
+                  {itemCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      key={itemCount}
+                      className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center"
+                    >
+                      {itemCount}
+                    </motion.span>
+                  )}
+                </Button>
+              </motion.div>
 
               {isAdmin && (
                 <Button

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Loader2, Plus, X, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Plus, X } from 'lucide-react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks/useProducts';
 import { supabase } from '@/integrations/supabase/client';
 import { slugify } from '@/lib/utils';
@@ -48,7 +49,6 @@ export default function AdminProductForm() {
     is_featured: false,
   });
 
-  const [newImageUrl, setNewImageUrl] = useState('');
   const [newTag, setNewTag] = useState('');
 
   useEffect(() => {
@@ -101,21 +101,8 @@ export default function AdminProductForm() {
     });
   };
 
-  const addImage = () => {
-    if (newImageUrl.trim()) {
-      setFormData({
-        ...formData,
-        images: [...formData.images, newImageUrl.trim()],
-      });
-      setNewImageUrl('');
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setFormData({
-      ...formData,
-      images: formData.images.filter((_, i) => i !== index),
-    });
+  const handleImagesChange = (newImages: string[]) => {
+    setFormData({ ...formData, images: newImages });
   };
 
   const addTag = () => {
@@ -292,41 +279,12 @@ export default function AdminProductForm() {
             {/* Images */}
             <div className="bg-card rounded-xl border border-border p-6 space-y-4">
               <h3 className="font-display text-lg font-semibold">Images</h3>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {formData.images.map((url, index) => (
-                  <div key={index} className="relative group aspect-square">
-                    <img
-                      src={url}
-                      alt={`Product ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-                <div className="aspect-square border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center p-4">
-                  <ImageIcon className="h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-xs text-muted-foreground text-center">Add image URL</p>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Input
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addImage())}
-                />
-                <Button type="button" variant="outline" onClick={addImage}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
+              <ImageUpload
+                images={formData.images}
+                onChange={handleImagesChange}
+                maxImages={10}
+                folder={`products/${formData.slug || 'new'}`}
+              />
             </div>
           </motion.div>
 
