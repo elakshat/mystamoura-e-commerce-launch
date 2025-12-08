@@ -8,7 +8,7 @@ import {
   Users,
   Settings,
   Tag,
-  FileText,
+  Star,
   LogOut,
   Menu,
   X,
@@ -28,6 +28,7 @@ const navItems = [
   { href: '/admin/orders', icon: ShoppingCart, label: 'Orders' },
   { href: '/admin/coupons', icon: Tag, label: 'Coupons' },
   { href: '/admin/customers', icon: Users, label: 'Customers' },
+  { href: '/admin/reviews', icon: Star, label: 'Reviews' },
   { href: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
