@@ -30,6 +30,8 @@ import AdminProductForm from "./pages/admin/AdminProductForm";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminCustomers from "./pages/admin/AdminCustomers";
+import AdminReviews from "./pages/admin/AdminReviews";
 
 const queryClient = new QueryClient();
 
@@ -113,6 +115,22 @@ const App = () => (
                 element={
                   <AdminGuard>
                     <AdminSettings />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/customers"
+                element={
+                  <AdminGuard>
+                    <AdminCustomers />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/reviews"
+                element={
+                  <AdminGuard>
+                    <AdminReviews />
                   </AdminGuard>
                 }
               />

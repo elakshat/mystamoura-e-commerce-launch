@@ -14,8 +14,13 @@ export default function ProductDetailPage() {
   const { data: product, isLoading } = useProduct(slug || '');
   const { data: relatedProducts } = useProducts({ categorySlug: product?.category?.slug });
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  
+  const { data: isInWishlist } = useIsInWishlist(product?.id || '');
+  const { toggle: toggleWishlist, isPending: wishlistPending } = useToggleWishlist();
+  const { data: reviewStats } = useReviewStats(product?.id || '');
 
   if (isLoading) {
     return (
@@ -133,6 +138,16 @@ export default function ProductDetailPage() {
               {product.name}
             </h1>
 
+            {/* Rating Summary */}
+            {reviewStats && reviewStats.review_count > 0 && (
+              <div className="flex items-center gap-2">
+                <ReviewStars rating={Math.round(reviewStats.average_rating)} size="sm" />
+                <span className="text-sm text-muted-foreground">
+                  {reviewStats.average_rating} ({reviewStats.review_count} reviews)
+                </span>
+              </div>
+            )}
+
             <div className="flex items-center gap-3">
               {isOnSale ? (
                 <>
@@ -209,9 +224,11 @@ export default function ProductDetailPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="py-6 border-border hover:bg-secondary"
+                  className={`py-6 border-border hover:bg-secondary ${isInWishlist ? 'text-primary' : ''}`}
+                  onClick={() => user && toggleWishlist(product.id, isInWishlist || false)}
+                  disabled={!user || wishlistPending}
                 >
-                  <Heart className="h-5 w-5" />
+                  <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-primary' : ''}`} />
                 </Button>
               </div>
             </div>
@@ -243,12 +260,15 @@ export default function ProductDetailPage() {
               You May Also Like
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {filteredRelated.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
+              {filteredRelated.map((p, index) => (
+                <ProductCard key={p.id} product={p} index={index} />
               ))}
             </div>
           </section>
         )}
+
+        {/* Reviews Section */}
+        <ProductReviews productId={product.id} />
       </div>
     </MainLayout>
   );
