@@ -77,15 +77,7 @@ export function Header() {
                 size="icon"
                 className="hover:text-primary"
                 onClick={() => navigate(user ? '/account' : '/auth')}
-              >
-                <User className="h-5 w-5" />
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:text-primary"
-                onClick={() => navigate(user ? '/account' : '/auth')}
+                aria-label={user ? 'My Account' : 'Sign In'}
               >
                 <User className="h-5 w-5" />
               </Button>
@@ -96,6 +88,7 @@ export function Header() {
                   size="icon"
                   className="hover:text-primary"
                   onClick={() => navigate('/wishlist')}
+                  aria-label="Wishlist"
                 >
                   <Heart className="h-5 w-5" />
                 </Button>

@@ -1,17 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Package, MapPin, LogOut } from 'lucide-react';
+import { User, Package, MapPin, LogOut, Plus } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserOrders } from '@/hooks/useOrders';
+import { useAddresses } from '@/hooks/useAddresses';
+import { AddressForm } from '@/components/account/AddressForm';
+import { AddressCard } from '@/components/account/AddressCard';
 import { formatPrice, getStatusColor } from '@/lib/utils';
+import { Address } from '@/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function AccountPage() {
   const { user, profile, signOut, isLoading, isAdmin } = useAuth();
   const { data: orders } = useUserOrders(user?.id);
+  const { data: addresses } = useAddresses(user?.id);
   const navigate = useNavigate();
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -37,6 +45,16 @@ export default function AccountPage() {
     navigate('/');
   };
 
+  const handleEditAddress = (address: Address) => {
+    setEditingAddress(address);
+    setShowAddressForm(true);
+  };
+
+  const handleFormSuccess = () => {
+    setShowAddressForm(false);
+    setEditingAddress(null);
+  };
+
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-12">
@@ -56,7 +74,7 @@ export default function AccountPage() {
             )}
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {/* Profile Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -110,65 +128,134 @@ export default function AccountPage() {
                 <MapPin className="h-5 w-5 text-primary" />
                 <h3 className="font-medium">Addresses</h3>
               </div>
-              <p className="text-3xl font-display font-semibold">0</p>
+              <p className="text-3xl font-display font-semibold">{addresses?.length || 0}</p>
               <p className="text-sm text-muted-foreground">Saved addresses</p>
             </motion.div>
           </div>
 
-          {/* Orders */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mt-8"
-          >
-            <h2 className="font-display text-2xl font-semibold mb-6">
-              Order History
-            </h2>
+          {/* Tabs for Orders and Addresses */}
+          <Tabs defaultValue="orders" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="orders">Orders</TabsTrigger>
+              <TabsTrigger value="addresses">Addresses</TabsTrigger>
+            </TabsList>
 
-            {orders && orders.length > 0 ? (
-              <div className="space-y-4">
-                {orders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="bg-card border border-border rounded-lg p-6"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                      <div>
-                        <p className="font-medium">{order.order_number}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(order.created_at).toLocaleDateString('en-IN', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })}
-                        </p>
+            <TabsContent value="orders">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <h2 className="font-display text-2xl font-semibold mb-6">
+                  Order History
+                </h2>
+
+                {orders && orders.length > 0 ? (
+                  <div className="space-y-4">
+                    {orders.map((order) => (
+                      <div
+                        key={order.id}
+                        className="bg-card border border-border rounded-lg p-6"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                          <div>
+                            <p className="font-medium">{order.order_number}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {new Date(order.created_at).toLocaleDateString('en-IN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(order.status)}`}>
+                              {order.status}
+                            </span>
+                            <span className="font-semibold">
+                              {formatPrice(order.total)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(order.status)}`}>
-                          {order.status}
-                        </span>
-                        <span className="font-semibold">
-                          {formatPrice(order.total)}
-                        </span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-card border border-border rounded-lg p-12 text-center">
-                <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-display text-xl font-semibold mb-2">No Orders Yet</h3>
-                <p className="text-muted-foreground mb-6">
-                  Start shopping to see your orders here
-                </p>
-                <Button asChild className="bg-gradient-gold text-primary-foreground">
-                  <Link to="/products">Browse Products</Link>
-                </Button>
-              </div>
-            )}
-          </motion.div>
+                ) : (
+                  <div className="bg-card border border-border rounded-lg p-12 text-center">
+                    <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="font-display text-xl font-semibold mb-2">No Orders Yet</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Start shopping to see your orders here
+                    </p>
+                    <Button asChild className="bg-gradient-gold text-primary-foreground">
+                      <Link to="/products">Browse Products</Link>
+                    </Button>
+                  </div>
+                )}
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="addresses">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="font-display text-2xl font-semibold">
+                    My Addresses
+                  </h2>
+                  {!showAddressForm && (
+                    <Button onClick={() => setShowAddressForm(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Address
+                    </Button>
+                  )}
+                </div>
+
+                {showAddressForm && (
+                  <div className="bg-card border border-border rounded-lg p-6 mb-6">
+                    <h3 className="font-display text-lg font-semibold mb-4">
+                      {editingAddress ? 'Edit Address' : 'Add New Address'}
+                    </h3>
+                    <AddressForm
+                      address={editingAddress}
+                      onSuccess={handleFormSuccess}
+                      onCancel={() => {
+                        setShowAddressForm(false);
+                        setEditingAddress(null);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {addresses && addresses.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {addresses.map((address, index) => (
+                      <AddressCard
+                        key={address.id}
+                        address={address}
+                        onEdit={handleEditAddress}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  !showAddressForm && (
+                    <div className="bg-card border border-border rounded-lg p-12 text-center">
+                      <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="font-display text-xl font-semibold mb-2">No Addresses Saved</h3>
+                      <p className="text-muted-foreground mb-6">
+                        Add an address to make checkout faster
+                      </p>
+                      <Button onClick={() => setShowAddressForm(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Address
+                      </Button>
+                    </div>
+                  )
+                )}
+              </motion.div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </MainLayout>
