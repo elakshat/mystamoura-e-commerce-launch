@@ -21,7 +21,6 @@ export function Header() {
     { href: '/collections/for-him', label: 'For Him' },
     { href: '/collections/for-her', label: 'For Her' },
     { href: '/collections/unisex', label: 'Unisex' },
-    { href: '/fragrance-guide', label: 'Fragrance Guide' },
     { href: '/about', label: 'About' },
   ];
 

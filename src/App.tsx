@@ -24,7 +24,6 @@ import RefundPage from "./pages/RefundPage";
 import TermsPage from "./pages/TermsPage";
 import NotFound from "./pages/NotFound";
 import WishlistPage from "./pages/WishlistPage";
-import FragranceGuidePage from "./pages/FragranceGuidePage";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -66,7 +65,6 @@ const App = () => (
                 <Route path="/refund" element={<RefundPage />} />
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/wishlist" element={<WishlistPage />} />
-                <Route path="/fragrance-guide" element={<FragranceGuidePage />} />
 
                 {/* Admin Routes */}
                 <Route
