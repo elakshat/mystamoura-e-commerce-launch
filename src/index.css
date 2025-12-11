@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,33 +6,33 @@
 
 @layer base {
   :root {
-    /* Light theme - elegant cream/gold */
-    --background: 40 30% 97%;
-    --foreground: 20 14% 10%;
+    /* Light theme - improved readability with proper contrast */
+    --background: 40 30% 98%;
+    --foreground: 220 13% 13%;
 
-    --card: 40 30% 99%;
-    --card-foreground: 20 14% 10%;
+    --card: 40 30% 100%;
+    --card-foreground: 220 13% 13%;
 
-    --popover: 40 30% 99%;
-    --popover-foreground: 20 14% 10%;
+    --popover: 40 30% 100%;
+    --popover-foreground: 220 13% 13%;
 
     --primary: 43 74% 42%;
-    --primary-foreground: 40 30% 97%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 20% 92%;
-    --secondary-foreground: 20 14% 15%;
+    --secondary: 40 20% 94%;
+    --secondary-foreground: 220 13% 18%;
 
-    --muted: 40 20% 90%;
-    --muted-foreground: 20 10% 45%;
+    --muted: 40 20% 92%;
+    --muted-foreground: 220 10% 40%;
 
     --accent: 43 74% 42%;
-    --accent-foreground: 40 30% 97%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 50%;
-    --destructive-foreground: 40 30% 97%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 40 20% 85%;
-    --input: 40 20% 85%;
+    --border: 40 20% 82%;
+    --input: 40 20% 82%;
     --ring: 43 74% 42%;
 
     --radius: 0.5rem;
@@ -48,22 +48,22 @@
 
     /* Gradients */
     --gradient-gold: linear-gradient(135deg, hsl(43 74% 42%), hsl(43 80% 55%));
-    --gradient-dark: linear-gradient(180deg, hsl(40 30% 97%), hsl(40 25% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(40 30% 99%), hsl(40 30% 96%));
-    --gradient-hero: radial-gradient(ellipse at center top, hsl(40 25% 92%), hsl(40 30% 97%));
+    --gradient-dark: linear-gradient(180deg, hsl(40 30% 98%), hsl(40 25% 95%));
+    --gradient-card: linear-gradient(145deg, hsl(40 30% 100%), hsl(40 30% 97%));
+    --gradient-hero: radial-gradient(ellipse at center top, hsl(40 25% 94%), hsl(40 30% 98%));
 
     /* Shadows */
     --shadow-gold: 0 4px 30px hsl(43 74% 42% / 0.15);
-    --shadow-soft: 0 10px 40px hsl(0 0% 0% / 0.08);
-    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.05);
+    --shadow-soft: 0 10px 40px hsl(0 0% 0% / 0.06);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.04);
 
     /* Sidebar */
-    --sidebar-background: 40 25% 95%;
-    --sidebar-foreground: 20 14% 15%;
+    --sidebar-background: 40 25% 96%;
+    --sidebar-foreground: 220 13% 18%;
     --sidebar-primary: 43 74% 42%;
-    --sidebar-primary-foreground: 40 30% 97%;
-    --sidebar-accent: 40 20% 90%;
-    --sidebar-accent-foreground: 20 14% 15%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 20% 92%;
+    --sidebar-accent-foreground: 220 13% 18%;
     --sidebar-border: 40 20% 85%;
     --sidebar-ring: 43 74% 42%;
   }
@@ -136,22 +136,43 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Improved text rendering for light mode */
+  .light body,
+  :root:not(.dark) body {
+    font-weight: 450;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+  }
+
+  /* Use Inter for UI elements that need better legibility */
+  button, input, select, textarea, label, .font-sans {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Ensure proper contrast for small text */
+  small, .text-sm, .text-xs {
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
 @layer components {
   .font-display {
-    font-family: 'Playfair Display', serif;
+    font-family: 'EB Garamond', Georgia, serif;
   }
 
   .font-sans {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   .text-gradient-gold {
@@ -164,7 +185,7 @@
   }
 
   .bg-gradient-hero {
-    background-image: radial-gradient(ellipse at center top, hsl(20 14% 12%), hsl(20 14% 4%));
+    background-image: var(--gradient-hero);
   }
 
   .shadow-gold {
