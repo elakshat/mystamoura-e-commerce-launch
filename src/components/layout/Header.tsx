@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, User, Menu, X, Search, Heart } from 'lucide-react';
+import { ShoppingBag, User, Menu, X, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/hooks/useSettings';
 import { SearchDialog } from '@/components/search/SearchDialog';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,6 +21,7 @@ export function Header() {
     { href: '/collections/for-him', label: 'For Him' },
     { href: '/collections/for-her', label: 'For Her' },
     { href: '/collections/unisex', label: 'Unisex' },
+    { href: '/fragrance-guide', label: 'Fragrance Guide' },
     { href: '/about', label: 'About' },
   ];
 
@@ -69,8 +71,10 @@ export function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-1 md:space-x-2">
               <SearchDialog />
+
+              <ThemeToggle />
 
               <Button
                 variant="ghost"

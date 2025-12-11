@@ -6,6 +6,69 @@
 
 @layer base {
   :root {
+    /* Light theme - elegant cream/gold */
+    --background: 40 30% 97%;
+    --foreground: 20 14% 10%;
+
+    --card: 40 30% 99%;
+    --card-foreground: 20 14% 10%;
+
+    --popover: 40 30% 99%;
+    --popover-foreground: 20 14% 10%;
+
+    --primary: 43 74% 42%;
+    --primary-foreground: 40 30% 97%;
+
+    --secondary: 40 20% 92%;
+    --secondary-foreground: 20 14% 15%;
+
+    --muted: 40 20% 90%;
+    --muted-foreground: 20 10% 45%;
+
+    --accent: 43 74% 42%;
+    --accent-foreground: 40 30% 97%;
+
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 40 30% 97%;
+
+    --border: 40 20% 85%;
+    --input: 40 20% 85%;
+    --ring: 43 74% 42%;
+
+    --radius: 0.5rem;
+
+    /* Custom luxury colors */
+    --gold: 43 74% 49%;
+    --gold-light: 43 80% 65%;
+    --gold-dark: 43 70% 35%;
+    --cream: 40 30% 92%;
+    --champagne: 40 25% 85%;
+    --rose-gold: 15 50% 60%;
+    --bronze: 30 60% 40%;
+
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(43 74% 42%), hsl(43 80% 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(40 30% 97%), hsl(40 25% 94%));
+    --gradient-card: linear-gradient(145deg, hsl(40 30% 99%), hsl(40 30% 96%));
+    --gradient-hero: radial-gradient(ellipse at center top, hsl(40 25% 92%), hsl(40 30% 97%));
+
+    /* Shadows */
+    --shadow-gold: 0 4px 30px hsl(43 74% 42% / 0.15);
+    --shadow-soft: 0 10px 40px hsl(0 0% 0% / 0.08);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.05);
+
+    /* Sidebar */
+    --sidebar-background: 40 25% 95%;
+    --sidebar-foreground: 20 14% 15%;
+    --sidebar-primary: 43 74% 42%;
+    --sidebar-primary-foreground: 40 30% 97%;
+    --sidebar-accent: 40 20% 90%;
+    --sidebar-accent-foreground: 20 14% 15%;
+    --sidebar-border: 40 20% 85%;
+    --sidebar-ring: 43 74% 42%;
+  }
+
+  .dark {
     /* Luxury dark theme with gold accents */
     --background: 20 14% 4%;
     --foreground: 40 20% 95%;
@@ -35,9 +98,7 @@
     --input: 40 15% 18%;
     --ring: 43 74% 49%;
 
-    --radius: 0.5rem;
-
-    /* Custom luxury colors */
+    /* Custom luxury colors - dark mode */
     --gold: 43 74% 49%;
     --gold-light: 43 80% 65%;
     --gold-dark: 43 70% 35%;
@@ -46,18 +107,18 @@
     --rose-gold: 15 50% 60%;
     --bronze: 30 60% 40%;
 
-    /* Gradients */
+    /* Gradients - dark mode */
     --gradient-gold: linear-gradient(135deg, hsl(43 74% 49%), hsl(43 80% 65%));
     --gradient-dark: linear-gradient(180deg, hsl(20 14% 4%), hsl(20 14% 8%));
     --gradient-card: linear-gradient(145deg, hsl(20 14% 8%), hsl(20 14% 5%));
     --gradient-hero: radial-gradient(ellipse at center top, hsl(20 14% 12%), hsl(20 14% 4%));
 
-    /* Shadows */
+    /* Shadows - dark mode */
     --shadow-gold: 0 4px 30px hsl(43 74% 49% / 0.15);
     --shadow-soft: 0 10px 40px hsl(0 0% 0% / 0.3);
     --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.2);
 
-    /* Sidebar */
+    /* Sidebar - dark mode */
     --sidebar-background: 20 14% 6%;
     --sidebar-foreground: 40 20% 95%;
     --sidebar-primary: 43 74% 49%;
@@ -66,11 +127,6 @@
     --sidebar-accent-foreground: 40 20% 95%;
     --sidebar-border: 40 15% 15%;
     --sidebar-ring: 43 74% 49%;
-  }
-
-  .dark {
-    --background: 20 14% 4%;
-    --foreground: 40 20% 95%;
   }
 }
 

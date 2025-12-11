@@ -45,9 +45,10 @@ export default function CheckoutPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500, tax_percentage: 18 };
+  const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500 };
+  const taxSettings = settings?.tax || { rate: 18 };
   const shippingAmount = subtotal >= shippingSettings.free_threshold ? 0 : shippingSettings.base_price;
-  const taxAmount = (subtotal * shippingSettings.tax_percentage) / 100;
+  const taxAmount = (subtotal * taxSettings.rate) / 100;
   const total = subtotal + shippingAmount + taxAmount;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

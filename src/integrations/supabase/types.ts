@@ -172,6 +172,9 @@ export type Database = {
           quantity: number
           total_price: number
           unit_price: number
+          variant_id: string | null
+          variant_size: string | null
+          variant_sku: string | null
         }
         Insert: {
           created_at?: string | null
@@ -183,6 +186,9 @@ export type Database = {
           quantity: number
           total_price: number
           unit_price: number
+          variant_id?: string | null
+          variant_size?: string | null
+          variant_sku?: string | null
         }
         Update: {
           created_at?: string | null
@@ -194,6 +200,9 @@ export type Database = {
           quantity?: number
           total_price?: number
           unit_price?: number
+          variant_id?: string | null
+          variant_size?: string | null
+          variant_sku?: string | null
         }
         Relationships: [
           {
@@ -208,6 +217,13 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
             referencedColumns: ["id"]
           },
         ]
@@ -279,6 +295,62 @@ export type Database = {
             columns: ["coupon_id"]
             isOneToOne: false
             referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          created_at: string | null
+          id: string
+          images: string[] | null
+          is_default: boolean | null
+          is_visible: boolean | null
+          price: number
+          product_id: string
+          sale_price: number | null
+          size: string
+          sku: string | null
+          stock: number | null
+          updated_at: string | null
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          images?: string[] | null
+          is_default?: boolean | null
+          is_visible?: boolean | null
+          price: number
+          product_id: string
+          sale_price?: number | null
+          size?: string
+          sku?: string | null
+          stock?: number | null
+          updated_at?: string | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          images?: string[] | null
+          is_default?: boolean | null
+          is_visible?: boolean | null
+          price?: number
+          product_id?: string
+          sale_price?: number | null
+          size?: string
+          sku?: string | null
+          stock?: number | null
+          updated_at?: string | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
