@@ -31,6 +31,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminProductForm from "./pages/admin/AdminProductForm";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminCustomers from "./pages/admin/AdminCustomers";
@@ -105,6 +106,14 @@ const App = () => (
                   element={
                     <AdminGuard>
                       <AdminOrders />
+                    </AdminGuard>
+                  }
+                />
+                <Route
+                  path="/admin/orders/:id"
+                  element={
+                    <AdminGuard>
+                      <AdminOrderDetail />
                     </AdminGuard>
                   }
                 />
