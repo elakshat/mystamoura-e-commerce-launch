@@ -20,7 +20,8 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const validateCoupon = useValidateCoupon();
 
-  const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500, tax_percentage: 18 };
+  const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500 };
+  const taxSettings = settings?.tax || { rate: 18 };
   const shippingAmount = subtotal >= shippingSettings.free_threshold ? 0 : shippingSettings.base_price;
   
   let discountAmount = 0;
@@ -32,8 +33,8 @@ export default function CartPage() {
     }
   }
 
-  const taxAmount = ((subtotal - discountAmount) * shippingSettings.tax_percentage) / 100;
-  const total = subtotal - discountAmount + shippingAmount + taxAmount;
+  const taxAmount = Math.round(((subtotal - discountAmount) * taxSettings.rate) / 100 * 100) / 100;
+  const total = Math.round((subtotal - discountAmount + shippingAmount + taxAmount) * 100) / 100;
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -238,7 +239,7 @@ export default function CartPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax ({shippingSettings.tax_percentage}%)</span>
+                  <span className="text-muted-foreground">Tax ({taxSettings.rate}%)</span>
                   <span>{formatPrice(taxAmount)}</span>
                 </div>
                 <div className="border-t border-border pt-3 mt-3">

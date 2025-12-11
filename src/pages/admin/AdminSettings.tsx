@@ -40,7 +40,7 @@ export default function AdminSettings() {
   });
 
   const [tax, setTax] = useState({
-    rate: 0,
+    rate: 18,
   });
 
   useEffect(() => {
@@ -364,7 +364,9 @@ export default function AdminSettings() {
                         id="tax-rate"
                         type="number"
                         step="0.01"
-                        value={tax.rate}
+                        min="0"
+                        max="100"
+                        value={tax.rate ?? 18}
                         onChange={(e) =>
                           setTax({ rate: parseFloat(e.target.value) || 0 })
                         }

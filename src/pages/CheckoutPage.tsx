@@ -48,8 +48,8 @@ export default function CheckoutPage() {
   const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500 };
   const taxSettings = settings?.tax || { rate: 18 };
   const shippingAmount = subtotal >= shippingSettings.free_threshold ? 0 : shippingSettings.base_price;
-  const taxAmount = (subtotal * taxSettings.rate) / 100;
-  const total = subtotal + shippingAmount + taxAmount;
+  const taxAmount = Math.round((subtotal * taxSettings.rate) / 100 * 100) / 100;
+  const total = Math.round((subtotal + shippingAmount + taxAmount) * 100) / 100;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -160,8 +160,8 @@ export default function CheckoutPage() {
                 <div className="space-y-3 text-sm border-t border-border pt-4">
                   <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{formatPrice(subtotal)}</span></div>
                   <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span>{shippingAmount === 0 ? <span className="text-primary">FREE</span> : formatPrice(shippingAmount)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Tax</span><span>{formatPrice(taxAmount)}</span></div>
-                  <div className="border-t border-border pt-3"><div className="flex justify-between text-lg font-semibold"><span>Total</span><span>{formatPrice(total)}</span></div></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Tax ({taxSettings.rate}%)</span><span>{formatPrice(Math.round(taxAmount * 100) / 100)}</span></div>
+                  <div className="border-t border-border pt-3"><div className="flex justify-between text-lg font-semibold"><span>Total</span><span>{formatPrice(Math.round(total * 100) / 100)}</span></div></div>
                 </div>
                 <Button type="submit" className="w-full mt-6 bg-gradient-gold text-primary-foreground hover:opacity-90 py-6" disabled={createOrder.isPending}>{createOrder.isPending ? 'Placing Order...' : 'Place Order'}</Button>
               </motion.div>
