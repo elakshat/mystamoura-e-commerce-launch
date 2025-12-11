@@ -282,7 +282,6 @@ export function useAdminReviews(status?: 'pending' | 'approved' | 'spam') {
         .from('reviews')
         .select(`
           *,
-          user_profile:profiles(full_name, avatar_url, email),
           product:products(name, slug, images)
         `)
         .order('created_at', { ascending: false });
@@ -297,7 +296,53 @@ export function useAdminReviews(status?: 'pending' | 'approved' | 'spam') {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as unknown as Review[];
+
+      // Fetch user profiles separately for reviews with user_id
+      const reviewsWithProfiles = await Promise.all(
+        (data || []).map(async (review) => {
+          let user_profile = null;
+          if (review.user_id) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('full_name, avatar_url, email')
+              .eq('id', review.user_id)
+              .single();
+            user_profile = profile;
+          }
+          return { ...review, user_profile };
+        })
+      );
+
+      return reviewsWithProfiles as unknown as Review[];
+    },
+  });
+}
+
+export function useReviewSummary() {
+  return useQuery({
+    queryKey: ['review-summary'],
+    queryFn: async () => {
+      const [pendingRes, approvedRes, spamRes] = await Promise.all([
+        supabase
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_approved', false)
+          .eq('is_spam', false),
+        supabase
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_approved', true),
+        supabase
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_spam', true),
+      ]);
+
+      return {
+        pending: pendingRes.count || 0,
+        approved: approvedRes.count || 0,
+        spam: spamRes.count || 0,
+      };
     },
   });
 }

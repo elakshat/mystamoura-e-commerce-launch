@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Search, Star, Check, X, Flag, MessageSquare, Trash2 } from 'lucide-react';
+import { Star, Check, Flag, MessageSquare, Trash2, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,15 +14,16 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
-import { useAdminReviews, useUpdateReview, useDeleteReview, useAdminReplyToReview } from '@/hooks/useReviews';
+import { useAdminReviews, useUpdateReview, useDeleteReview, useAdminReplyToReview, useReviewSummary } from '@/hooks/useReviews';
 import { ReviewStars } from '@/components/reviews/ReviewStars';
-import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function AdminReviews() {
   const [tab, setTab] = useState<'pending' | 'approved' | 'spam'>('pending');
   const [replyDialog, setReplyDialog] = useState<{ id: string; reply: string } | null>(null);
   
   const { data: reviews, isLoading } = useAdminReviews(tab);
+  const { data: summary } = useReviewSummary();
   const updateReview = useUpdateReview();
   const deleteReview = useDeleteReview();
   const replyToReview = useAdminReplyToReview();
@@ -46,6 +46,48 @@ export default function AdminReviews() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="font-display text-3xl font-semibold">Reviews</h1>
           <p className="text-muted-foreground mt-1">Moderate customer reviews</p>
+        </motion.div>
+
+        {/* Review Summary Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+        >
+          <Card className="border-yellow-500/30 bg-yellow-500/5">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-3 rounded-full bg-yellow-500/10">
+                <Clock className="h-5 w-5 text-yellow-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{summary?.pending ?? 0}</p>
+                <p className="text-sm text-muted-foreground">Pending</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-green-500/30 bg-green-500/5">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-3 rounded-full bg-green-500/10">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{summary?.approved ?? 0}</p>
+                <p className="text-sm text-muted-foreground">Approved</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-orange-500/30 bg-orange-500/5">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="p-3 rounded-full bg-orange-500/10">
+                <AlertTriangle className="h-5 w-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{summary?.spam ?? 0}</p>
+                <p className="text-sm text-muted-foreground">Spam</p>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
