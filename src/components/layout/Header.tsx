@@ -70,15 +70,17 @@ export function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center space-x-1 md:space-x-2">
+            <div className="flex items-center space-x-0.5 md:space-x-2">
               <SearchDialog />
 
-              <ThemeToggle />
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
 
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:text-primary"
+                className="hover:text-primary h-9 w-9 md:h-10 md:w-10"
                 onClick={() => navigate(user ? '/account' : '/auth')}
                 aria-label={user ? 'My Account' : 'Sign In'}
               >
@@ -89,7 +91,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:text-primary"
+                  className="hover:text-primary hidden sm:flex h-9 w-9 md:h-10 md:w-10"
                   onClick={() => navigate('/wishlist')}
                   aria-label="Wishlist"
                 >
@@ -104,8 +106,9 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative hover:text-primary"
+                  className="relative hover:text-primary h-9 w-9 md:h-10 md:w-10"
                   onClick={() => navigate('/cart')}
+                  aria-label="Cart"
                 >
                   <ShoppingBag className="h-5 w-5" />
                   {itemCount > 0 && (
@@ -113,7 +116,7 @@ export function Header() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       key={itemCount}
-                      className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 h-4 w-4 md:h-5 md:w-5 bg-primary text-primary-foreground text-[10px] md:text-xs font-bold rounded-full flex items-center justify-center"
                     >
                       {itemCount}
                     </motion.span>
@@ -144,26 +147,42 @@ export function Header() {
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden bg-background border-t border-border"
             >
-              <nav className="container mx-auto px-4 py-4 space-y-4">
+              <nav className="container mx-auto px-4 py-4 space-y-3">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     to={link.href}
-                    className="block text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
+                    className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors border-b border-border/50 last:border-0"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.label}
                   </Link>
                 ))}
+                
+                {user && (
+                  <Link
+                    to="/wishlist"
+                    className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors border-b border-border/50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Wishlist
+                  </Link>
+                )}
+                
                 {isAdmin && (
                   <Link
                     to="/admin"
-                    className="block text-lg font-medium text-primary"
+                    className="block py-2 text-base font-medium text-primary"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Admin Dashboard
                   </Link>
                 )}
+                
+                <div className="pt-2 flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Theme</span>
+                  <ThemeToggle />
+                </div>
               </nav>
             </motion.div>
           )}

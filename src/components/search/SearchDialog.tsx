@@ -52,8 +52,9 @@ export function SearchDialog() {
       <Button
         variant="ghost"
         size="icon"
-        className="hidden md:flex hover:text-primary"
+        className="hover:text-primary"
         onClick={() => setIsOpen(true)}
+        aria-label="Search"
       >
         <Search className="h-5 w-5" />
       </Button>
@@ -72,34 +73,34 @@ export function SearchDialog() {
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="fixed left-1/2 top-[20%] -translate-x-1/2 w-full max-w-lg z-50 p-4"
+              className="fixed left-4 right-4 top-[10%] md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-full md:max-w-lg z-50"
             >
               <div className="bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
-                <div className="flex items-center gap-3 p-4 border-b border-border">
-                  <Search className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center gap-2 md:gap-3 p-3 md:p-4 border-b border-border">
+                  <Search className="h-5 w-5 text-muted-foreground shrink-0" />
                   <Input
                     ref={inputRef}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search products..."
-                    className="border-0 bg-transparent focus-visible:ring-0 px-0 text-lg"
+                    className="border-0 bg-transparent focus-visible:ring-0 px-0 text-base md:text-lg"
                   />
-                  {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />}
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="shrink-0"
+                    className="shrink-0 h-8 w-8"
                     onClick={() => setIsOpen(false)}
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
 
-                <div className="max-h-80 overflow-y-auto">
+                <div className="max-h-[60vh] md:max-h-80 overflow-y-auto">
                   {query.length < 2 ? (
-                    <div className="p-6 text-center text-muted-foreground">
-                      <p>Type at least 2 characters to search</p>
-                      <p className="text-xs mt-2">
+                    <div className="p-4 md:p-6 text-center text-muted-foreground">
+                      <p className="text-sm md:text-base">Type at least 2 characters to search</p>
+                      <p className="text-xs mt-2 hidden md:block">
                         <kbd className="px-2 py-1 bg-muted rounded">⌘K</kbd> to open search
                       </p>
                     </div>
