@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, ArrowLeft, Share2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { useProduct, useProducts } from '@/hooks/useProducts';
@@ -13,6 +13,9 @@ import { ProductReviews } from '@/components/reviews/ProductReviews';
 import { ReviewStars } from '@/components/reviews/ReviewStars';
 import { useIsInWishlist, useToggleWishlist } from '@/hooks/useWishlist';
 import { useReviewStats } from '@/hooks/useReviews';
+import { StickyAddToCart } from '@/components/products/StickyAddToCart';
+import { toast } from 'sonner';
+import { Helmet } from 'react-helmet-async';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -22,18 +25,55 @@ export default function ProductDetailPage() {
   const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showStickyCart, setShowStickyCart] = useState(false);
+  const addToCartRef = useRef<HTMLDivElement>(null);
   
   const { data: isInWishlist } = useIsInWishlist(product?.id || '');
   const { toggle: toggleWishlist, isPending: wishlistPending } = useToggleWishlist();
   const { data: reviewStats } = useReviewStats(product?.id || '');
 
+  // Handle sticky cart visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyCart(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    if (addToCartRef.current) {
+      observer.observe(addToCartRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [product]);
+
+  // Share functionality
+  const handleShare = async () => {
+    if (navigator.share && product) {
+      try {
+        await navigator.share({
+          title: product.name,
+          text: product.description || `Check out ${product.name}`,
+          url: window.location.href,
+        });
+      } catch {
+        // User cancelled or error
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    }
+  };
+
   if (isLoading) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-pulse">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 animate-pulse">
             <div className="aspect-square bg-muted rounded-lg" />
             <div className="space-y-4">
+              <div className="h-4 bg-muted rounded w-1/4" />
               <div className="h-8 bg-muted rounded w-3/4" />
               <div className="h-6 bg-muted rounded w-1/4" />
               <div className="h-24 bg-muted rounded" />
@@ -71,45 +111,64 @@ export default function ProductDetailPage() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>{product.name} | Mystamoura</title>
+        <meta name="description" content={product.description || `Buy ${product.name} - Premium fragrance from Mystamoura`} />
+        <meta property="og:title" content={`${product.name} | Mystamoura`} />
+        <meta property="og:description" content={product.description || ''} />
+        {product.images?.[0] && <meta property="og:image" content={product.images[0]} />}
+      </Helmet>
+
+      <div className="container mx-auto px-4 py-6 md:py-8">
         {/* Breadcrumb */}
-        <nav className="mb-8">
+        <nav className="mb-6">
           <Link
             to="/products"
-            className="inline-flex items-center text-muted-foreground hover:text-primary transition-colors"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Products
           </Link>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Images */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="space-y-4"
+            className="space-y-3"
           >
-            <div className="aspect-square overflow-hidden rounded-lg bg-secondary">
+            <div className="aspect-square overflow-hidden rounded-lg bg-secondary relative">
               {product.images?.[selectedImage] ? (
                 <img
                   src={product.images[selectedImage]}
                   alt={product.name}
                   className="h-full w-full object-cover"
+                  loading="eager"
                 />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-muted-foreground">
                   No Image
                 </div>
               )}
+              
+              {/* Share button */}
+              <button
+                onClick={handleShare}
+                className="absolute top-3 right-3 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background transition-colors"
+                aria-label="Share product"
+              >
+                <Share2 className="h-4 w-4" />
+              </button>
             </div>
+            
             {product.images && product.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 {product.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
                       selectedImage === index ? 'border-primary' : 'border-transparent'
                     }`}
                   >
@@ -117,6 +176,7 @@ export default function ProductDetailPage() {
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       className="h-full w-full object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}
@@ -128,18 +188,18 @@ export default function ProductDetailPage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="space-y-6"
+            className="space-y-4 md:space-y-6"
           >
             {product.category && (
               <Link
                 to={`/collections/${product.category.slug}`}
-                className="text-sm text-primary font-medium uppercase tracking-wider hover:underline"
+                className="text-xs md:text-sm text-primary font-medium uppercase tracking-wider hover:underline"
               >
                 {product.category.name}
               </Link>
             )}
 
-            <h1 className="font-display text-3xl md:text-4xl font-semibold">
+            <h1 className="font-display text-2xl md:text-4xl font-semibold">
               {product.name}
             </h1>
 
@@ -153,45 +213,45 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               {isOnSale ? (
                 <>
-                  <span className="text-2xl font-semibold text-primary">
+                  <span className="text-xl md:text-2xl font-semibold text-primary">
                     {formatPrice(product.sale_price!, product.currency)}
                   </span>
-                  <span className="text-xl text-muted-foreground line-through">
+                  <span className="text-lg md:text-xl text-muted-foreground line-through">
                     {formatPrice(product.price, product.currency)}
                   </span>
-                  <span className="bg-primary/20 text-primary text-sm font-bold px-2 py-1 rounded">
+                  <span className="bg-primary/20 text-primary text-xs md:text-sm font-bold px-2 py-1 rounded">
                     SAVE {Math.round((1 - product.sale_price! / product.price) * 100)}%
                   </span>
                 </>
               ) : (
-                <span className="text-2xl font-semibold">
+                <span className="text-xl md:text-2xl font-semibold">
                   {formatPrice(product.price, product.currency)}
                 </span>
               )}
             </div>
 
             {product.size && (
-              <p className="text-muted-foreground">{product.size}</p>
+              <p className="text-muted-foreground text-sm md:text-base">{product.size}</p>
             )}
 
             {product.description && (
-              <p className="text-foreground/80 leading-relaxed">
+              <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
                 {product.description}
               </p>
             )}
 
             {product.notes && (
               <div className="bg-secondary/50 p-4 rounded-lg">
-                <h3 className="font-medium mb-2">Fragrance Notes</h3>
+                <h3 className="font-medium mb-2 text-sm md:text-base">Fragrance Notes</h3>
                 <p className="text-sm text-muted-foreground">{product.notes}</p>
               </div>
             )}
 
             {/* Quantity & Add to Cart */}
-            <div className="space-y-4 pt-4">
+            <div ref={addToCartRef} className="space-y-4 pt-4">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">Quantity</span>
                 <div className="flex items-center border border-border rounded-lg">
@@ -216,10 +276,10 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <Button
                   size="lg"
-                  className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 py-6"
+                  className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 h-12 md:h-14"
                   onClick={handleAddToCart}
                   disabled={isSoldOut}
                 >
@@ -229,9 +289,10 @@ export default function ProductDetailPage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className={`py-6 border-border hover:bg-secondary ${isInWishlist ? 'text-primary' : ''}`}
+                  className={`h-12 md:h-14 px-4 border-border hover:bg-secondary ${isInWishlist ? 'text-primary' : ''}`}
                   onClick={() => user && toggleWishlist(product.id, isInWishlist || false)}
                   disabled={!user || wishlistPending}
+                  aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
                   <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-primary' : ''}`} />
                 </Button>
@@ -241,11 +302,11 @@ export default function ProductDetailPage() {
             {/* Features */}
             <div className="flex flex-col gap-3 pt-4 border-t border-border">
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Truck className="h-4 w-4 text-primary" />
-                <span>Free shipping on orders above ₹1500</span>
+                <Truck className="h-4 w-4 text-primary flex-shrink-0" />
+                <span>Free shipping on orders above ₹999</span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Shield className="h-4 w-4 text-primary" />
+                <Shield className="h-4 w-4 text-primary flex-shrink-0" />
                 <span>100% authentic product guarantee</span>
               </div>
             </div>
@@ -260,11 +321,11 @@ export default function ProductDetailPage() {
 
         {/* Related Products */}
         {filteredRelated && filteredRelated.length > 0 && (
-          <section className="mt-20">
-            <h2 className="font-display text-2xl md:text-3xl font-semibold mb-8">
+          <section className="mt-16 md:mt-20">
+            <h2 className="font-display text-xl md:text-3xl font-semibold mb-6 md:mb-8">
               You May Also Like
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
               {filteredRelated.map((p, index) => (
                 <ProductCard key={p.id} product={p} index={index} />
               ))}
@@ -275,6 +336,15 @@ export default function ProductDetailPage() {
         {/* Reviews Section */}
         <ProductReviews productId={product.id} />
       </div>
+
+      {/* Sticky Add to Cart for Mobile */}
+      <StickyAddToCart
+        product={product}
+        quantity={quantity}
+        onQuantityChange={setQuantity}
+        onAddToCart={handleAddToCart}
+        isVisible={showStickyCart}
+      />
     </MainLayout>
   );
 }
