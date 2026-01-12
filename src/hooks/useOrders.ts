@@ -112,6 +112,8 @@ interface CreateOrderInput {
   coupon_id?: string | null;
   shipping_address?: Json | null;
   payment_method?: string | null;
+  payment_status?: string | null;
+  payment_id?: string | null;
 }
 
 interface CreateOrderItemInput {
