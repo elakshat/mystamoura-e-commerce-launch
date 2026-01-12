@@ -1,3 +1,4 @@
+# Mystamoura Robots.txt
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +13,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: /sitemap.xml

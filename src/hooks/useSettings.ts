@@ -33,8 +33,12 @@ export function useUpdateSetting() {
 
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['settings'] });
+      // Also invalidate tax-settings when tax or shipping is updated
+      if (variables.key === 'tax' || variables.key === 'shipping') {
+        queryClient.invalidateQueries({ queryKey: ['tax-settings'] });
+      }
       toast.success('Settings updated');
     },
     onError: (error: Error) => {

@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Package, ArrowRight } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 
 export default function OrderSuccessPage() {
@@ -10,6 +11,7 @@ export default function OrderSuccessPage() {
 
   return (
     <MainLayout>
+      <SEOHead title="Order Confirmed" description="Your order has been successfully placed." />
       <div className="container mx-auto px-4 py-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}

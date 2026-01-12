@@ -2,11 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag, Tag } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { useValidateCoupon } from '@/hooks/useCoupons';
-import { useSettings } from '@/hooks/useSettings';
+import { useTaxSettings, calculateTax, calculateShipping, calculateTotal } from '@/hooks/useTaxSettings';
 import { formatPrice } from '@/lib/utils';
 import { useState } from 'react';
 import { Coupon } from '@/types';
@@ -14,15 +15,15 @@ import { toast } from 'sonner';
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, subtotal } = useCart();
-  const { data: settings } = useSettings();
+  const { data: taxSettings, isLoading: taxLoading } = useTaxSettings();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const validateCoupon = useValidateCoupon();
 
-  const shippingSettings = settings?.shipping || { base_price: 99, free_threshold: 1500 };
-  const taxSettings = settings?.tax || { rate: 18 };
-  const shippingAmount = subtotal >= shippingSettings.free_threshold ? 0 : shippingSettings.base_price;
+  const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
+  const taxRate = taxSettings?.tax?.rate || 18;
+  const shippingAmount = calculateShipping(subtotal, shippingSettings);
   
   let discountAmount = 0;
   if (appliedCoupon) {
@@ -33,8 +34,9 @@ export default function CartPage() {
     }
   }
 
-  const taxAmount = Math.round(((subtotal - discountAmount) * taxSettings.rate) / 100 * 100) / 100;
-  const total = Math.round((subtotal - discountAmount + shippingAmount + taxAmount) * 100) / 100;
+  const taxableAmount = subtotal - discountAmount;
+  const taxAmount = calculateTax(taxableAmount, taxRate);
+  const total = calculateTotal(subtotal, discountAmount, shippingAmount, taxAmount);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -62,6 +64,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <MainLayout>
+        <SEOHead title="Cart" description="View your shopping cart at Mystamoura" />
         <div className="container mx-auto px-4 py-20 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -86,6 +89,7 @@ export default function CartPage() {
 
   return (
     <MainLayout>
+      <SEOHead title="Cart" description="View and manage your shopping cart at Mystamoura" />
       <div className="container mx-auto px-4 py-8">
         <Link
           to="/products"
@@ -239,7 +243,7 @@ export default function CartPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax ({taxSettings.rate}%)</span>
+                  <span className="text-muted-foreground">Tax ({taxRate}%)</span>
                   <span>{formatPrice(taxAmount)}</span>
                 </div>
                 <div className="border-t border-border pt-3 mt-3">
