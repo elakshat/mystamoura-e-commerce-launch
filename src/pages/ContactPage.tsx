@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -65,6 +66,10 @@ export default function ContactPage() {
 
   return (
     <MainLayout>
+      <SEOHead 
+        title="Contact Us" 
+        description="Get in touch with Mystamoura. We'd love to hear from you about our luxury fragrances."
+      />
       <div className="container mx-auto px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

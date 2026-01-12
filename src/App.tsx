@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
@@ -36,126 +37,135 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminReviews from "./pages/admin/AdminReviews";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000,
+      refetchOnWindowFocus: true,
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <ThemeProvider>
-        <CartProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                {/* Customer Routes */}
-                <Route path="/" element={<Index />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/products/:slug" element={<ProductDetailPage />} />
-                <Route path="/collections/:slug" element={<CollectionPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/order-success" element={<OrderSuccessPage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/shipping" element={<ShippingPage />} />
-                <Route path="/refund" element={<RefundPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/wishlist" element={<WishlistPage />} />
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  {/* Customer Routes */}
+                  <Route path="/" element={<Index />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route path="/products/:slug" element={<ProductDetailPage />} />
+                  <Route path="/collections/:slug" element={<CollectionPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/order-success" element={<OrderSuccessPage />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/account" element={<AccountPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/shipping" element={<ShippingPage />} />
+                  <Route path="/refund" element={<RefundPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/wishlist" element={<WishlistPage />} />
 
-                {/* Admin Routes */}
-                <Route
-                  path="/admin"
-                  element={
-                    <AdminGuard>
-                      <AdminDashboard />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/products"
-                  element={
-                    <AdminGuard>
-                      <AdminProducts />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/products/new"
-                  element={
-                    <AdminGuard>
-                      <AdminProductForm />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/products/:id/edit"
-                  element={
-                    <AdminGuard>
-                      <AdminProductForm />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/orders"
-                  element={
-                    <AdminGuard>
-                      <AdminOrders />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/orders/:id"
-                  element={
-                    <AdminGuard>
-                      <AdminOrderDetail />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/coupons"
-                  element={
-                    <AdminGuard>
-                      <AdminCoupons />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/settings"
-                  element={
-                    <AdminGuard>
-                      <AdminSettings />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/customers"
-                  element={
-                    <AdminGuard>
-                      <AdminCustomers />
-                    </AdminGuard>
-                  }
-                />
-                <Route
-                  path="/admin/reviews"
-                  element={
-                    <AdminGuard>
-                      <AdminReviews />
-                    </AdminGuard>
-                  }
-                />
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin"
+                    element={
+                      <AdminGuard>
+                        <AdminDashboard />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <AdminGuard>
+                        <AdminProducts />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/products/new"
+                    element={
+                      <AdminGuard>
+                        <AdminProductForm />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/products/:id/edit"
+                    element={
+                      <AdminGuard>
+                        <AdminProductForm />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <AdminGuard>
+                        <AdminOrders />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders/:id"
+                    element={
+                      <AdminGuard>
+                        <AdminOrderDetail />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/coupons"
+                    element={
+                      <AdminGuard>
+                        <AdminCoupons />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/settings"
+                    element={
+                      <AdminGuard>
+                        <AdminSettings />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/customers"
+                    element={
+                      <AdminGuard>
+                        <AdminCustomers />
+                      </AdminGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/reviews"
+                    element={
+                      <AdminGuard>
+                        <AdminReviews />
+                      </AdminGuard>
+                    }
+                  />
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </CartProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </CartProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { ProductGrid } from '@/components/products/ProductGrid';
 import { useProducts, useCategories } from '@/hooks/useProducts';
 import { useState } from 'react';
@@ -12,6 +13,10 @@ export default function ProductsPage() {
 
   return (
     <MainLayout>
+      <SEOHead 
+        title="Our Collection" 
+        description="Browse our complete collection of luxury fragrances. Find your perfect signature scent from Mystamoura."
+      />
       <div className="container mx-auto px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

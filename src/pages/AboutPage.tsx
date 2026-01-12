@@ -1,9 +1,14 @@
 import { motion } from 'framer-motion';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { SEOHead } from '@/components/seo/SEOHead';
 
 export default function AboutPage() {
   return (
     <MainLayout>
+      <SEOHead 
+        title="About Us" 
+        description="Learn about Mystamoura's journey, philosophy, and commitment to creating exceptional luxury fragrances."
+      />
       <div className="container mx-auto px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

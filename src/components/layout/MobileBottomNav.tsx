@@ -11,11 +11,11 @@ export function MobileBottomNav() {
   const { user } = useAuth();
 
   const navItems = [
-    { href: '/', icon: Home, label: 'Home' },
-    { href: '/products', icon: Search, label: 'Shop' },
-    { href: '/cart', icon: ShoppingBag, label: 'Cart', badge: itemCount },
-    { href: user ? '/wishlist' : '/auth', icon: Heart, label: 'Wishlist' },
-    { href: user ? '/account' : '/auth', icon: User, label: 'Account' },
+    { id: 'home', href: '/', icon: Home, label: 'Home' },
+    { id: 'shop', href: '/products', icon: Search, label: 'Shop' },
+    { id: 'cart', href: '/cart', icon: ShoppingBag, label: 'Cart', badge: itemCount },
+    { id: 'wishlist', href: user ? '/wishlist' : '/auth', icon: Heart, label: 'Wishlist' },
+    { id: 'account', href: user ? '/account' : '/auth', icon: User, label: 'Account' },
   ];
 
   // Hide on admin pages
@@ -32,7 +32,7 @@ export function MobileBottomNav() {
           
           return (
             <Link
-              key={item.href}
+              key={item.id}
               to={item.href}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 h-full relative transition-colors',
