@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { CreditCard, Banknote, Loader2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTaxSettings, calculateTax, calculateShipping, calculateTotal } from '@/hooks/useTaxSettings';
@@ -14,6 +16,7 @@ import { formatPrice, generateOrderNumber } from '@/lib/utils';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { Json } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/client';
 
 const addressSchema = z.object({
   full_name: z.string().min(2, 'Name is required'),
@@ -32,6 +35,8 @@ export default function CheckoutPage() {
   const { data: taxSettings } = useTaxSettings();
   const createOrder = useCreateOrder();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const payuFormRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -45,6 +50,18 @@ export default function CheckoutPage() {
     country: 'India',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [paymentMethod, setPaymentMethod] = useState<'cod' | 'payu'>('payu');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [payuData, setPayuData] = useState<{
+    payuUrl: string;
+    paymentData: Record<string, string>;
+  } | null>(null);
+
+  // Check for payment error from URL
+  const paymentError = searchParams.get('error');
+  if (paymentError && paymentError === 'payment_failed') {
+    toast.error('Payment failed. Please try again.');
+  }
 
   const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
   const taxRate = taxSettings?.tax?.rate || 18;
@@ -57,6 +74,46 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const initiatePayUPayment = async (orderNumber: string) => {
+    setIsProcessing(true);
+    try {
+      const baseUrl = window.location.origin;
+      
+      const { data, error } = await supabase.functions.invoke('payu-create-payment', {
+        body: {
+          orderId: orderNumber,
+          amount: total.toFixed(2),
+          productInfo: `Order ${orderNumber}`,
+          firstName: formData.full_name.split(' ')[0],
+          email: formData.email || user?.email,
+          phone: formData.phone,
+          successUrl: `${baseUrl}/order-success`,
+          failureUrl: `${baseUrl}/checkout?error=payment_failed`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setPayuData({
+          payuUrl: data.payuUrl,
+          paymentData: data.paymentData,
+        });
+        
+        // Submit form after state update
+        setTimeout(() => {
+          payuFormRef.current?.submit();
+        }, 100);
+      } else {
+        throw new Error(data.error || 'Failed to initiate payment');
+      }
+    } catch (error) {
+      console.error('PayU payment error:', error);
+      toast.error('Failed to initiate payment. Please try again.');
+      setIsProcessing(false);
     }
   };
 
@@ -73,6 +130,7 @@ export default function CheckoutPage() {
 
       const orderNumber = generateOrderNumber();
 
+      // Create order first
       await createOrder.mutateAsync({
         order: {
           order_number: orderNumber,
@@ -83,7 +141,8 @@ export default function CheckoutPage() {
           tax_amount: taxAmount,
           total,
           shipping_address: validatedAddress as unknown as Json,
-          payment_method: 'cod',
+          payment_method: paymentMethod,
+          payment_status: paymentMethod === 'cod' ? 'pending' : 'awaiting',
         },
         items: items.map((item) => ({
           product_id: item.product.id,
@@ -95,9 +154,15 @@ export default function CheckoutPage() {
         })),
       });
 
-      clearCart();
-      toast.success('Order placed successfully!');
-      navigate('/order-success', { state: { orderNumber } });
+      if (paymentMethod === 'payu') {
+        // Initiate PayU payment
+        await initiatePayUPayment(orderNumber);
+      } else {
+        // Cash on Delivery
+        clearCart();
+        toast.success('Order placed successfully!');
+        navigate('/order-success', { state: { orderNumber } });
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
@@ -110,6 +175,7 @@ export default function CheckoutPage() {
       } else {
         toast.error('Failed to place order. Please try again.');
       }
+      setIsProcessing(false);
     }
   };
 
@@ -121,11 +187,27 @@ export default function CheckoutPage() {
   return (
     <MainLayout>
       <SEOHead title="Checkout" description="Complete your order at Mystamoura" />
+      
+      {/* Hidden PayU form for redirect */}
+      {payuData && (
+        <form
+          ref={payuFormRef}
+          action={payuData.payuUrl}
+          method="POST"
+          style={{ display: 'none' }}
+        >
+          {Object.entries(payuData.paymentData).map(([key, value]) => (
+            <input key={key} type="hidden" name={key} value={value} />
+          ))}
+        </form>
+      )}
+
       <div className="container mx-auto px-4 py-8">
         <h1 className="font-display text-3xl md:text-4xl font-semibold mb-8">Checkout</h1>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
+              {/* Shipping Information */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-display text-xl font-semibold mb-6">Shipping Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,31 +223,135 @@ export default function CheckoutPage() {
                       {errors.email && <p className="text-destructive text-sm mt-1">{errors.email}</p>}
                     </div>
                   )}
-                  <div className="md:col-span-2"><Label htmlFor="phone">Phone *</Label><Input id="phone" name="phone" value={formData.phone} onChange={handleChange} className={errors.phone ? 'border-destructive' : ''} />{errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone}</p>}</div>
-                  <div className="md:col-span-2"><Label htmlFor="address_line1">Address *</Label><Input id="address_line1" name="address_line1" value={formData.address_line1} onChange={handleChange} className={errors.address_line1 ? 'border-destructive' : ''} />{errors.address_line1 && <p className="text-destructive text-sm mt-1">{errors.address_line1}</p>}</div>
-                  <div className="md:col-span-2"><Label htmlFor="address_line2">Address Line 2</Label><Input id="address_line2" name="address_line2" value={formData.address_line2} onChange={handleChange} /></div>
-                  <div><Label htmlFor="city">City *</Label><Input id="city" name="city" value={formData.city} onChange={handleChange} className={errors.city ? 'border-destructive' : ''} />{errors.city && <p className="text-destructive text-sm mt-1">{errors.city}</p>}</div>
-                  <div><Label htmlFor="state">State *</Label><Input id="state" name="state" value={formData.state} onChange={handleChange} className={errors.state ? 'border-destructive' : ''} />{errors.state && <p className="text-destructive text-sm mt-1">{errors.state}</p>}</div>
-                  <div><Label htmlFor="postal_code">Postal Code *</Label><Input id="postal_code" name="postal_code" value={formData.postal_code} onChange={handleChange} className={errors.postal_code ? 'border-destructive' : ''} />{errors.postal_code && <p className="text-destructive text-sm mt-1">{errors.postal_code}</p>}</div>
-                  <div><Label htmlFor="country">Country</Label><Input id="country" name="country" value={formData.country} disabled /></div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="phone">Phone *</Label>
+                    <Input id="phone" name="phone" value={formData.phone} onChange={handleChange} className={errors.phone ? 'border-destructive' : ''} />
+                    {errors.phone && <p className="text-destructive text-sm mt-1">{errors.phone}</p>}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="address_line1">Address *</Label>
+                    <Input id="address_line1" name="address_line1" value={formData.address_line1} onChange={handleChange} className={errors.address_line1 ? 'border-destructive' : ''} />
+                    {errors.address_line1 && <p className="text-destructive text-sm mt-1">{errors.address_line1}</p>}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="address_line2">Address Line 2</Label>
+                    <Input id="address_line2" name="address_line2" value={formData.address_line2} onChange={handleChange} />
+                  </div>
+                  <div>
+                    <Label htmlFor="city">City *</Label>
+                    <Input id="city" name="city" value={formData.city} onChange={handleChange} className={errors.city ? 'border-destructive' : ''} />
+                    {errors.city && <p className="text-destructive text-sm mt-1">{errors.city}</p>}
+                  </div>
+                  <div>
+                    <Label htmlFor="state">State *</Label>
+                    <Input id="state" name="state" value={formData.state} onChange={handleChange} className={errors.state ? 'border-destructive' : ''} />
+                    {errors.state && <p className="text-destructive text-sm mt-1">{errors.state}</p>}
+                  </div>
+                  <div>
+                    <Label htmlFor="postal_code">Postal Code *</Label>
+                    <Input id="postal_code" name="postal_code" value={formData.postal_code} onChange={handleChange} className={errors.postal_code ? 'border-destructive' : ''} />
+                    {errors.postal_code && <p className="text-destructive text-sm mt-1">{errors.postal_code}</p>}
+                  </div>
+                  <div>
+                    <Label htmlFor="country">Country</Label>
+                    <Input id="country" name="country" value={formData.country} disabled />
+                  </div>
                 </div>
               </motion.div>
+
+              {/* Payment Method */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-lg p-6">
                 <h2 className="font-display text-xl font-semibold mb-4">Payment Method</h2>
-                <div className="bg-secondary/50 p-4 rounded-lg"><p className="font-medium">Cash on Delivery</p><p className="text-sm text-muted-foreground">Pay when your order arrives</p></div>
+                <RadioGroup value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as 'cod' | 'payu')} className="space-y-3">
+                  <div className={`flex items-center space-x-3 p-4 rounded-lg border-2 transition-colors cursor-pointer ${paymentMethod === 'payu' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/50'}`}>
+                    <RadioGroupItem value="payu" id="payu" />
+                    <Label htmlFor="payu" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <CreditCard className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Pay Online (PayU)</p>
+                        <p className="text-sm text-muted-foreground">Credit/Debit Card, UPI, Net Banking, Wallets</p>
+                      </div>
+                    </Label>
+                  </div>
+                  <div className={`flex items-center space-x-3 p-4 rounded-lg border-2 transition-colors cursor-pointer ${paymentMethod === 'cod' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/50'}`}>
+                    <RadioGroupItem value="cod" id="cod" />
+                    <Label htmlFor="cod" className="flex items-center gap-3 cursor-pointer flex-1">
+                      <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                        <Banknote className="h-5 w-5 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Cash on Delivery</p>
+                        <p className="text-sm text-muted-foreground">Pay when your order arrives</p>
+                      </div>
+                    </Label>
+                  </div>
+                </RadioGroup>
               </motion.div>
             </div>
+
+            {/* Order Summary */}
             <div className="lg:col-span-1">
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-card border border-border rounded-lg p-6 sticky top-24">
                 <h2 className="font-display text-xl font-semibold mb-6">Order Summary</h2>
-                <div className="space-y-4 mb-6">{items.map((item) => (<div key={item.product.id} className="flex gap-3"><div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex-shrink-0">{item.product.images?.[0] && <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover" />}</div><div className="flex-1 min-w-0"><p className="font-medium text-sm truncate">{item.product.name}</p><p className="text-xs text-muted-foreground">Qty: {item.quantity}</p><p className="text-sm font-semibold">{formatPrice((item.product.sale_price || item.product.price) * item.quantity)}</p></div></div>))}</div>
-                <div className="space-y-3 text-sm border-t border-border pt-4">
-                  <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{formatPrice(subtotal)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span>{shippingAmount === 0 ? <span className="text-primary">FREE</span> : formatPrice(shippingAmount)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">Tax ({taxRate}%)</span><span>{formatPrice(taxAmount)}</span></div>
-                  <div className="border-t border-border pt-3"><div className="flex justify-between text-lg font-semibold"><span>Total</span><span>{formatPrice(Math.round(total * 100) / 100)}</span></div></div>
+                <div className="space-y-4 mb-6">
+                  {items.map((item) => (
+                    <div key={item.product.id} className="flex gap-3">
+                      <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
+                        {item.product.images?.[0] && <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{item.product.name}</p>
+                        <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                        <p className="text-sm font-semibold">{formatPrice((item.product.sale_price || item.product.price) * item.quantity)}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <Button type="submit" className="w-full mt-6 bg-gradient-gold text-primary-foreground hover:opacity-90 py-6" disabled={createOrder.isPending}>{createOrder.isPending ? 'Placing Order...' : 'Place Order'}</Button>
+                <div className="space-y-3 text-sm border-t border-border pt-4">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatPrice(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>{shippingAmount === 0 ? <span className="text-primary">FREE</span> : formatPrice(shippingAmount)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Tax ({taxRate}%)</span>
+                    <span>{formatPrice(taxAmount)}</span>
+                  </div>
+                  <div className="border-t border-border pt-3">
+                    <div className="flex justify-between text-lg font-semibold">
+                      <span>Total</span>
+                      <span>{formatPrice(Math.round(total * 100) / 100)}</span>
+                    </div>
+                  </div>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full mt-6 bg-gradient-gold text-primary-foreground hover:opacity-90 py-6" 
+                  disabled={createOrder.isPending || isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : createOrder.isPending ? (
+                    'Placing Order...'
+                  ) : paymentMethod === 'payu' ? (
+                    'Pay Now'
+                  ) : (
+                    'Place Order'
+                  )}
+                </Button>
+                {paymentMethod === 'payu' && (
+                  <p className="text-xs text-center text-muted-foreground mt-3">
+                    You will be redirected to PayU secure payment gateway
+                  </p>
+                )}
               </motion.div>
             </div>
           </div>
