@@ -37,13 +37,26 @@ export function truncate(text: string, length: number): string {
 
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    pending: 'bg-yellow-500/20 text-yellow-500',
-    paid: 'bg-green-500/20 text-green-500',
-    processing: 'bg-blue-500/20 text-blue-500',
-    shipped: 'bg-purple-500/20 text-purple-500',
-    delivered: 'bg-emerald-500/20 text-emerald-500',
-    cancelled: 'bg-red-500/20 text-red-500',
-    refunded: 'bg-gray-500/20 text-gray-500',
+    pending: 'bg-warning/20 text-warning',
+    awaiting: 'bg-warning/20 text-warning',
+    paid: 'bg-primary/20 text-primary',
+    processing: 'bg-accent/50 text-accent-foreground',
+    shipped: 'bg-secondary text-secondary-foreground',
+    delivered: 'bg-primary/20 text-primary',
+    cancelled: 'bg-destructive/20 text-destructive',
+    refunded: 'bg-muted text-muted-foreground',
+    failed: 'bg-destructive/20 text-destructive',
+    completed: 'bg-primary/20 text-primary',
   };
-  return colors[status] || 'bg-gray-500/20 text-gray-500';
+  return colors[status] || 'bg-muted text-muted-foreground';
+}
+
+export function getPaymentStatusColor(status: string): string {
+  const colors: Record<string, string> = {
+    pending: 'bg-warning/20 text-warning',
+    awaiting: 'bg-warning/20 text-warning',
+    completed: 'bg-primary/20 text-primary',
+    failed: 'bg-destructive/20 text-destructive',
+  };
+  return colors[status] || 'bg-muted text-muted-foreground';
 }
