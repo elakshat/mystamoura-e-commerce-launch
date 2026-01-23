@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Loader2, CreditCard, ExternalLink, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Save, Loader2, CreditCard, ExternalLink, AlertCircle, CheckCircle2, Mail, Phone, MapPin } from 'lucide-react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSettings, useUpdateSetting } from '@/hooks/useSettings';
+import { CollectionImageManager } from '@/components/admin/CollectionImageManager';
 import { toast } from 'sonner';
 
 export default function AdminSettings() {
@@ -33,6 +34,9 @@ export default function AdminSettings() {
     instagram: '',
     facebook: '',
     twitter: '',
+    email: '',
+    phone: '',
+    location: '',
   });
 
   const [shipping, setShipping] = useState({
@@ -60,7 +64,16 @@ export default function AdminSettings() {
         setHero(settings.hero);
       }
       if (settings.footer) {
-        setFooter(settings.footer);
+        const footerSettings = settings.footer as Record<string, string>;
+        setFooter({
+          about_text: footerSettings.about_text || '',
+          instagram: footerSettings.instagram || '',
+          facebook: footerSettings.facebook || '',
+          twitter: footerSettings.twitter || '',
+          email: footerSettings.email || '',
+          phone: footerSettings.phone || '',
+          location: footerSettings.location || '',
+        });
       }
       if (settings.shipping) {
         setShipping(settings.shipping);
@@ -115,7 +128,9 @@ export default function AdminSettings() {
           <Tabs defaultValue="general" className="space-y-6">
             <TabsList>
               <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="contact">Contact</TabsTrigger>
               <TabsTrigger value="homepage">Homepage</TabsTrigger>
+              <TabsTrigger value="collections">Collections</TabsTrigger>
               <TabsTrigger value="shipping">Shipping & Tax</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
             </TabsList>
@@ -237,6 +252,87 @@ export default function AdminSettings() {
               </div>
             </TabsContent>
 
+            {/* Contact Settings */}
+            <TabsContent value="contact" className="space-y-6">
+              <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg font-semibold text-foreground">
+                        Contact Information
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Manage contact details shown in the footer
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="contact-email" className="text-foreground flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-muted-foreground" />
+                          Email Address
+                        </Label>
+                        <Input
+                          id="contact-email"
+                          type="email"
+                          value={footer.email}
+                          onChange={(e) =>
+                            setFooter({ ...footer, email: e.target.value })
+                          }
+                          placeholder="hello@mystamoura.in"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contact-phone" className="text-foreground flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-muted-foreground" />
+                          Phone Number
+                        </Label>
+                        <Input
+                          id="contact-phone"
+                          type="tel"
+                          value={footer.phone}
+                          onChange={(e) =>
+                            setFooter({ ...footer, phone: e.target.value })
+                          }
+                          placeholder="+91 9876543210"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact-location" className="text-foreground flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        Location / Address
+                      </Label>
+                      <Input
+                        id="contact-location"
+                        value={footer.location}
+                        onChange={(e) =>
+                          setFooter({ ...footer, location: e.target.value })
+                        }
+                        placeholder="Mumbai, India"
+                      />
+                    </div>
+                    <Button
+                      onClick={() => handleSave('footer', footer)}
+                      disabled={updateSettings.isPending}
+                    >
+                      {updateSettings.isPending ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4 mr-2" />
+                      )}
+                      Save Contact Settings
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
             {/* Homepage Settings */}
             <TabsContent value="homepage" className="space-y-6">
               <div className="bg-card rounded-xl border border-border p-6 space-y-6">
@@ -303,6 +399,13 @@ export default function AdminSettings() {
                     </Button>
                   </div>
                 </div>
+              </div>
+            </TabsContent>
+
+            {/* Collections Settings */}
+            <TabsContent value="collections" className="space-y-6">
+              <div className="bg-card rounded-xl border border-border p-6">
+                <CollectionImageManager />
               </div>
             </TabsContent>
 

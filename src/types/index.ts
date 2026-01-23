@@ -114,6 +114,7 @@ export interface SiteSettings {
     about_text: string;
     email: string;
     phone: string;
+    location: string;
     instagram: string;
     facebook: string;
     twitter: string;
