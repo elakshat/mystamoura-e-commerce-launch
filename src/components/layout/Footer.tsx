@@ -114,26 +114,37 @@ export function Footer() {
           <div>
             <h4 className="font-display text-lg font-medium mb-4">Contact Us</h4>
             <ul className="space-y-3">
-              {settings?.footer?.email && (
+              {(settings?.footer as Record<string, string>)?.email && (
                 <li className="flex items-center space-x-2 text-muted-foreground text-sm">
                   <Mail className="h-4 w-4" />
-                  <a href={`mailto:${settings.footer.email}`} className="hover:text-primary transition-colors">
-                    {settings.footer.email}
+                  <a href={`mailto:${(settings?.footer as Record<string, string>)?.email}`} className="hover:text-primary transition-colors">
+                    {(settings?.footer as Record<string, string>)?.email}
                   </a>
                 </li>
               )}
-              {settings?.footer?.phone && (
+              {(settings?.footer as Record<string, string>)?.phone && (
                 <li className="flex items-center space-x-2 text-muted-foreground text-sm">
                   <Phone className="h-4 w-4" />
-                  <a href={`tel:${settings.footer.phone}`} className="hover:text-primary transition-colors">
-                    {settings.footer.phone}
+                  <a href={`tel:${(settings?.footer as Record<string, string>)?.phone}`} className="hover:text-primary transition-colors">
+                    {(settings?.footer as Record<string, string>)?.phone}
                   </a>
                 </li>
               )}
-              <li className="flex items-start space-x-2 text-muted-foreground text-sm">
-                <MapPin className="h-4 w-4 mt-0.5" />
-                <span>Mumbai, India</span>
-              </li>
+              {(settings?.footer as Record<string, string>)?.location && (
+                <li className="flex items-start space-x-2 text-muted-foreground text-sm">
+                  <MapPin className="h-4 w-4 mt-0.5" />
+                  <span>{(settings?.footer as Record<string, string>)?.location}</span>
+                </li>
+              )}
+              {/* Fallback if no contact info is set */}
+              {!(settings?.footer as Record<string, string>)?.email && 
+               !(settings?.footer as Record<string, string>)?.phone && 
+               !(settings?.footer as Record<string, string>)?.location && (
+                <li className="flex items-start space-x-2 text-muted-foreground text-sm">
+                  <MapPin className="h-4 w-4 mt-0.5" />
+                  <span>Mumbai, India</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
