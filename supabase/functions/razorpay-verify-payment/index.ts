@@ -43,15 +43,22 @@ serve(async (req) => {
   }
 
   try {
-    const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    // Get credentials from secrets (trimmed)
+    const keySecret = (Deno.env.get("RAZORPAY_KEY_SECRET") || "").trim();
+    const supabaseUrl = (Deno.env.get("SUPABASE_URL") || "").trim();
+    const supabaseServiceKey = (Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "").trim();
 
     if (!keySecret) {
+      console.error("RAZORPAY_KEY_SECRET not configured");
       throw new Error("Razorpay credentials not configured");
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error("Supabase credentials not configured");
+      throw new Error("Backend configuration missing");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const {
       razorpay_order_id,
@@ -59,6 +66,8 @@ serve(async (req) => {
       razorpay_signature,
       order_number,
     } = await req.json();
+
+    console.log(`Verifying payment for order: ${order_number}`);
 
     // Validate required fields
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !order_number) {
@@ -74,7 +83,7 @@ serve(async (req) => {
     );
 
     if (!isValid) {
-      console.error("Payment signature verification failed");
+      console.error(`❌ Payment signature verification failed for order: ${order_number}`);
       
       // Update order as failed
       await supabase
@@ -124,6 +133,27 @@ serve(async (req) => {
         order_number,
       },
     });
+
+    console.log(`✅ Payment verified for order: ${order_number}, Payment ID: ${razorpay_payment_id}`);
+
+    // Trigger email notifications (optional - call send-order-emails function)
+    try {
+      const emailResponse = await fetch(`${supabaseUrl}/functions/v1/send-order-emails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseServiceKey}`,
+        },
+        body: JSON.stringify({ order_number }),
+      });
+      
+      if (!emailResponse.ok) {
+        console.warn("Email notification failed but payment succeeded");
+      }
+    } catch (emailError) {
+      console.warn("Failed to send email notifications:", emailError);
+      // Don't fail the payment verification if email fails
+    }
 
     return new Response(
       JSON.stringify({
