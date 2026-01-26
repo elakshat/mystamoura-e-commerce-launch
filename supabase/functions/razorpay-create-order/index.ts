@@ -13,10 +13,24 @@ serve(async (req) => {
   }
 
   try {
-    // Create Supabase client to fetch settings
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Razorpay secret must come from backend secrets (never from the database)
+    const razorpayKeyIdFromSecret = (Deno.env.get("RAZORPAY_KEY_ID") || "").trim();
+    const razorpayKeySecret = (Deno.env.get("RAZORPAY_KEY_SECRET") || "").trim();
+
+    if (!razorpayKeyIdFromSecret || !razorpayKeySecret) {
+      throw new Error("Razorpay credentials not configured");
+    }
+
+    // Create a DB client (anon key is enough for reading public settings)
+    const supabaseUrl = (Deno.env.get("SUPABASE_URL") || "").trim();
+    const supabaseAnonKey =
+      (Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "").trim();
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error("Backend configuration missing (SUPABASE_URL / SUPABASE_ANON_KEY)");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     // Fetch Razorpay settings from site_settings table
     const { data: settings, error: settingsError } = await supabase
@@ -30,23 +44,18 @@ serve(async (req) => {
       throw new Error("Razorpay settings not configured");
     }
 
-    const razorpayConfig = settings.value as {
-      key_id: string;
-      key_secret: string;
-      enabled: boolean;
-      test_mode: boolean;
+    const razorpayConfig = (settings.value ?? {}) as {
+      enabled?: boolean;
+      test_mode?: boolean;
     };
 
     if (!razorpayConfig.enabled) {
       throw new Error("Razorpay payments are disabled");
     }
 
-    const keyId = razorpayConfig.key_id;
-    const keySecret = razorpayConfig.key_secret;
-
-    if (!keyId || !keySecret) {
-      throw new Error("Razorpay credentials not configured in settings");
-    }
+    // Use the secret-managed keys for auth
+    const keyId = razorpayKeyIdFromSecret;
+    const keySecret = razorpayKeySecret;
 
     const { orderNumber, amount, currency = "INR", notes } = await req.json();
 
