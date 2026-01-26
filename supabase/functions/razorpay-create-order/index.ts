@@ -13,11 +13,39 @@ serve(async (req) => {
   }
 
   try {
-    const keyId = Deno.env.get("RAZORPAY_KEY_ID");
-    const keySecret = Deno.env.get("RAZORPAY_KEY_SECRET");
+    // Create Supabase client to fetch settings
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Fetch Razorpay settings from site_settings table
+    const { data: settings, error: settingsError } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "razorpay")
+      .single();
+
+    if (settingsError || !settings) {
+      console.error("Failed to fetch Razorpay settings:", settingsError);
+      throw new Error("Razorpay settings not configured");
+    }
+
+    const razorpayConfig = settings.value as {
+      key_id: string;
+      key_secret: string;
+      enabled: boolean;
+      test_mode: boolean;
+    };
+
+    if (!razorpayConfig.enabled) {
+      throw new Error("Razorpay payments are disabled");
+    }
+
+    const keyId = razorpayConfig.key_id;
+    const keySecret = razorpayConfig.key_secret;
 
     if (!keyId || !keySecret) {
-      throw new Error("Razorpay credentials not configured");
+      throw new Error("Razorpay credentials not configured in settings");
     }
 
     const { orderNumber, amount, currency = "INR", notes } = await req.json();
@@ -54,6 +82,8 @@ serve(async (req) => {
     }
 
     const razorpayOrder = await razorpayResponse.json();
+
+    console.log(`✅ Razorpay order created: ${razorpayOrder.id} for ${orderNumber}`);
 
     return new Response(
       JSON.stringify({
