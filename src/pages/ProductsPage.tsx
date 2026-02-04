@@ -23,10 +23,10 @@ export default function ProductsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="font-display text-4xl md:text-5xl font-semibold mb-4">
+          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Our Collection
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
             Discover our curated selection of luxury fragrances, each crafted with the finest ingredients.
           </p>
         </motion.div>

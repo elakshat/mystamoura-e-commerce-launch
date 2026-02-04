@@ -199,7 +199,7 @@ export default function ProductDetailPage() {
               </Link>
             )}
 
-            <h1 className="font-display text-2xl md:text-4xl font-semibold">
+            <h1 className="font-display text-2xl md:text-4xl font-bold text-foreground">
               {product.name}
             </h1>
 
@@ -238,7 +238,7 @@ export default function ProductDetailPage() {
             )}
 
             {product.description && (
-              <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
+              <p className="text-foreground leading-relaxed text-sm md:text-base">
                 {product.description}
               </p>
             )}
@@ -322,7 +322,7 @@ export default function ProductDetailPage() {
         {/* Related Products */}
         {filteredRelated && filteredRelated.length > 0 && (
           <section className="mt-16 md:mt-20">
-            <h2 className="font-display text-xl md:text-3xl font-semibold mb-6 md:mb-8">
+            <h2 className="font-display text-xl md:text-3xl font-bold mb-6 md:mb-8 text-foreground">
               You May Also Like
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">

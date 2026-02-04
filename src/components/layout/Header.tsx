@@ -33,7 +33,7 @@ export function Header() {
         </div>
       )}
 
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Mobile Menu Button */}
@@ -62,7 +62,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors duration-300"
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-300 relative after:absolute after:left-0 after:bottom-[-4px] after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
                 >
                   {link.label}
                 </Link>

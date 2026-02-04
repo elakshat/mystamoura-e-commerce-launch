@@ -107,10 +107,10 @@ export default function AuthPage() {
           className="max-w-md mx-auto"
         >
           <div className="text-center mb-8">
-            <h1 className="font-display text-3xl md:text-4xl font-semibold mb-2">
+            <h1 className="font-display text-3xl md:text-4xl font-bold mb-2 text-foreground">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground font-medium">
               {isLogin
                 ? 'Sign in to access your account'
                 : 'Join us for an exclusive fragrance experience'}
