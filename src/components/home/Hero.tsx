@@ -17,7 +17,7 @@ export function Hero() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-hero">
+    <section ref={containerRef} className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-hero">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <motion.div
@@ -79,7 +79,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-semibold leading-tight mb-6"
+            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-foreground"
           >
             {settings?.hero?.title || (
               <>

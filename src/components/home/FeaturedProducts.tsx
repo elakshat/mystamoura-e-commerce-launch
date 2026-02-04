@@ -51,7 +51,7 @@ export function FeaturedProducts() {
           >
             BEST SELLERS
           </motion.p>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
             Featured Collection
           </h2>
         </motion.div>

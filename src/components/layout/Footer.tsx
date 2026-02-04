@@ -6,7 +6,7 @@ export function Footer() {
   const { data: settings } = useSettings();
 
   return (
-    <footer className="bg-card border-t border-border">
+    <footer className="bg-card border-t border-border mt-auto">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
@@ -53,7 +53,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display text-lg font-medium mb-4">Quick Links</h4>
+            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Quick Links</h4>
             <ul className="space-y-3">
               <li>
                 <Link to="/products" className="text-muted-foreground hover:text-primary text-sm transition-colors">
@@ -85,7 +85,7 @@ export function Footer() {
 
           {/* Policies */}
           <div>
-            <h4 className="font-display text-lg font-medium mb-4">Policies</h4>
+            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Policies</h4>
             <ul className="space-y-3">
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-primary text-sm transition-colors">
@@ -112,7 +112,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="font-display text-lg font-medium mb-4">Contact Us</h4>
+            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Contact Us</h4>
             <ul className="space-y-3">
               {(settings?.footer as Record<string, string>)?.email && (
                 <li className="flex items-center space-x-2 text-muted-foreground text-sm">

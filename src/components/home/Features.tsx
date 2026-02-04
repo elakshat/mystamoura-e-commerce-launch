@@ -73,10 +73,10 @@ export function Features() {
               >
                 <feature.icon className="h-6 w-6" />
               </motion.div>
-              <h3 className="font-display text-lg font-medium mb-1 group-hover:text-primary transition-colors duration-300">
+              <h3 className="font-display text-lg font-semibold mb-1 text-foreground group-hover:text-primary transition-colors duration-300">
                 {feature.title}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground font-medium">
                 {feature.description}
               </p>
             </motion.div>

@@ -99,7 +99,7 @@ export default function CartPage() {
           Continue Shopping
         </Link>
 
-        <h1 className="font-display text-3xl md:text-4xl font-semibold mb-8">
+        <h1 className="font-display text-3xl md:text-4xl font-bold mb-8 text-foreground">
           Shopping Cart
         </h1>
 
@@ -185,7 +185,7 @@ export default function CartPage() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-card border border-border rounded-lg p-6 sticky top-24"
             >
-              <h2 className="font-display text-xl font-semibold mb-6">Order Summary</h2>
+              <h2 className="font-display text-xl font-bold mb-6 text-foreground">Order Summary</h2>
 
               {/* Coupon */}
               <div className="mb-6">
