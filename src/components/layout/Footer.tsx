@@ -7,17 +7,17 @@ export function Footer() {
 
   return (
     <footer className="bg-card border-t border-border mt-auto">
-      <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+      <div className="container mx-auto px-4 py-10 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {/* Brand */}
-          <div className="space-y-4">
-            <h3 className="font-display text-2xl font-semibold text-gradient-gold">
+          <div className="col-span-2 md:col-span-1 space-y-4">
+            <h3 className="font-display text-xl md:text-2xl font-semibold text-gradient-gold">
               MYSTAMOURA
             </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
               {settings?.footer?.about_text || 'Luxury fragrances crafted with passion and precision.'}
             </p>
-            <div className="flex items-center space-x-4 pt-2">
+            <div className="flex items-center gap-4 pt-2">
               {(settings?.footer?.instagram || settings?.social?.instagram) && (
                 <a
                   href={settings?.footer?.instagram || settings?.social?.instagram}
@@ -53,8 +53,8 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Quick Links</h4>
+            <ul className="space-y-2.5">
               <li>
                 <Link to="/products" className="text-muted-foreground hover:text-primary text-sm transition-colors">
                   Shop All
@@ -85,8 +85,8 @@ export function Footer() {
 
           {/* Policies */}
           <div>
-            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Policies</h4>
-            <ul className="space-y-3">
+            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Policies</h4>
+            <ul className="space-y-2.5">
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-primary text-sm transition-colors">
                   Privacy Policy
@@ -111,8 +111,8 @@ export function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="font-display text-lg font-semibold mb-4 text-foreground">Contact Us</h4>
+          <div className="col-span-2 md:col-span-1">
+            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Contact Us</h4>
             <ul className="space-y-3">
               {(settings?.footer as Record<string, string>)?.email && (
                 <li className="flex items-center space-x-2 text-muted-foreground text-sm">
@@ -149,8 +149,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 text-center">
-          <p className="text-muted-foreground text-sm">
+        <div className="border-t border-border mt-10 md:mt-12 pt-6 md:pt-8 text-center">
+          <p className="text-muted-foreground text-xs md:text-sm">
             © {new Date().getFullYear()} Mystamoura. All rights reserved.
           </p>
         </div>

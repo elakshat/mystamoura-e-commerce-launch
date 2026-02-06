@@ -56,12 +56,12 @@ export function TrustBadges() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4">
+          <h2 className="font-display text-2xl md:text-3xl lg:text-4xl font-semibold mb-3 md:mb-4 text-foreground">
             Why Choose Mystamoura
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
             Experience the art of perfumery with our commitment to quality and authenticity
           </p>
         </motion.div>
@@ -81,17 +81,17 @@ export function TrustBadges() {
               className="relative group"
             >
               <div className="absolute inset-0 bg-gradient-gold opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500" />
-              <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-6 text-center h-full transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-gold">
+              <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl p-4 md:p-6 text-center h-full flex flex-col items-center transition-all duration-500 group-hover:border-primary/30 group-hover:shadow-gold">
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4 transition-colors duration-300 group-hover:bg-primary/20"
+                  className="flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/10 text-primary mb-3 md:mb-4 transition-colors duration-300 group-hover:bg-primary/20"
                 >
-                  <badge.icon className="h-7 w-7" />
+                  <badge.icon className="h-5 w-5 md:h-7 md:w-7" />
                 </motion.div>
-                <h3 className="font-display text-lg font-semibold mb-2 group-hover:text-primary transition-colors duration-300">
+                <h3 className="font-display text-sm md:text-lg font-semibold mb-1 md:mb-2 group-hover:text-primary transition-colors duration-300">
                   {badge.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                   {badge.description}
                 </p>
               </div>

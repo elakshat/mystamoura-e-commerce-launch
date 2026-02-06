@@ -70,10 +70,10 @@ export function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center space-x-0.5 md:space-x-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <SearchDialog />
 
-              <div className="hidden md:block">
+              <div className="hidden md:flex items-center">
                 <ThemeToggle />
               </div>
 

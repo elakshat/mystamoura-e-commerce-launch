@@ -64,19 +64,19 @@ export function Features() {
               key={feature.title}
               variants={itemVariants}
               whileHover={{ y: -5 }}
-              className="text-center group cursor-default"
+              className="flex flex-col items-center text-center group cursor-default"
             >
               <motion.div
                 whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 0.3 }}
-                className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4 group-hover:bg-primary/20 transition-colors duration-300"
+                className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/10 text-primary mb-3 md:mb-4 group-hover:bg-primary/20 transition-colors duration-300"
               >
-                <feature.icon className="h-6 w-6" />
+                <feature.icon className="h-5 w-5 md:h-6 md:w-6" />
               </motion.div>
-              <h3 className="font-display text-lg font-semibold mb-1 text-foreground group-hover:text-primary transition-colors duration-300">
+              <h3 className="font-display text-sm md:text-lg font-semibold mb-1 text-foreground group-hover:text-primary transition-colors duration-300">
                 {feature.title}
               </h3>
-              <p className="text-sm text-muted-foreground font-medium">
+              <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
