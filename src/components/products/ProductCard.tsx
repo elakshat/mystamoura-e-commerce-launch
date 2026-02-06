@@ -134,20 +134,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       </Link>
 
       {/* Product Info */}
-      <div className="mt-3 space-y-1.5">
+      <div className="mt-3 space-y-1">
         <Link to={`/products/${product.slug}`}>
-          <h3 className="font-display text-base md:text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-display text-sm md:text-base font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1 leading-tight">
             {product.name}
           </h3>
         </Link>
-        <p className="text-xs md:text-sm text-muted-foreground font-medium">{product.size}</p>
-        <div className="flex items-center gap-2">
+        <p className="text-xs text-muted-foreground font-medium">{product.size}</p>
+        <div className="flex items-baseline gap-2 pt-0.5">
           {isOnSale ? (
             <>
               <span className="font-bold text-sm md:text-base text-primary">
                 {formatPrice(product.sale_price!, product.currency)}
               </span>
-              <span className="text-xs md:text-sm text-muted-foreground line-through">
+              <span className="text-xs text-muted-foreground line-through">
                 {formatPrice(product.price, product.currency)}
               </span>
             </>

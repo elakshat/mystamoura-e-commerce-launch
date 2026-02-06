@@ -51,18 +51,18 @@ export function Collections() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
           <motion.p
             initial={{ opacity: 0, letterSpacing: '0.1em' }}
             whileInView={{ opacity: 1, letterSpacing: '0.2em' }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-primary font-medium text-sm mb-3"
+            className="text-primary font-medium text-xs md:text-sm mb-2 md:mb-3"
           >
             EXPLORE
           </motion.p>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+          <h2 className="font-display text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
             Our Collections
           </h2>
         </motion.div>
@@ -102,18 +102,18 @@ export function Collections() {
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
                 />
                 
-                <div className="absolute inset-0 flex flex-col items-center justify-end p-8 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-end p-6 md:p-8 text-center">
                   <motion.h3
-                    className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-2"
+                    className="font-display text-xl md:text-2xl lg:text-3xl font-semibold text-foreground mb-2"
                     whileHover={{ scale: 1.05 }}
                   >
                     {category.name}
                   </motion.h3>
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2 max-w-xs">
+                  <p className="text-muted-foreground text-xs md:text-sm mb-3 md:mb-4 line-clamp-2 max-w-xs leading-relaxed">
                     {category.description}
                   </p>
                   <motion.span
-                    className="inline-flex items-center text-primary font-medium text-sm"
+                    className="inline-flex items-center justify-center text-primary font-medium text-sm"
                     whileHover={{ x: 5 }}
                   >
                     Shop Now

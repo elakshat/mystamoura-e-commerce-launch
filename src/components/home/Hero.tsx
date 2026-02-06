@@ -66,20 +66,20 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="inline-flex items-center gap-2 mb-6"
+            className="inline-flex items-center justify-center gap-2 mb-4 md:mb-6"
           >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-primary font-medium tracking-[0.3em] text-sm md:text-base">
+            <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+            <span className="text-primary font-medium tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm">
               LUXURY FRAGRANCES
             </span>
-            <Sparkles className="h-4 w-4 text-primary" />
+            <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary" />
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-foreground"
+            className="font-display text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-4 md:mb-6 text-foreground"
           >
             {settings?.hero?.title || (
               <>
@@ -88,7 +88,7 @@ export function Hero() {
                   initial={{ backgroundSize: '0% 100%' }}
                   animate={{ backgroundSize: '100% 100%' }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="text-gradient-gold block mt-2"
+                  className="text-gradient-gold block mt-1 md:mt-2"
                 >
                   Signature Scent
                 </motion.span>
@@ -100,7 +100,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl md:max-w-2xl mx-auto mb-8 md:mb-10 px-4"
           >
             {settings?.hero?.subtitle ||
               'Handcrafted perfumes that capture the essence of elegance and leave a lasting impression.'}
@@ -110,26 +110,26 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 px-4"
           >
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
               <Button
                 asChild
                 size="lg"
-                className="bg-gradient-gold text-primary-foreground hover:opacity-90 transition-all px-8 py-6 text-base font-semibold shadow-gold group"
+                className="w-full sm:w-auto bg-gradient-gold text-primary-foreground hover:opacity-90 transition-all px-6 md:px-8 py-5 md:py-6 text-sm md:text-base font-semibold shadow-gold group"
               >
                 <Link to={settings?.hero?.cta_link || '/products'}>
                   {settings?.hero?.cta_text || 'Shop Now'}
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-primary/50 text-foreground hover:bg-primary/10 px-8 py-6 text-base backdrop-blur-sm"
+                className="w-full sm:w-auto border-primary/50 text-foreground hover:bg-primary/10 px-6 md:px-8 py-5 md:py-6 text-sm md:text-base backdrop-blur-sm"
               >
                 <Link to="/about">Our Story</Link>
               </Button>

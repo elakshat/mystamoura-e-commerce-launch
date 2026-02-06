@@ -40,18 +40,18 @@ export function FeaturedProducts() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
           <motion.p
             initial={{ opacity: 0, letterSpacing: '0.1em' }}
             whileInView={{ opacity: 1, letterSpacing: '0.2em' }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-primary font-medium text-sm mb-3"
+            className="text-primary font-medium text-xs md:text-sm mb-2 md:mb-3"
           >
             BEST SELLERS
           </motion.p>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
+          <h2 className="font-display text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
             Featured Collection
           </h2>
         </motion.div>
@@ -93,7 +93,7 @@ export function FeaturedProducts() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="text-center mt-12"
+          className="text-center mt-8 md:mt-12"
         >
           <Button
             asChild
