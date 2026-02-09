@@ -161,7 +161,12 @@ export default function AdminOrders() {
                       <p className="font-mono font-medium">{order.order_number}</p>
                     </TableCell>
                     <TableCell>
-                      <p className="text-sm">{order.guest_email || 'Registered User'}</p>
+                      <div>
+                        <p className="text-sm font-medium">{order.guest_email || '—'}</p>
+                        <Badge variant={order.user_id ? 'secondary' : 'outline'} className="text-[10px] mt-1">
+                          {order.user_id ? 'Registered' : 'Guest'}
+                        </Badge>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <p className="text-sm">

@@ -26,12 +26,13 @@ declare global {
 
 const addressSchema = z.object({
   full_name: z.string().min(2, 'Name is required'),
-  phone: z.string().min(10, 'Valid phone number is required'),
+  email: z.string().email('Valid email is required'),
+  phone: z.string().regex(/^[6-9]\d{9}$/, 'Valid 10-digit phone number is required'),
   address_line1: z.string().min(5, 'Address is required'),
   address_line2: z.string().optional(),
   city: z.string().min(2, 'City is required'),
   state: z.string().min(2, 'State is required'),
-  postal_code: z.string().min(5, 'Valid postal code is required'),
+  postal_code: z.string().regex(/^\d{6}$/, 'Valid 6-digit pincode is required'),
   country: z.string().default('India'),
 });
 
@@ -54,6 +55,13 @@ export default function CheckoutPage() {
     postal_code: '',
     country: 'India',
   });
+
+  // Sync email when user logs in after page load
+  useEffect(() => {
+    if (user?.email && !formData.email) {
+      setFormData((prev) => ({ ...prev, email: user.email || '' }));
+    }
+  }, [user]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -227,8 +235,8 @@ export default function CheckoutPage() {
     try {
       const validatedAddress = addressSchema.parse(formData);
 
-      if (!user && !formData.email) {
-        setErrors({ email: 'Email is required for guest checkout' });
+      if (!formData.email) {
+        setErrors({ email: 'Email is required for order confirmation' });
         setIsProcessing(false);
         return;
       }
@@ -240,7 +248,7 @@ export default function CheckoutPage() {
         order: {
           order_number: orderNumber,
           user_id: user?.id || null,
-          guest_email: !user ? formData.email : null,
+          guest_email: formData.email,
           subtotal,
           shipping_amount: shippingAmount,
           tax_amount: taxAmount,
@@ -308,13 +316,11 @@ export default function CheckoutPage() {
                     <Input id="full_name" name="full_name" value={formData.full_name} onChange={handleChange} className={errors.full_name ? 'border-destructive' : ''} />
                     {errors.full_name && <p className="text-destructive text-sm mt-1">{errors.full_name}</p>}
                   </div>
-                  {!user && (
-                    <div className="md:col-span-2">
-                      <Label htmlFor="email" className="text-foreground">Email *</Label>
-                      <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} className={errors.email ? 'border-destructive' : ''} />
-                      {errors.email && <p className="text-destructive text-sm mt-1">{errors.email}</p>}
-                    </div>
-                  )}
+                  <div className="md:col-span-2">
+                    <Label htmlFor="email" className="text-foreground">Email * <span className="text-xs text-muted-foreground font-normal">(for order confirmation)</span></Label>
+                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} className={errors.email ? 'border-destructive' : ''} placeholder="your@email.com" />
+                    {errors.email && <p className="text-destructive text-sm mt-1">{errors.email}</p>}
+                  </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="phone" className="text-foreground">Phone *</Label>
                     <Input id="phone" name="phone" value={formData.phone} onChange={handleChange} className={errors.phone ? 'border-destructive' : ''} />
