@@ -246,6 +246,9 @@ export default function AdminOrderDetail() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
+                  <Badge variant={order.user_id ? 'secondary' : 'outline'} className="mb-2">
+                    {order.user_id ? 'Registered User' : 'Guest Order'}
+                  </Badge>
                   {shippingAddress?.full_name && (
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
