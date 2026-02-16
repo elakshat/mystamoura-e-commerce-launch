@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, ArrowLeft, Share2 } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Button } from '@/components/ui/button';
 import { useProduct, useProducts } from '@/hooks/useProducts';
+import { useProductVariants } from '@/hooks/useVariants';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatPrice } from '@/lib/utils';
@@ -14,23 +15,60 @@ import { ReviewStars } from '@/components/reviews/ReviewStars';
 import { useIsInWishlist, useToggleWishlist } from '@/hooks/useWishlist';
 import { useReviewStats } from '@/hooks/useReviews';
 import { StickyAddToCart } from '@/components/products/StickyAddToCart';
+import { VariantSelector } from '@/components/products/VariantSelector';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
+import { ProductVariantInfo } from '@/types';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: product, isLoading } = useProduct(slug || '');
+  const { data: variants } = useProductVariants(product?.id || '');
   const { data: relatedProducts } = useProducts({ categorySlug: product?.category?.slug });
   const { addToCart } = useCart();
   const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showStickyCart, setShowStickyCart] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariantInfo | null>(null);
   const addToCartRef = useRef<HTMLDivElement>(null);
   
   const { data: isInWishlist } = useIsInWishlist(product?.id || '');
   const { toggle: toggleWishlist, isPending: wishlistPending } = useToggleWishlist();
   const { data: reviewStats } = useReviewStats(product?.id || '');
+
+  // Visible variants only
+  const visibleVariants = (variants || []).filter(v => v.is_visible);
+
+  // Auto-select default variant
+  useEffect(() => {
+    if (visibleVariants.length > 0 && !selectedVariant) {
+      const defaultVariant = visibleVariants.find(v => v.is_default) || visibleVariants[0];
+      setSelectedVariant(defaultVariant as ProductVariantInfo);
+    }
+  }, [variants]);
+
+  // Reset variant when product changes
+  useEffect(() => {
+    setSelectedVariant(null);
+    setQuantity(1);
+  }, [product?.id]);
+
+  const hasVariants = visibleVariants.length > 0;
+  
+  // Derive price/stock from selected variant or product
+  const currentPrice = hasVariants && selectedVariant
+    ? (selectedVariant.sale_price && selectedVariant.sale_price < selectedVariant.price ? selectedVariant.sale_price : selectedVariant.price)
+    : (product?.sale_price && product.sale_price < product.price ? product.sale_price : product?.price || 0);
+  
+  const originalPrice = hasVariants && selectedVariant ? selectedVariant.price : product?.price || 0;
+  const isOnSale = hasVariants && selectedVariant
+    ? (selectedVariant.sale_price !== null && selectedVariant.sale_price !== undefined && selectedVariant.sale_price < selectedVariant.price)
+    : (product?.sale_price !== null && product?.sale_price !== undefined && product!.sale_price! < product!.price);
+  
+  const currentStock = hasVariants && selectedVariant ? selectedVariant.stock : (product?.stock || 0);
+  const isSoldOut = currentStock <= 0;
+  const currentSku = hasVariants && selectedVariant ? selectedVariant.sku : product?.sku;
 
   // Handle sticky cart visibility
   useEffect(() => {
@@ -48,7 +86,6 @@ export default function ProductDetailPage() {
     return () => observer.disconnect();
   }, [product]);
 
-  // Share functionality
   const handleShare = async () => {
     if (navigator.share && product) {
       try {
@@ -58,7 +95,7 @@ export default function ProductDetailPage() {
           url: window.location.href,
         });
       } catch {
-        // User cancelled or error
+        // User cancelled
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
@@ -97,14 +134,19 @@ export default function ProductDetailPage() {
     );
   }
 
-  const isOnSale = product.sale_price && product.sale_price < product.price;
-  const isSoldOut = product.stock <= 0;
-  const currentPrice = isOnSale ? product.sale_price! : product.price;
-
   const handleAddToCart = () => {
-    if (!isSoldOut) {
-      addToCart(product, quantity);
+    if (hasVariants && !selectedVariant) {
+      toast.error('Please select a size before adding to cart');
+      return;
     }
+    if (!isSoldOut) {
+      addToCart(product, quantity, hasVariants ? selectedVariant : null);
+    }
+  };
+
+  const handleVariantSelect = (variant: any) => {
+    setSelectedVariant(variant as ProductVariantInfo);
+    setQuantity(1);
   };
 
   const filteredRelated = relatedProducts?.filter((p) => p.id !== product.id).slice(0, 4);
@@ -120,7 +162,6 @@ export default function ProductDetailPage() {
       </Helmet>
 
       <div className="container mx-auto px-4 py-6 md:py-8">
-        {/* Breadcrumb */}
         <nav className="mb-6">
           <Link
             to="/products"
@@ -152,7 +193,6 @@ export default function ProductDetailPage() {
                 </div>
               )}
               
-              {/* Share button */}
               <button
                 onClick={handleShare}
                 className="absolute top-3 right-3 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background transition-colors"
@@ -203,7 +243,6 @@ export default function ProductDetailPage() {
               {product.name}
             </h1>
 
-            {/* Rating Summary */}
             {reviewStats && reviewStats.review_count > 0 && (
               <div className="flex items-center gap-2">
                 <ReviewStars rating={Math.round(reviewStats.average_rating)} size="sm" />
@@ -213,27 +252,47 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            <div className="flex items-center gap-3 flex-wrap">
-              {isOnSale ? (
-                <>
-                  <span className="text-xl md:text-2xl font-semibold text-primary">
-                    {formatPrice(product.sale_price!, product.currency)}
+            {/* Price - animated on variant change */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selectedVariant?.id || 'default'}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-3 flex-wrap"
+              >
+                {isOnSale ? (
+                  <>
+                    <span className="text-xl md:text-2xl font-semibold text-primary">
+                      {formatPrice(currentPrice, product.currency)}
+                    </span>
+                    <span className="text-lg md:text-xl text-muted-foreground line-through">
+                      {formatPrice(originalPrice, product.currency)}
+                    </span>
+                    <span className="bg-primary/20 text-primary text-xs md:text-sm font-bold px-2 py-1 rounded">
+                      SAVE {Math.round((1 - currentPrice / originalPrice) * 100)}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xl md:text-2xl font-semibold">
+                    {formatPrice(currentPrice, product.currency)}
                   </span>
-                  <span className="text-lg md:text-xl text-muted-foreground line-through">
-                    {formatPrice(product.price, product.currency)}
-                  </span>
-                  <span className="bg-primary/20 text-primary text-xs md:text-sm font-bold px-2 py-1 rounded">
-                    SAVE {Math.round((1 - product.sale_price! / product.price) * 100)}%
-                  </span>
-                </>
-              ) : (
-                <span className="text-xl md:text-2xl font-semibold">
-                  {formatPrice(product.price, product.currency)}
-                </span>
-              )}
-            </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
 
-            {product.size && (
+            {/* Variant Selector */}
+            {hasVariants && (
+              <VariantSelector
+                variants={visibleVariants as any}
+                selectedVariant={selectedVariant as any}
+                onSelect={handleVariantSelect}
+              />
+            )}
+
+            {/* Show size only if no variants */}
+            {!hasVariants && product.size && (
               <p className="text-muted-foreground text-sm md:text-base">{product.size}</p>
             )}
 
@@ -264,16 +323,23 @@ export default function ProductDetailPage() {
                   </button>
                   <span className="w-12 text-center font-medium">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
                     className="p-3 hover:bg-secondary transition-colors"
-                    disabled={quantity >= product.stock}
+                    disabled={quantity >= currentStock}
                   >
                     <Plus className="h-4 w-4" />
                   </button>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                </span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={currentStock}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-sm text-muted-foreground"
+                  >
+                    {currentStock > 0 ? `${currentStock} in stock` : 'Out of stock'}
+                  </motion.span>
+                </AnimatePresence>
               </div>
 
               <div className="flex gap-3">
@@ -311,9 +377,9 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {product.sku && (
+            {currentSku && (
               <p className="text-sm text-muted-foreground">
-                SKU: {product.sku}
+                SKU: {currentSku}
               </p>
             )}
           </motion.div>
@@ -344,6 +410,7 @@ export default function ProductDetailPage() {
         onQuantityChange={setQuantity}
         onAddToCart={handleAddToCart}
         isVisible={showStickyCart}
+        variant={selectedVariant}
       />
     </MainLayout>
   );

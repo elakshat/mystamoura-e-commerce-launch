@@ -10,8 +10,23 @@ import { useValidateCoupon } from '@/hooks/useCoupons';
 import { useTaxSettings, calculateTax, calculateShipping, calculateTotal } from '@/hooks/useTaxSettings';
 import { formatPrice } from '@/lib/utils';
 import { useState } from 'react';
-import { Coupon } from '@/types';
+import { Coupon, CartItem } from '@/types';
 import { toast } from 'sonner';
+
+function getItemPrice(item: CartItem): number {
+  if (item.variant) {
+    return item.variant.sale_price && item.variant.sale_price < item.variant.price
+      ? item.variant.sale_price
+      : item.variant.price;
+  }
+  return item.product.sale_price && item.product.sale_price < item.product.price
+    ? item.product.sale_price
+    : item.product.price;
+}
+
+function getItemStock(item: CartItem): number {
+  return item.variant ? item.variant.stock : item.product.stock;
+}
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart, subtotal } = useCart();
@@ -40,7 +55,6 @@ export default function CartPage() {
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
-
     try {
       const coupon = await validateCoupon.mutateAsync({
         code: couponCode,
@@ -104,78 +118,82 @@ export default function CartPage() {
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {items.map((item, index) => (
-              <motion.div
-                key={item.product.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex gap-4 p-4 bg-card rounded-lg border border-border"
-              >
-                <Link
-                  to={`/products/${item.product.slug}`}
-                  className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden bg-secondary"
-                >
-                  {item.product.images?.[0] ? (
-                    <img
-                      src={item.product.images[0]}
-                      alt={item.product.name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center text-muted-foreground text-xs">
-                      No Image
-                    </div>
-                  )}
-                </Link>
+            {items.map((item, index) => {
+              const price = getItemPrice(item);
+              const stock = getItemStock(item);
+              const variantId = item.variant?.id;
 
-                <div className="flex-1 min-w-0">
+              return (
+                <motion.div
+                  key={`${item.product.id}_${variantId || 'base'}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex gap-4 p-4 bg-card rounded-lg border border-border"
+                >
                   <Link
                     to={`/products/${item.product.slug}`}
-                    className="font-display text-lg font-medium hover:text-primary transition-colors"
+                    className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden bg-secondary"
                   >
-                    {item.product.name}
-                  </Link>
-                  <p className="text-sm text-muted-foreground">{item.product.size}</p>
-                  <p className="font-semibold mt-1">
-                    {formatPrice(
-                      item.product.sale_price || item.product.price,
-                      item.product.currency
+                    {item.product.images?.[0] ? (
+                      <img
+                        src={item.product.images[0]}
+                        alt={item.product.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full flex items-center justify-center text-muted-foreground text-xs">
+                        No Image
+                      </div>
                     )}
-                  </p>
+                  </Link>
 
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center border border-border rounded">
+                  <div className="flex-1 min-w-0">
+                    <Link
+                      to={`/products/${item.product.slug}`}
+                      className="font-display text-lg font-medium hover:text-primary transition-colors"
+                    >
+                      {item.product.name}
+                    </Link>
+                    <p className="text-sm text-muted-foreground">
+                      {item.variant ? item.variant.size : item.product.size}
+                    </p>
+                    <p className="font-semibold mt-1">
+                      {formatPrice(price, item.product.currency)}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex items-center border border-border rounded">
+                        <button
+                          onClick={() => updateQuantity(item.product.id, item.quantity - 1, variantId)}
+                          className="p-2 hover:bg-secondary transition-colors"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </button>
+                        <span className="w-10 text-center text-sm font-medium">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1, variantId)}
+                          className="p-2 hover:bg-secondary transition-colors"
+                          disabled={item.quantity >= stock}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+
                       <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="p-2 hover:bg-secondary transition-colors"
+                        onClick={() => removeFromCart(item.product.id, variantId)}
+                        className="text-muted-foreground hover:text-destructive transition-colors"
                       >
-                        <Minus className="h-4 w-4" />
-                      </button>
-                      <span className="w-10 text-center text-sm font-medium">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                        className="p-2 hover:bg-secondary transition-colors"
-                        disabled={item.quantity >= item.product.stock}
-                      >
-                        <Plus className="h-4 w-4" />
+                        <Trash2 className="h-5 w-5" />
                       </button>
                     </div>
-
-                    <button
-                      onClick={() => removeFromCart(item.product.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Order Summary */}
@@ -187,7 +205,6 @@ export default function CartPage() {
             >
               <h2 className="font-display text-xl font-bold mb-6 text-foreground">Order Summary</h2>
 
-              {/* Coupon */}
               <div className="mb-6">
                 {appliedCoupon ? (
                   <div className="flex items-center justify-between bg-primary/10 p-3 rounded-lg">

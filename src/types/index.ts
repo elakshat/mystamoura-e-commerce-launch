@@ -20,6 +20,20 @@ export interface Product {
   category?: Category;
 }
 
+export interface ProductVariantInfo {
+  id: string;
+  product_id: string;
+  size: string;
+  sku: string | null;
+  price: number;
+  sale_price: number | null;
+  stock: number;
+  images: string[];
+  is_visible: boolean;
+  is_default: boolean;
+  weight: number | null;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -33,6 +47,7 @@ export interface Category {
 export interface CartItem {
   product: Product;
   quantity: number;
+  variant?: ProductVariantInfo | null;
 }
 
 export interface Address {

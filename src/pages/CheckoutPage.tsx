@@ -110,11 +110,16 @@ export default function CheckoutPage() {
           customer_email: formData.email || user?.email,
           customer_name: formData.full_name,
           total,
-          items: items.map((item) => ({
-            product_name: item.product.name,
-            quantity: item.quantity,
-            unit_price: item.product.sale_price || item.product.price,
-          })),
+          items: items.map((item) => {
+            const unitPrice = item.variant
+              ? (item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price)
+              : (item.product.sale_price || item.product.price);
+            return {
+              product_name: item.product.name + (item.variant ? ` - ${item.variant.size}` : ''),
+              quantity: item.quantity,
+              unit_price: unitPrice,
+            };
+          }),
           shipping_address: validatedAddress,
         },
       });
@@ -257,14 +262,22 @@ export default function CheckoutPage() {
           payment_method: paymentMethod,
           payment_status: paymentMethod === 'cod' ? 'pending' : 'awaiting',
         },
-        items: items.map((item) => ({
-          product_id: item.product.id,
-          product_name: item.product.name,
-          product_image: item.product.images?.[0] || null,
-          quantity: item.quantity,
-          unit_price: item.product.sale_price || item.product.price,
-          total_price: (item.product.sale_price || item.product.price) * item.quantity,
-        })),
+        items: items.map((item) => {
+          const unitPrice = item.variant
+            ? (item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price)
+            : (item.product.sale_price || item.product.price);
+          return {
+            product_id: item.product.id,
+            product_name: item.product.name,
+            product_image: item.product.images?.[0] || null,
+            quantity: item.quantity,
+            unit_price: unitPrice,
+            total_price: unitPrice * item.quantity,
+            variant_id: item.variant?.id || null,
+            variant_size: item.variant?.size || null,
+            variant_sku: item.variant?.sku || null,
+          };
+        }),
       });
 
       if (paymentMethod === 'razorpay') {
@@ -394,18 +407,24 @@ export default function CheckoutPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-card border border-border rounded-lg p-6 sticky top-24">
                 <h2 className="font-display text-xl font-semibold mb-6 text-foreground">Order Summary</h2>
                 <div className="space-y-4 mb-6">
-                  {items.map((item) => (
-                    <div key={item.product.id} className="flex gap-3">
+                  {items.map((item) => {
+                    const unitPrice = item.variant
+                      ? (item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price)
+                      : (item.product.sale_price || item.product.price);
+                    return (
+                    <div key={`${item.product.id}_${item.variant?.id || 'base'}`} className="flex gap-3">
                       <div className="w-16 h-16 bg-secondary rounded-lg overflow-hidden flex-shrink-0">
                         {item.product.images?.[0] && <img src={item.product.images[0]} alt={item.product.name} className="h-full w-full object-cover" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate text-foreground">{item.product.name}</p>
+                        {item.variant && <p className="text-xs text-primary font-medium">{item.variant.size}</p>}
                         <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                        <p className="text-sm font-semibold text-foreground">{formatPrice((item.product.sale_price || item.product.price) * item.quantity)}</p>
+                        <p className="text-sm font-semibold text-foreground">{formatPrice(unitPrice * item.quantity)}</p>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="space-y-3 text-sm border-t border-border pt-4">
                   <div className="flex justify-between">
