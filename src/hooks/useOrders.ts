@@ -123,6 +123,9 @@ interface CreateOrderItemInput {
   quantity: number;
   unit_price: number;
   total_price: number;
+  variant_id?: string | null;
+  variant_size?: string | null;
+  variant_sku?: string | null;
 }
 
 export function useCreateOrder() {

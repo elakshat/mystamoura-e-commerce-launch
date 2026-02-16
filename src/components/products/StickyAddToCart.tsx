@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Minus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Product } from '@/types';
+import { Product, ProductVariantInfo } from '@/types';
 import { formatPrice } from '@/lib/utils';
 
 interface StickyAddToCartProps {
@@ -10,6 +10,7 @@ interface StickyAddToCartProps {
   onQuantityChange: (qty: number) => void;
   onAddToCart: () => void;
   isVisible: boolean;
+  variant?: ProductVariantInfo | null;
 }
 
 export function StickyAddToCart({
@@ -18,10 +19,17 @@ export function StickyAddToCart({
   onQuantityChange,
   onAddToCart,
   isVisible,
+  variant,
 }: StickyAddToCartProps) {
-  const isOnSale = product.sale_price && product.sale_price < product.price;
-  const isSoldOut = product.stock <= 0;
-  const currentPrice = isOnSale ? product.sale_price! : product.price;
+  const price = variant
+    ? (variant.sale_price && variant.sale_price < variant.price ? variant.sale_price : variant.price)
+    : (product.sale_price && product.sale_price < product.price ? product.sale_price! : product.price);
+  const originalPrice = variant ? variant.price : product.price;
+  const isOnSale = variant
+    ? (variant.sale_price != null && variant.sale_price < variant.price)
+    : (product.sale_price != null && product.sale_price < product.price);
+  const stock = variant ? variant.stock : product.stock;
+  const isSoldOut = stock <= 0;
 
   return (
     <AnimatePresence>
@@ -34,22 +42,22 @@ export function StickyAddToCart({
           className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border p-4 md:hidden"
         >
           <div className="flex items-center gap-4">
-            {/* Product Info */}
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm truncate">{product.name}</h4>
+              <h4 className="font-medium text-sm truncate">
+                {product.name}{variant ? ` - ${variant.size}` : ''}
+              </h4>
               <div className="flex items-center gap-2">
                 <span className="text-primary font-semibold">
-                  {formatPrice(currentPrice, product.currency)}
+                  {formatPrice(price, product.currency)}
                 </span>
                 {isOnSale && (
                   <span className="text-xs text-muted-foreground line-through">
-                    {formatPrice(product.price, product.currency)}
+                    {formatPrice(originalPrice, product.currency)}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Quantity */}
             <div className="flex items-center border border-border rounded-lg">
               <button
                 onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
@@ -60,15 +68,14 @@ export function StickyAddToCart({
               </button>
               <span className="w-8 text-center text-sm font-medium">{quantity}</span>
               <button
-                onClick={() => onQuantityChange(Math.min(product.stock, quantity + 1))}
+                onClick={() => onQuantityChange(Math.min(stock, quantity + 1))}
                 className="p-2 hover:bg-secondary transition-colors"
-                disabled={quantity >= product.stock}
+                disabled={quantity >= stock}
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Add to Cart */}
             <Button
               className="bg-gradient-gold text-primary-foreground hover:opacity-90"
               onClick={onAddToCart}
