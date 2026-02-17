@@ -16,7 +16,7 @@ export function VariantSelector({ variants, selectedVariant, onSelect }: Variant
     return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
   });
 
-  if (variants.length <= 1) return null;
+  if (variants.length === 0) return null;
 
   return (
     <div className="space-y-3">
