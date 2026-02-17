@@ -16,7 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { VariantEditor, VariantData } from '@/components/admin/VariantEditor';
 import { useCategories, useCreateProduct, useUpdateProduct } from '@/hooks/useProducts';
+import { useProductVariants, useBulkUpsertVariants, useDeleteVariant } from '@/hooks/useVariants';
 import { supabase } from '@/integrations/supabase/client';
 import { slugify } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -29,8 +31,14 @@ export default function AdminProductForm() {
   const { data: categories } = useCategories();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
+  const bulkUpsertVariants = useBulkUpsertVariants();
+  const deleteVariant = useDeleteVariant();
+
+  // Load existing variants when editing
+  const { data: existingVariants } = useProductVariants(id || '');
 
   const [isLoading, setIsLoading] = useState(false);
+  const [variants, setVariants] = useState<VariantData[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -50,6 +58,22 @@ export default function AdminProductForm() {
   });
 
   const [newTag, setNewTag] = useState('');
+
+  // Populate variants from DB when editing
+  useEffect(() => {
+    if (existingVariants && existingVariants.length > 0) {
+      setVariants(existingVariants.map(v => ({
+        id: v.id,
+        size: v.size,
+        sku: v.sku || '',
+        price: v.price,
+        sale_price: v.sale_price,
+        stock: v.stock,
+        is_visible: v.is_visible,
+        is_default: v.is_default,
+      })));
+    }
+  }, [existingVariants]);
 
   useEffect(() => {
     if (isEditing && id) {
@@ -144,11 +168,40 @@ export default function AdminProductForm() {
     };
 
     try {
+      let productId = id;
       if (isEditing) {
         await updateProduct.mutateAsync({ id, ...productData });
       } else {
-        await createProduct.mutateAsync(productData);
+        const created = await createProduct.mutateAsync(productData);
+        productId = (created as any)?.id;
       }
+
+      // Save variants if any exist
+      if (variants.length > 0 && productId) {
+        // Find removed variants (existed in DB but not in current list)
+        const currentSizes = variants.map(v => v.size);
+        const removedVariants = (existingVariants || []).filter(v => !currentSizes.includes(v.size));
+        
+        // Delete removed variants
+        for (const rv of removedVariants) {
+          await deleteVariant.mutateAsync(rv.id);
+        }
+
+        // Upsert current variants
+        await bulkUpsertVariants.mutateAsync({
+          productId,
+          variants: variants.map(v => ({
+            size: v.size,
+            sku: v.sku || null,
+            price: v.price,
+            sale_price: v.sale_price,
+            stock: v.stock,
+            is_visible: v.is_visible,
+            is_default: v.is_default,
+          })),
+        });
+      }
+
       navigate('/admin/products');
     } catch (error) {
       // Error already handled in hook
@@ -286,6 +339,13 @@ export default function AdminProductForm() {
                 folder={`products/${formData.slug || 'new'}`}
               />
             </div>
+
+            {/* Variants */}
+            <VariantEditor
+              variants={variants}
+              onChange={setVariants}
+              productSku={formData.sku}
+            />
           </motion.div>
 
           {/* Sidebar */}
