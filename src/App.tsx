@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { RouteTracker } from "@/components/analytics/RouteTracker";
+import { initGA } from "@/lib/gtag";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
@@ -37,6 +39,9 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminReviews from "./pages/admin/AdminReviews";
 
+// Initialize Google Analytics
+initGA();
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -55,6 +60,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <RouteTracker />
                 <Routes>
                   {/* Customer Routes */}
                   <Route path="/" element={<Index />} />

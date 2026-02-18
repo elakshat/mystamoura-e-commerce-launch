@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CartItem, Product, ProductVariantInfo } from '@/types';
 import { toast } from 'sonner';
+import { trackAddToCart } from '@/lib/gtag';
 
 interface CartContextType {
   items: CartItem[];
@@ -75,6 +76,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       const displayName = variant ? `${product.name} - ${variant.size}` : product.name;
       toast.success(`Added ${displayName} to cart`);
+      const price = variant
+        ? (variant.sale_price && variant.sale_price < variant.price ? variant.sale_price : variant.price)
+        : (product.sale_price && product.sale_price < product.price ? product.sale_price : product.price);
+      trackAddToCart({
+        id: product.id,
+        name: product.name,
+        price,
+        variant: variant?.size,
+        quantity: Math.min(quantity, stock),
+      });
       return [...prev, { product, quantity: Math.min(quantity, stock), variant: variant || null }];
     });
   };
