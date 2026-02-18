@@ -1,9 +1,11 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Package, ArrowRight, CreditCard, Mail } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
+import { trackPurchase } from '@/lib/gtag';
 
 export default function OrderSuccessPage() {
   const location = useLocation();
@@ -11,6 +13,16 @@ export default function OrderSuccessPage() {
   
   const orderNumber = location.state?.orderNumber || searchParams.get('order') || 'N/A';
   const paymentId = location.state?.paymentId || searchParams.get('txnid') || null;
+  const orderTotal = location.state?.total || 0;
+  const orderItems = location.state?.items || [];
+  const tracked = useRef(false);
+
+  useEffect(() => {
+    if (!tracked.current && orderNumber !== 'N/A' && orderTotal > 0) {
+      tracked.current = true;
+      trackPurchase(orderNumber, orderTotal, orderItems);
+    }
+  }, [orderNumber, orderTotal, orderItems]);
 
   return (
     <MainLayout>

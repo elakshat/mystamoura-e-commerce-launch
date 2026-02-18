@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { Json } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
+import { trackBeginCheckout } from '@/lib/gtag';
 
 declare global {
   interface Window {
@@ -88,6 +89,27 @@ export default function CheckoutPage() {
     }
   }, [searchParams]);
 
+  // Track begin_checkout on mount
+  useEffect(() => {
+    if (items.length > 0) {
+      const getPrice = (item: typeof items[0]) => {
+        if (item.variant) {
+          return item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price;
+        }
+        return item.product.sale_price && item.product.sale_price < item.product.price ? item.product.sale_price : item.product.price;
+      };
+      trackBeginCheckout(
+        items.map((item) => ({
+          id: item.product.id,
+          name: item.product.name,
+          price: getPrice(item),
+          variant: item.variant?.size,
+          quantity: item.quantity,
+        })),
+        subtotal
+      );
+    }
+  }, []);
   const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
   const taxRate = taxSettings?.tax?.rate || 18;
   const shippingAmount = calculateShipping(subtotal, shippingSettings);
@@ -184,6 +206,13 @@ export default function CheckoutPage() {
               state: { 
                 orderNumber,
                 paymentId: response.razorpay_payment_id,
+                total,
+                items: items.map((item) => {
+                  const p = item.variant
+                    ? (item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price)
+                    : (item.product.sale_price && item.product.sale_price < item.product.price ? item.product.sale_price : item.product.price);
+                  return { id: item.product.id, name: item.product.name, price: p, variant: item.variant?.size, quantity: item.quantity };
+                }),
               } 
             });
           } catch (verifyError) {
@@ -288,7 +317,18 @@ export default function CheckoutPage() {
         await sendOrderEmails(orderNumber, validatedAddress);
         clearCart();
         toast.success('Order placed successfully!');
-        navigate('/order-success', { state: { orderNumber } });
+        navigate('/order-success', {
+          state: {
+            orderNumber,
+            total,
+            items: items.map((item) => {
+              const p = item.variant
+                ? (item.variant.sale_price && item.variant.sale_price < item.variant.price ? item.variant.sale_price : item.variant.price)
+                : (item.product.sale_price && item.product.sale_price < item.product.price ? item.product.sale_price : item.product.price);
+              return { id: item.product.id, name: item.product.name, price: p, variant: item.variant?.size, quantity: item.quantity };
+            }),
+          },
+        });
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
