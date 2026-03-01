@@ -31,7 +31,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
-      toast.info('Please sign in to save items');
+      toast.info('Please sign in to save items to your wishlist', {
+        action: {
+          label: 'Sign In',
+          onClick: () => window.location.assign('/auth'),
+        },
+      });
       return;
     }
     await toggleWishlist(product.id, isInWishlist || false);

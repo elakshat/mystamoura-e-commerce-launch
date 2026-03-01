@@ -62,7 +62,8 @@ export default function CheckoutPage() {
     if (user?.email && !formData.email) {
       setFormData((prev) => ({ ...prev, email: user.email || '' }));
     }
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'razorpay'>('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);

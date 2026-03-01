@@ -310,7 +310,7 @@ export default function AccountPage() {
                             <Button
                               size="sm"
                               onClick={() => handleRetryPayment(order)}
-                              disabled={retryingOrderId === order.id}
+                              disabled={retryingOrderId === order.id || !razorpayLoaded}
                               className="bg-gradient-gold text-primary-foreground"
                             >
                               {retryingOrderId === order.id ? (

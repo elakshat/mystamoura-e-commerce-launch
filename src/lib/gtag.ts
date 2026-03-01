@@ -2,17 +2,14 @@
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID as string | undefined;
 
-// Initialize GA4 script
+let gaReady = false;
+
+// Initialize GA4 script — call from useEffect, not module scope
 export function initGA() {
   if (!GA_MEASUREMENT_ID) return;
 
   // Prevent duplicate initialization
   if (document.querySelector(`script[src*="googletagmanager.com/gtag"]`)) return;
-
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-  document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function (...args: any[]) {
@@ -20,15 +17,64 @@ export function initGA() {
   };
   window.gtag('js', new Date());
   window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
+
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.onload = () => { gaReady = true; };
+  document.head.appendChild(script);
+}
+
+function isReady() {
+  return !!GA_MEASUREMENT_ID && typeof window.gtag === 'function';
 }
 
 // Track page views
 export function trackPageView(path: string, title?: string) {
-  if (!GA_MEASUREMENT_ID || !window.gtag) return;
+  if (!isReady()) return;
   window.gtag('event', 'page_view', {
     page_path: path,
     page_title: title || document.title,
   });
+}
+
+// Track view_item (product impression)
+export function trackViewItem(item: {
+  id: string;
+  name: string;
+  price: number;
+  variant?: string;
+  currency?: string;
+}) {
+  if (!isReady()) return;
+  window.gtag('event', 'view_item', {
+    currency: item.currency || 'INR',
+    value: item.price,
+    items: [{
+      item_id: item.id,
+      item_name: item.name,
+      item_variant: item.variant,
+      price: item.price,
+    }],
+  });
+}
+
+// Track search
+export function trackSearch(searchTerm: string) {
+  if (!isReady()) return;
+  window.gtag('event', 'search', { search_term: searchTerm });
+}
+
+// Track login
+export function trackLogin(method: string = 'email') {
+  if (!isReady()) return;
+  window.gtag('event', 'login', { method });
+}
+
+// Track sign_up
+export function trackSignUp(method: string = 'email') {
+  if (!isReady()) return;
+  window.gtag('event', 'sign_up', { method });
 }
 
 // Ecommerce: add_to_cart
@@ -39,7 +85,7 @@ export function trackAddToCart(item: {
   variant?: string;
   quantity: number;
 }) {
-  if (!GA_MEASUREMENT_ID || !window.gtag) return;
+  if (!isReady()) return;
   window.gtag('event', 'add_to_cart', {
     currency: 'INR',
     value: item.price * item.quantity,
@@ -63,7 +109,7 @@ export function trackBeginCheckout(items: Array<{
   variant?: string;
   quantity: number;
 }>, value: number) {
-  if (!GA_MEASUREMENT_ID || !window.gtag) return;
+  if (!isReady()) return;
   window.gtag('event', 'begin_checkout', {
     currency: 'INR',
     value,
@@ -85,7 +131,7 @@ export function trackPurchase(transactionId: string, value: number, items: Array
   variant?: string;
   quantity: number;
 }>) {
-  if (!GA_MEASUREMENT_ID || !window.gtag) return;
+  if (!isReady()) return;
   window.gtag('event', 'purchase', {
     transaction_id: transactionId,
     currency: 'INR',

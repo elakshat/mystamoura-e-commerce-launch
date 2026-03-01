@@ -8,7 +8,6 @@ import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
-import { initGA } from "@/lib/gtag";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
@@ -18,6 +17,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AccountPage from "./pages/AccountPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
@@ -38,9 +38,6 @@ import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminReviews from "./pages/admin/AdminReviews";
-
-// Initialize Google Analytics
-initGA();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +68,7 @@ const App = () => (
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/order-success" element={<OrderSuccessPage />} />
                   <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/reset-password" element={<ResetPasswordPage />} />
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/contact" element={<ContactPage />} />
