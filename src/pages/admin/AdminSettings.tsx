@@ -534,112 +534,74 @@ export default function AdminSettings() {
                     </AlertDescription>
                   </Alert>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                      <div>
-                        <Label className="text-foreground">Enable Razorpay</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Accept online payments via Razorpay
-                        </p>
-                      </div>
-                      <Switch
-                        checked={razorpay.enabled}
-                        onCheckedChange={(enabled) =>
-                          setRazorpay({ ...razorpay, enabled })
-                        }
-                      />
-                    </div>
+                    <div className="space-y-4">
+                     <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                       <div>
+                         <Label className="text-foreground">Enable Razorpay</Label>
+                         <p className="text-sm text-muted-foreground">
+                           Accept online payments via Razorpay
+                         </p>
+                       </div>
+                       <Switch
+                         checked={razorpay.enabled}
+                         onCheckedChange={(enabled) =>
+                           setRazorpay({ ...razorpay, enabled })
+                         }
+                       />
+                     </div>
 
-                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                      <div>
-                        <Label className="text-foreground">Test Mode</Label>
-                        <p className="text-sm text-muted-foreground">
-                          {razorpay.test_mode 
-                            ? 'Using test credentials (no real payments)' 
-                            : 'Using live credentials (real payments)'
-                          }
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {razorpay.test_mode ? (
-                          <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-1 rounded-full">
-                            Test Mode
-                          </span>
-                        ) : (
-                          <span className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-2 py-1 rounded-full flex items-center gap-1">
-                            <CheckCircle2 className="h-3 w-3" /> Live
-                          </span>
-                        )}
-                        <Switch
-                          checked={razorpay.test_mode}
-                          onCheckedChange={(test_mode) =>
-                            setRazorpay({ ...razorpay, test_mode })
-                          }
-                        />
-                      </div>
-                    </div>
+                     <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                       <div>
+                         <Label className="text-foreground">Test Mode</Label>
+                         <p className="text-sm text-muted-foreground">
+                           {razorpay.test_mode 
+                             ? 'Using test credentials (no real payments)' 
+                             : 'Using live credentials (real payments)'
+                           }
+                         </p>
+                       </div>
+                       <div className="flex items-center gap-3">
+                         {razorpay.test_mode ? (
+                           <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-1 rounded-full">
+                             Test Mode
+                           </span>
+                         ) : (
+                           <span className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-2 py-1 rounded-full flex items-center gap-1">
+                             <CheckCircle2 className="h-3 w-3" /> Live
+                           </span>
+                         )}
+                         <Switch
+                           checked={razorpay.test_mode}
+                           onCheckedChange={(test_mode) =>
+                             setRazorpay({ ...razorpay, test_mode })
+                           }
+                         />
+                       </div>
+                     </div>
 
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="razorpay-key-id" className="text-foreground">
-                          Key ID {razorpay.test_mode ? '(Test)' : '(Live)'}
-                        </Label>
-                        <Input
-                          id="razorpay-key-id"
-                          type="text"
-                          value={razorpay.key_id}
-                          onChange={(e) =>
-                            setRazorpay({ ...razorpay, key_id: e.target.value })
-                          }
-                          placeholder={razorpay.test_mode ? 'rzp_test_xxxxxxxxxxxx' : 'rzp_live_xxxxxxxxxxxx'}
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          {razorpay.test_mode 
-                            ? 'Test Key ID starts with rzp_test_' 
-                            : 'Live Key ID starts with rzp_live_'
-                          }
-                        </p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="razorpay-key-secret" className="text-foreground">
-                          Key Secret {razorpay.test_mode ? '(Test)' : '(Live)'}
-                        </Label>
-                        <Input
-                          id="razorpay-key-secret"
-                          type="password"
-                          value={razorpay.key_secret}
-                          onChange={(e) =>
-                            setRazorpay({ ...razorpay, key_secret: e.target.value })
-                          }
-                          placeholder="Enter your Key Secret"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          Keep this secret. Never share it publicly.
-                        </p>
-                      </div>
-                    </div>
+                     <Alert className="bg-primary/5 border-primary/20">
+                       <AlertCircle className="h-4 w-4" />
+                       <AlertTitle>Razorpay API Keys</AlertTitle>
+                       <AlertDescription className="mt-2 text-sm">
+                         Razorpay Key ID and Key Secret are managed as secure backend secrets and cannot be changed from this panel.
+                         The toggles above (Enable / Test Mode) are saved here and control the checkout flow.
+                         To update the actual API keys, contact your developer to update the backend secrets.
+                       </AlertDescription>
+                     </Alert>
 
-                    <Alert variant="destructive" className="bg-destructive/10 border-destructive/30">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Important Security Note</AlertTitle>
-                      <AlertDescription>
-                        API keys stored here are for display purposes only. The actual keys are securely stored in environment variables. Contact your developer to update the live credentials.
-                      </AlertDescription>
-                    </Alert>
-
-                    <Button
-                      onClick={() => handleSave('razorpay', razorpay)}
-                      disabled={updateSettings.isPending}
-                      className="w-full sm:w-auto"
-                    >
-                      {updateSettings.isPending ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Save className="h-4 w-4 mr-2" />
-                      )}
-                      Save Payment Settings
-                    </Button>
-                  </div>
+                     <Button
+                       onClick={() => handleSave('razorpay', { enabled: razorpay.enabled, test_mode: razorpay.test_mode })}
+                       disabled={updateSettings.isPending}
+                       className="w-full sm:w-auto"
+                     >
+                       {updateSettings.isPending ? (
+                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                       ) : (
+                         <Save className="h-4 w-4 mr-2" />
+                       )}
+                       Save Payment Settings
+                     </Button>
+                   </div>
                 </div>
               </div>
             </TabsContent>

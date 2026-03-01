@@ -19,6 +19,7 @@ import { VariantSelector } from '@/components/products/VariantSelector';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
 import { ProductVariantInfo } from '@/types';
+import { trackViewItem } from '@/lib/gtag';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -52,6 +53,15 @@ export default function ProductDetailPage() {
   useEffect(() => {
     setSelectedVariant(null);
     setQuantity(1);
+    // Track view_item
+    if (product) {
+      trackViewItem({
+        id: product.id,
+        name: product.name,
+        price: product.sale_price && product.sale_price < product.price ? product.sale_price : product.price,
+        currency: product.currency,
+      });
+    }
   }, [product?.id]);
 
   const hasVariants = visibleVariants.length > 0;
@@ -356,8 +366,16 @@ export default function ProductDetailPage() {
                   size="lg"
                   variant="outline"
                   className={`h-12 md:h-14 px-4 border-border hover:bg-secondary ${isInWishlist ? 'text-primary' : ''}`}
-                  onClick={() => user && toggleWishlist(product.id, isInWishlist || false)}
-                  disabled={!user || wishlistPending}
+                  onClick={() => {
+                    if (!user) {
+                      toast.info('Please sign in to save items to your wishlist', {
+                        action: { label: 'Sign In', onClick: () => window.location.assign('/auth') },
+                      });
+                      return;
+                    }
+                    toggleWishlist(product.id, isInWishlist || false);
+                  }}
+                  disabled={wishlistPending}
                   aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
                   <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-primary' : ''}`} />
