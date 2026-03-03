@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { Json } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { trackBeginCheckout } from '@/lib/gtag';
+import { trackPixelInitiateCheckout } from '@/lib/meta-pixel';
 
 declare global {
   interface Window {
@@ -105,6 +106,15 @@ export default function CheckoutPage() {
           name: item.product.name,
           price: getPrice(item),
           variant: item.variant?.size,
+          quantity: item.quantity,
+        })),
+        subtotal
+      );
+      trackPixelInitiateCheckout(
+        items.map((item) => ({
+          id: item.product.id,
+          name: item.product.name,
+          price: getPrice(item),
           quantity: item.quantity,
         })),
         subtotal
