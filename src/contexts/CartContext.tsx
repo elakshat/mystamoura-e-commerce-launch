@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { CartItem, Product, ProductVariantInfo } from '@/types';
 import { toast } from 'sonner';
 import { trackAddToCart } from '@/lib/gtag';
+import { trackPixelAddToCart } from '@/lib/meta-pixel';
 
 interface CartContextType {
   items: CartItem[];
@@ -84,6 +85,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         name: product.name,
         price,
         variant: variant?.size,
+        quantity: Math.min(quantity, stock),
+      });
+      trackPixelAddToCart({
+        id: product.id,
+        name: product.name,
+        price,
         quantity: Math.min(quantity, stock),
       });
       return [...prev, { product, quantity: Math.min(quantity, stock), variant: variant || null }];

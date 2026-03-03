@@ -8,6 +8,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
+import { DynamicFavicon } from "@/components/DynamicFavicon";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
@@ -58,6 +59,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <RouteTracker />
+                <DynamicFavicon />
                 <Routes>
                   {/* Customer Routes */}
                   <Route path="/" element={<Index />} />

@@ -6,6 +6,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { trackPurchase } from '@/lib/gtag';
+import { trackPixelPurchase } from '@/lib/meta-pixel';
 
 export default function OrderSuccessPage() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export default function OrderSuccessPage() {
     if (!tracked.current && orderNumber !== 'N/A' && orderTotal > 0) {
       tracked.current = true;
       trackPurchase(orderNumber, orderTotal, orderItems);
+      trackPixelPurchase(orderNumber, orderTotal, orderItems);
     }
   }, [orderNumber, orderTotal, orderItems]);
 

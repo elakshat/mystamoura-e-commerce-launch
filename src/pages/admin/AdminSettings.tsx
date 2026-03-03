@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Loader2, CreditCard, ExternalLink, AlertCircle, CheckCircle2, Mail, Phone, MapPin } from 'lucide-react';
+import { Save, Loader2, CreditCard, ExternalLink, AlertCircle, CheckCircle2, Mail, Phone, MapPin, Image, Upload } from 'lucide-react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +56,9 @@ export default function AdminSettings() {
   });
 
   const [gaMeasurementId, setGaMeasurementId] = useState('');
+  const [metaPixelId, setMetaPixelId] = useState('');
+  const [faviconUrl, setFaviconUrl] = useState('');
+  const [faviconUploading, setFaviconUploading] = useState(false);
 
   useEffect(() => {
     if (settings) {
@@ -88,6 +91,12 @@ export default function AdminSettings() {
       }
       if ((settings as any).ga_measurement_id) {
         setGaMeasurementId((settings as any).ga_measurement_id as string);
+      }
+      if ((settings as any).meta_pixel_id) {
+        setMetaPixelId((settings as any).meta_pixel_id as string);
+      }
+      if ((settings as any).favicon_url) {
+        setFaviconUrl((settings as any).favicon_url as string);
       }
     }
   }, [settings]);
@@ -131,7 +140,7 @@ export default function AdminSettings() {
           transition={{ delay: 0.1 }}
         >
           <Tabs defaultValue="general" className="space-y-6">
-            <TabsList>
+            <TabsList className="flex-wrap">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="contact">Contact</TabsTrigger>
               <TabsTrigger value="homepage">Homepage</TabsTrigger>
@@ -139,6 +148,7 @@ export default function AdminSettings() {
               <TabsTrigger value="shipping">Shipping & Tax</TabsTrigger>
               <TabsTrigger value="payments">Payments</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="site">Site</TabsTrigger>
             </TabsList>
 
             {/* General Settings */}
@@ -641,8 +651,151 @@ export default function AdminSettings() {
                       ) : (
                         <Save className="h-4 w-4 mr-2" />
                       )}
-                      Save Analytics Settings
+                      Save GA Settings
                     </Button>
+                  </div>
+                </div>
+
+                <hr className="border-border" />
+
+                <div>
+                  <h3 className="font-display text-lg font-semibold mb-4 text-foreground">
+                    Meta (Facebook) Pixel
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Enter your Meta Pixel ID. Find it in Meta Events Manager → Data Sources → your Pixel.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="pixel-id" className="text-foreground">Pixel ID</Label>
+                      <Input
+                        id="pixel-id"
+                        value={metaPixelId}
+                        onChange={(e) => setMetaPixelId(e.target.value)}
+                        placeholder="1234567890123456"
+                      />
+                    </div>
+                    <Button
+                      onClick={() => handleSave('meta_pixel_id', metaPixelId)}
+                      disabled={updateSettings.isPending}
+                    >
+                      {updateSettings.isPending ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4 mr-2" />
+                      )}
+                      Save Pixel Settings
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Site Settings (Favicon) */}
+            <TabsContent value="site" className="space-y-6">
+              <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Image className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg font-semibold text-foreground">
+                        Favicon
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Upload a custom favicon (.png, .ico, .svg — max 1 MB)
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Preview */}
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 border border-border rounded-lg flex items-center justify-center bg-muted/50 overflow-hidden">
+                        {faviconUrl ? (
+                          <img src={`${faviconUrl}?v=${Date.now()}`} alt="Favicon" className="w-10 h-10 object-contain" />
+                        ) : (
+                          <Image className="h-6 w-6 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {faviconUrl ? 'Current favicon' : 'Using default favicon'}
+                      </div>
+                    </div>
+
+                    {/* Upload */}
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="outline"
+                        disabled={faviconUploading}
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = '.ico,.png,.svg,image/png,image/x-icon,image/svg+xml';
+                          input.onchange = async (e) => {
+                            const file = (e.target as HTMLInputElement).files?.[0];
+                            if (!file) return;
+                            if (file.size > 1024 * 1024) {
+                              toast.error('Favicon must be under 1 MB');
+                              return;
+                            }
+                            const validTypes = ['image/png', 'image/x-icon', 'image/vnd.microsoft.icon', 'image/svg+xml'];
+                            if (!validTypes.includes(file.type)) {
+                              toast.error('Only .png, .ico, .svg files are accepted');
+                              return;
+                            }
+                            setFaviconUploading(true);
+                            try {
+                              const { supabase } = await import('@/integrations/supabase/client');
+                              const ext = file.name.split('.').pop();
+                              const fileName = `favicon-${Date.now()}.${ext}`;
+                              const { error: uploadError } = await supabase.storage
+                                .from('product-images')
+                                .upload(`favicons/${fileName}`, file, { upsert: true });
+                              if (uploadError) throw uploadError;
+                              const { data: urlData } = supabase.storage
+                                .from('product-images')
+                                .getPublicUrl(`favicons/${fileName}`);
+                              const url = urlData.publicUrl;
+                              setFaviconUrl(url);
+                              await handleSave('favicon_url', url);
+                            } catch (err: any) {
+                              toast.error(`Upload failed: ${err.message}`);
+                            } finally {
+                              setFaviconUploading(false);
+                            }
+                          };
+                          input.click();
+                        }}
+                      >
+                        {faviconUploading ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4 mr-2" />
+                        )}
+                        Upload Favicon
+                      </Button>
+                    </div>
+
+                    {/* URL input */}
+                    <div className="space-y-2">
+                      <Label htmlFor="favicon-url" className="text-foreground">Or enter favicon URL</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="favicon-url"
+                          value={faviconUrl}
+                          onChange={(e) => setFaviconUrl(e.target.value)}
+                          placeholder="https://example.com/favicon.png"
+                        />
+                        <Button
+                          onClick={() => handleSave('favicon_url', faviconUrl)}
+                          disabled={updateSettings.isPending}
+                        >
+                          <Save className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
