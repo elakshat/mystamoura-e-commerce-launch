@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
 import { ProductVariantInfo } from '@/types';
 import { trackViewItem } from '@/lib/gtag';
+import { trackPixelEvent } from '@/utils/metaPixel';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -60,6 +61,13 @@ export default function ProductDetailPage() {
         name: product.name,
         price: product.sale_price && product.sale_price < product.price ? product.sale_price : product.price,
         currency: product.currency,
+      });
+      trackPixelEvent('ViewContent', {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: 'product',
+        value: product.sale_price && product.sale_price < product.price ? product.sale_price : product.price,
+        currency: product.currency || 'INR',
       });
     }
   }, [product?.id]);

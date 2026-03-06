@@ -7,6 +7,7 @@ import { SEOHead } from '@/components/seo/SEOHead';
 import { Button } from '@/components/ui/button';
 import { trackPurchase } from '@/lib/gtag';
 import { trackPixelPurchase } from '@/lib/meta-pixel';
+import { trackPixelEvent } from '@/utils/metaPixel';
 
 export default function OrderSuccessPage() {
   const location = useLocation();
@@ -14,7 +15,7 @@ export default function OrderSuccessPage() {
   
   const orderNumber = location.state?.orderNumber || searchParams.get('order') || 'N/A';
   const paymentId = location.state?.paymentId || searchParams.get('txnid') || null;
-  const orderTotal = location.state?.total || 0;
+  const orderTotal = location.state?.total || parseFloat(searchParams.get('amount') || '0') || 0;
   const orderItems = location.state?.items || [];
   const tracked = useRef(false);
 
@@ -23,6 +24,12 @@ export default function OrderSuccessPage() {
       tracked.current = true;
       trackPurchase(orderNumber, orderTotal, orderItems);
       trackPixelPurchase(orderNumber, orderTotal, orderItems);
+      trackPixelEvent('Purchase', {
+        value: orderTotal,
+        currency: 'INR',
+        content_type: 'product',
+        order_id: orderNumber,
+      });
     }
   }, [orderNumber, orderTotal, orderItems]);
 

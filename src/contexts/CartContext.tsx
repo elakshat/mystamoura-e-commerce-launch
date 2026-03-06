@@ -3,6 +3,7 @@ import { CartItem, Product, ProductVariantInfo } from '@/types';
 import { toast } from 'sonner';
 import { trackAddToCart } from '@/lib/gtag';
 import { trackPixelAddToCart } from '@/lib/meta-pixel';
+import { trackPixelEvent } from '@/utils/metaPixel';
 
 interface CartContextType {
   items: CartItem[];
@@ -92,6 +93,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         name: product.name,
         price,
         quantity: Math.min(quantity, stock),
+      });
+      trackPixelEvent('AddToCart', {
+        content_ids: [product.id],
+        content_name: product.name,
+        content_type: 'product',
+        value: price * Math.min(quantity, stock),
+        currency: 'INR',
       });
       return [...prev, { product, quantity: Math.min(quantity, stock), variant: variant || null }];
     });
