@@ -19,6 +19,7 @@ import { Json } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
 import { trackBeginCheckout } from '@/lib/gtag';
 import { trackPixelInitiateCheckout } from '@/lib/meta-pixel';
+import { trackPixelEvent } from '@/utils/metaPixel';
 
 declare global {
   interface Window {
@@ -119,6 +120,11 @@ export default function CheckoutPage() {
         })),
         subtotal
       );
+      trackPixelEvent('InitiateCheckout', {
+        value: subtotal,
+        currency: 'INR',
+        num_items: items.reduce((s, i) => s + i.quantity, 0),
+      });
     }
   }, []);
   const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
