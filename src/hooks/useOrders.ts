@@ -139,17 +139,21 @@ export function useCreateOrder() {
       order: CreateOrderInput;
       items: CreateOrderItemInput[];
     }) => {
-      const { data: createdOrder, error: orderError } = await supabase
+      const orderId = crypto.randomUUID();
+      const orderPayload = {
+        ...order,
+        id: orderId,
+      };
+
+      const { error: orderError } = await supabase
         .from('orders')
-        .insert([order])
-        .select()
-        .single();
+        .insert([orderPayload]);
 
       if (orderError) throw orderError;
 
       const orderItems = items.map((item) => ({
         ...item,
-        order_id: createdOrder.id,
+        order_id: orderId,
       }));
 
       const { error: itemsError } = await supabase
@@ -158,7 +162,7 @@ export function useCreateOrder() {
 
       if (itemsError) throw itemsError;
 
-      return createdOrder as unknown as Order;
+      return orderPayload as unknown as Order;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
