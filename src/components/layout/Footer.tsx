@@ -6,7 +6,7 @@ export function Footer() {
   const { data: settings } = useSettings();
 
   return (
-    <footer className="bg-card border-t border-border mt-auto">
+    <footer className="glass-bar border-t mt-auto">
       <div className="container mx-auto px-4 py-10 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {/* Brand */}
