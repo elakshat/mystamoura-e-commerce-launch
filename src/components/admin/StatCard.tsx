@@ -15,10 +15,10 @@ interface StatCardProps {
 }
 
 const variantStyles = {
-  default: 'bg-card border-border',
-  gold: 'bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20',
-  success: 'bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20',
-  warning: 'bg-gradient-to-br from-orange-500/10 to-orange-500/5 border-orange-500/20',
+  default: 'glass-card',
+  gold: 'glass-gold',
+  success: 'glass-card bg-gradient-to-br from-green-500/15 to-green-500/5 border-green-500/30',
+  warning: 'glass-card bg-gradient-to-br from-orange-500/15 to-orange-500/5 border-orange-500/30',
 };
 
 const iconStyles = {
@@ -43,7 +43,7 @@ export function StatCard({
       transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className={cn(
-        'relative overflow-hidden rounded-xl border p-6 transition-shadow duration-300 hover:shadow-lg',
+        'relative overflow-hidden rounded-xl p-6 transition-shadow duration-300 hover:shadow-lg',
         variantStyles[variant]
       )}
     >
