@@ -152,7 +152,7 @@ export default function AuthPage() {
               </p>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-8">
+            <div className="glass-card rounded-xl p-8">
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
                   <Label htmlFor="email">Email</Label>
@@ -219,7 +219,7 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <div className="bg-card border border-border rounded-lg p-8">
+          <div className="glass-card rounded-xl p-8">
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div>
