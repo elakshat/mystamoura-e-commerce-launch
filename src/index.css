@@ -391,9 +391,20 @@
     @apply bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300;
   }
 
-  /* Card hover effects */
+  /* Card hover effects — silky lift */
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-500 hover:shadow-lg hover:-translate-y-1;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Soft, premium lift used across interactive surfaces */
+  .lift-on-hover {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lift-on-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px hsl(220 25% 8% / 0.12);
   }
 
   /* Focus visible styling */
@@ -404,15 +415,15 @@
 
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out forwards;
+    animation: fadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
+    animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.4s ease-out forwards;
+    animation: scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   @keyframes fadeIn {

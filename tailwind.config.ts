@@ -100,11 +100,19 @@ export default {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        shimmer: "shimmer 2s linear infinite",
-        float: "float 3s ease-in-out infinite",
-        glow: "glow 2s ease-in-out infinite",
+        "accordion-down": "accordion-down 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+        "accordion-up": "accordion-up 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+        shimmer: "shimmer 2.5s linear infinite",
+        float: "float 6s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+        glow: "glow 3s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+      },
+      transitionTimingFunction: {
+        'silk': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        'smooth': 'cubic-bezier(0.45, 0, 0.55, 1)',
+      },
+      transitionDuration: {
+        '400': '400ms',
+        '600': '600ms',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
