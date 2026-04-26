@@ -138,6 +138,8 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    /* Smoother scrolling on touch devices */
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
@@ -149,6 +151,32 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* Avoid sub-pixel jitter during animations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Global silky-smooth easing for ALL interactive transitions */
+  a, button, input, select, textarea,
+  [role="button"], [data-state] {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-duration: 280ms;
+  }
+
+  /* Images fade in nicely instead of popping */
+  img {
+    transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Honour reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   /* Improved text rendering for light mode */
