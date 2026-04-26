@@ -91,8 +91,8 @@ export default {
           "100%": { backgroundPosition: "200% 0" },
         },
         float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "50%": { transform: "translateY(-18px) translateX(6px)" },
         },
         glow: {
           "0%, 100%": { opacity: "0.5" },
