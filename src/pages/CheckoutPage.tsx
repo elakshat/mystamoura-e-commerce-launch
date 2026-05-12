@@ -71,17 +71,38 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-  // Load Razorpay script
+  // Load Razorpay script (singleton — don't remove on unmount, don't re-inject)
   useEffect(() => {
+    const SRC = 'https://checkout.razorpay.com/v1/checkout.js';
+
+    if (typeof window !== 'undefined' && (window as any).Razorpay) {
+      setRazorpayLoaded(true);
+      return;
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SRC}"]`);
+    if (existing) {
+      if ((window as any).Razorpay) {
+        setRazorpayLoaded(true);
+      } else {
+        existing.addEventListener('load', () => setRazorpayLoaded(true), { once: true });
+        existing.addEventListener('error', () => {
+          console.error('Razorpay script failed to load');
+          toast.error('Could not load payment system. Please disable ad blockers and retry.');
+        }, { once: true });
+      }
+      return;
+    }
+
     const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.src = SRC;
     script.async = true;
     script.onload = () => setRazorpayLoaded(true);
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
+    script.onerror = () => {
+      console.error('Razorpay script failed to load');
+      toast.error('Could not load payment system. Please disable ad blockers and retry.');
     };
+    document.body.appendChild(script);
   }, []);
 
   // Check for payment error from URL
