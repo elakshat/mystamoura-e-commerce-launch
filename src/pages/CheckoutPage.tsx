@@ -300,7 +300,7 @@ export default function CheckoutPage() {
       razorpay.open();
     } catch (error) {
       console.error('Razorpay payment error:', error);
-      toast.error('Failed to initiate payment. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to initiate payment. Please try again.');
       setIsProcessing(false);
     }
   }, [razorpayLoaded, total, formData, user, clearCart, navigate, items]);
