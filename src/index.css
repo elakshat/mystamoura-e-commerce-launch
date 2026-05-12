@@ -151,9 +151,20 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    /* Avoid sub-pixel jitter during animations */
-    transform: translateZ(0);
-    backface-visibility: hidden;
+  }
+
+  /* Keep third-party payment modals above the app and unaffected by page styling */
+  body > iframe[src*="razorpay"],
+  body > div iframe[src*="razorpay"],
+  .razorpay-checkout-frame {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    z-index: 2147483647 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   /* Global silky-smooth easing for ALL interactive transitions */
