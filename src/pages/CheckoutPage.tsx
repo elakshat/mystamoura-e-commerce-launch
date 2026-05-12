@@ -208,8 +208,19 @@ export default function CheckoutPage() {
         },
       });
 
-      if (error || !data.success) {
+      if (error) {
+        console.error('create-order invoke error:', error);
+        throw new Error(error.message || 'Failed to create payment order');
+      }
+      if (!data || !data.success) {
+        console.error('create-order failed:', data);
         throw new Error(data?.error || 'Failed to create payment order');
+      }
+      if (!data.keyId || !data.orderId) {
+        throw new Error('Payment gateway misconfigured (missing key/order id)');
+      }
+      if (typeof window === 'undefined' || !(window as any).Razorpay) {
+        throw new Error('Payment script not loaded yet. Please retry.');
       }
 
       const options = {
