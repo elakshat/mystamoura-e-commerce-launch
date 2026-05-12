@@ -71,17 +71,38 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-  // Load Razorpay script
+  // Load Razorpay script (singleton — don't remove on unmount, don't re-inject)
   useEffect(() => {
+    const SRC = 'https://checkout.razorpay.com/v1/checkout.js';
+
+    if (typeof window !== 'undefined' && (window as any).Razorpay) {
+      setRazorpayLoaded(true);
+      return;
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SRC}"]`);
+    if (existing) {
+      if ((window as any).Razorpay) {
+        setRazorpayLoaded(true);
+      } else {
+        existing.addEventListener('load', () => setRazorpayLoaded(true), { once: true });
+        existing.addEventListener('error', () => {
+          console.error('Razorpay script failed to load');
+          toast.error('Could not load payment system. Please disable ad blockers and retry.');
+        }, { once: true });
+      }
+      return;
+    }
+
     const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.src = SRC;
     script.async = true;
     script.onload = () => setRazorpayLoaded(true);
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
+    script.onerror = () => {
+      console.error('Razorpay script failed to load');
+      toast.error('Could not load payment system. Please disable ad blockers and retry.');
     };
+    document.body.appendChild(script);
   }, []);
 
   // Check for payment error from URL
@@ -187,8 +208,19 @@ export default function CheckoutPage() {
         },
       });
 
-      if (error || !data.success) {
+      if (error) {
+        console.error('create-order invoke error:', error);
+        throw new Error(error.message || 'Failed to create payment order');
+      }
+      if (!data || !data.success) {
+        console.error('create-order failed:', data);
         throw new Error(data?.error || 'Failed to create payment order');
+      }
+      if (!data.keyId || !data.orderId) {
+        throw new Error('Payment gateway misconfigured (missing key/order id)');
+      }
+      if (typeof window === 'undefined' || !(window as any).Razorpay) {
+        throw new Error('Payment script not loaded yet. Please retry.');
       }
 
       const options = {
@@ -268,7 +300,7 @@ export default function CheckoutPage() {
       razorpay.open();
     } catch (error) {
       console.error('Razorpay payment error:', error);
-      toast.error('Failed to initiate payment. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to initiate payment. Please try again.');
       setIsProcessing(false);
     }
   }, [razorpayLoaded, total, formData, user, clearCart, navigate, items]);
