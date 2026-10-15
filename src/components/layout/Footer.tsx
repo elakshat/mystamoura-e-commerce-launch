@@ -6,15 +6,15 @@ export function Footer() {
   const { data: settings } = useSettings();
 
   return (
-    <footer className="glass-bar border-t mt-auto">
+    <footer className="bg-secondary/40 border-t mt-auto">
       <div className="container mx-auto px-4 py-10 md:py-16">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="font-display text-xl md:text-2xl font-semibold text-gradient-gold">
+            <h3 className="font-display text-xl md:text-2xl font-medium text-foreground">
               MYSTAMOURA
             </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs line-clamp-5">
               {settings?.footer?.about_text || 'Luxury fragrances crafted with passion and precision.'}
             </p>
             <div className="flex items-center gap-4 pt-2">

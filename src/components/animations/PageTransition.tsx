@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageTransitionProps {
@@ -12,14 +12,15 @@ interface PageTransitionProps {
  */
 export function PageTransition({ children }: PageTransitionProps) {
   const location = useLocation();
+  const reducedMotion = useReducedMotion();
 
   return (
     <motion.div
       key={location.pathname}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: reducedMotion ? 1 : 0 }}
+      animate={{ opacity: 1 }}
       transition={{
-        duration: 0.55,
+        duration: reducedMotion ? 0 : 0.25,
         ease: [0.22, 1, 0.36, 1], // expo-out: silky, premium feel
       }}
     >
