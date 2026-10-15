@@ -59,7 +59,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       className="group relative"
     >
       <Link to={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-secondary">
           {/* Image with lazy loading */}
           {product.images?.[0] && !imageError ? (
             <>
@@ -74,7 +74,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 className={cn(
                   'h-full w-full object-cover transition-all duration-500',
                   imageLoaded ? 'opacity-100' : 'opacity-0',
-                  'group-hover:scale-105'
+                  'group-hover:scale-[1.025]'
                 )}
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
@@ -118,9 +118,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
 
           {/* Wishlist */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             className={cn(
-              'absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm transition-all duration-300',
+              'absolute top-2 right-2 h-10 w-10 rounded-md transition-colors duration-200',
               isInWishlist 
                 ? 'bg-primary text-primary-foreground' 
                 : 'bg-background/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground'
@@ -134,14 +136,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             ) : (
               <Heart className={cn('h-4 w-4', isInWishlist && 'fill-current')} />
             )}
-          </button>
+          </Button>
         </div>
       </Link>
 
       {/* Product Info */}
-      <div className="mt-3 space-y-1">
+      <div className="mt-4 space-y-1.5">
         <Link to={`/products/${product.slug}`}>
-          <h3 className="font-display text-sm md:text-base font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1 leading-tight">
+          <h3 className="font-display text-base md:text-xl font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {product.name}
           </h3>
         </Link>
@@ -150,7 +152,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           {isOnSale ? (
             <>
               <span className="font-bold text-sm md:text-base text-primary">
-                {formatPrice(product.sale_price!, product.currency)}
+                {formatPrice(product.sale_price ?? product.price, product.currency)}
               </span>
               <span className="text-xs text-muted-foreground line-through">
                 {formatPrice(product.price, product.currency)}

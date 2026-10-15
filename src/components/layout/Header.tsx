@@ -28,7 +28,7 @@ export function Header() {
     <>
       {/* Announcement Bar */}
       {settings?.announcement?.enabled &&
-      <div className="bg-primary text-primary-foreground text-center py-2 px-4 text-sm font-medium">
+      <div className="bg-secondary text-secondary-foreground border-b border-border text-center py-2 px-4 text-xs font-medium">
           {settings.announcement.text}
         </div>
       }
@@ -37,32 +37,35 @@ export function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 -ml-2"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden -ml-2"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu">
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}>
 
               {isMenuOpen ?
               <X className="h-6 w-6" /> :
 
               <Menu className="h-6 w-6" />
               }
-            </button>
+            </Button>
 
             {/* Logo */}
             <Link to="/" className="flex items-center">
-              <h1 className="font-display text-2xl md:text-3xl font-semibold tracking-wider text-gradient-gold">
+              <span className="font-display text-xl lg:text-2xl font-medium text-foreground whitespace-nowrap">
                 MYST AMOURA
-              </h1>
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-7">
               {navLinks.map((link) =>
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-sm font-medium text-foreground hover:text-primary transition-colors duration-300 relative after:absolute after:left-0 after:bottom-[-4px] after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full">
+                className="text-xs lg:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 inline-flex items-center">
 
                   {link.label}
                 </Link>
