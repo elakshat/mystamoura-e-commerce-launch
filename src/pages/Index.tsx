@@ -12,10 +12,12 @@ const Index = () => {
         title="Luxury Fragrances" 
         description="Discover Mystamoura's collection of luxury perfumes. Premium fragrances crafted with the finest ingredients for an unforgettable sensory experience."
       />
-      <Hero />
-      <Features />
-      <FeaturedProducts />
-      <Collections />
+      <div className="home-page">
+        <Hero />
+        <Features />
+        <FeaturedProducts />
+        <Collections />
+      </div>
     </MainLayout>
   );
 };

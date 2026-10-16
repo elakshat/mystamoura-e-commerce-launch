@@ -9,7 +9,7 @@ const features = [
 
 export function Features() {
   return (
-    <section className="border-b border-border py-6 md:py-8">
+    <section className="home-features border-b border-border py-6 md:py-8" aria-label="Shopping benefits">
       <div className="container mx-auto grid grid-cols-2 gap-x-5 gap-y-6 px-6 md:grid-cols-4 md:px-12">
         {features.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-start gap-3">

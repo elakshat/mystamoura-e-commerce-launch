@@ -6,11 +6,10 @@ export function Collections() {
   const { data: categories } = useCategories();
 
   return (
-    <section className="border-t border-border bg-secondary/30 py-16 md:py-24">
+    <section className="home-collections border-t border-border py-16 md:py-24" aria-labelledby="home-collections-title">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="mb-10 md:mb-14">
-          <p className="section-eyebrow mb-4 text-xs text-primary font-medium">EXPLORE</p>
-          <h2 className="font-display text-3xl md:text-5xl font-normal">Our Collections</h2>
+        <div className="home-section-heading mb-10 md:mb-14">
+          <h2 id="home-collections-title" className="font-display text-3xl md:text-5xl font-normal">Our Collections</h2>
         </div>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-6">
           {categories?.map((category) => (

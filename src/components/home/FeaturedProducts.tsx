@@ -8,14 +8,11 @@ export function FeaturedProducts() {
   const { data: products, isLoading } = useProducts({ featured: true });
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="home-featured py-16 md:py-24" aria-labelledby="home-featured-title">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="mb-10 md:mb-14 flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="section-eyebrow mb-4 text-xs text-primary font-medium">BEST SELLERS</p>
-            <h2 className="font-display text-3xl md:text-5xl font-normal">Featured Collection</h2>
-          </div>
-          <Button asChild variant="link" className="h-auto rounded-none border-b border-border px-0 text-foreground">
+        <div className="home-section-heading mb-10 md:mb-14 flex flex-wrap items-end justify-between gap-6">
+          <h2 id="home-featured-title" className="font-display text-3xl md:text-5xl font-normal">Featured Collection</h2>
+          <Button asChild variant="link" className="home-section-link h-auto rounded-none px-0 text-[hsl(var(--home-gold))] hover:text-[hsl(var(--home-ink))]">
             <Link to="/products">View All Products<ArrowRight /></Link>
           </Button>
         </div>

@@ -59,7 +59,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       className="group relative"
     >
       <Link to={`/products/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-secondary">
+        <div className="product-card-media relative aspect-[3/4] overflow-hidden rounded-md bg-secondary">
           {/* Image with lazy loading */}
           {product.images?.[0] && !imageError ? (
             <>
