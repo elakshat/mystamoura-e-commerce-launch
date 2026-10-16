@@ -6,13 +6,13 @@ export function Footer() {
   const { data: settings } = useSettings();
 
   return (
-    <footer className="bg-secondary/40 border-t mt-auto">
-      <div className="container mx-auto px-4 py-10 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+    <footer className="site-footer border-t mt-auto">
+      <div className="container mx-auto px-6 py-12 md:px-12 md:py-20">
+        <div className="grid grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 md:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="font-display text-xl md:text-2xl font-medium text-foreground">
-              MYSTAMOURA
+            <h3 className="brand-wordmark font-display text-xl md:text-2xl font-normal text-foreground">
+              MYST AMOURA
             </h3>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs line-clamp-5">
               {settings?.footer?.about_text || 'Luxury fragrances crafted with passion and precision.'}
@@ -23,6 +23,7 @@ export function Footer() {
                   href={settings?.footer?.instagram || settings?.social?.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Instagram"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Instagram className="h-5 w-5" />
@@ -33,6 +34,7 @@ export function Footer() {
                   href={settings?.footer?.facebook || settings?.social?.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Facebook"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Facebook className="h-5 w-5" />
@@ -43,6 +45,7 @@ export function Footer() {
                   href={settings?.footer?.twitter || settings?.social?.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Twitter"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Twitter className="h-5 w-5" />

@@ -39,7 +39,7 @@ export function StickyAddToCart({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-t border-border p-4 md:hidden"
+          className="sticky-purchase fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 bg-card border-t border-border p-4 md:hidden"
         >
           <div className="flex items-center gap-4">
             <div className="flex-1 min-w-0">
@@ -58,11 +58,12 @@ export function StickyAddToCart({
               </div>
             </div>
 
-            <div className="flex items-center border border-border rounded-lg">
+            <div className="flex items-center border border-border rounded-sm">
               <button
                 onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
                 className="p-2 hover:bg-secondary transition-colors"
                 disabled={quantity <= 1}
+                aria-label="Decrease quantity"
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -71,6 +72,7 @@ export function StickyAddToCart({
                 onClick={() => onQuantityChange(Math.min(stock, quantity + 1))}
                 className="p-2 hover:bg-secondary transition-colors"
                 disabled={quantity >= stock}
+                aria-label="Increase quantity"
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -80,6 +82,7 @@ export function StickyAddToCart({
               className="bg-gradient-gold text-primary-foreground hover:opacity-90"
               onClick={onAddToCart}
               disabled={isSoldOut}
+              aria-label={isSoldOut ? 'Sold Out' : 'Add to Cart'}
             >
               <ShoppingBag className="h-4 w-4" />
             </Button>

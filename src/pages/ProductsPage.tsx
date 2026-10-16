@@ -17,25 +17,26 @@ export default function ProductsPage() {
         title="Our Collection" 
         description="Browse our complete collection of luxury fragrances. Find your perfect signature scent from Mystamoura."
       />
-      <div className="container mx-auto px-4 py-12">
+      <div className="catalog-page container mx-auto px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="page-heading mb-12"
         >
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h1 className="font-display text-4xl md:text-6xl font-normal mb-4 text-foreground">
             Our Collection
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
+          <p className="text-muted-foreground text-base max-w-2xl leading-relaxed">
             Discover our curated selection of luxury fragrances, each crafted with the finest ingredients.
           </p>
         </motion.div>
 
         {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="catalog-tabs flex flex-wrap gap-3 mb-12" role="group" aria-label="Filter by collection">
           <Button
             variant={selectedCategory === null ? 'default' : 'outline'}
             onClick={() => setSelectedCategory(null)}
+            aria-pressed={selectedCategory === null}
             className={selectedCategory === null ? 'bg-primary text-primary-foreground' : ''}
           >
             All
@@ -45,6 +46,7 @@ export default function ProductsPage() {
               key={category.id}
               variant={selectedCategory === category.slug ? 'default' : 'outline'}
               onClick={() => setSelectedCategory(category.slug)}
+              aria-pressed={selectedCategory === category.slug}
               className={selectedCategory === category.slug ? 'bg-primary text-primary-foreground' : ''}
             >
               {category.name}

@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -29,14 +28,12 @@ export function VariantSelector({ variants, selectedVariant, onSelect }: Variant
           return (
             <motion.button
               key={variant.id}
-              whileHover={{ scale: isOutOfStock ? 1 : 1.05 }}
-              whileTap={{ scale: isOutOfStock ? 1 : 0.95 }}
               onClick={() => !isOutOfStock && onSelect(variant)}
               disabled={isOutOfStock}
               className={cn(
-                'relative px-6 py-3 rounded-lg border-2 transition-all duration-200 min-w-[100px]',
+                'relative px-6 py-3 rounded-sm border transition-colors duration-200 min-w-[88px]',
                 isSelected
-                  ? 'border-primary bg-primary/10 text-primary'
+                  ? 'border-primary bg-secondary text-foreground'
                   : 'border-border bg-card hover:border-primary/50',
                 isOutOfStock && 'opacity-50 cursor-not-allowed line-through'
               )}

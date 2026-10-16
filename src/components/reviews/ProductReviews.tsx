@@ -28,7 +28,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
   const [showForm, setShowForm] = useState(false);
   
   const { user } = useAuth();
-  const { data: reviewsData, isLoading } = useProductReviews(productId, sort, page);
+  const { data: reviewsData, isLoading, isError } = useProductReviews(productId, sort, page);
   const { data: stats, isLoading: statsLoading } = useReviewStats(productId);
   const { data: canReviewData } = useCanReview(productId, user?.id);
 
@@ -118,6 +118,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                 </div>
               ))}
             </div>
+          ) : isError ? (
+            <p role="status" className="border-t border-border py-8 text-sm text-muted-foreground">
+              Reviews are temporarily unavailable. Please try again later.
+            </p>
           ) : reviews.length > 0 ? (
             <div className="space-y-6">
               {reviews.map((review, index) => (

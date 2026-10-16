@@ -20,7 +20,7 @@ export function Hero() {
           <p className="home-hero__lead font-display">{settings?.hero?.title || 'Perfumes born in India'}</p>
           <p className="home-hero__description">{settings?.hero?.subtitle || 'Handcrafted perfumes that leave a lasting impression.'}</p>
           <div className="home-hero__actions">
-            <Button asChild size="lg" className="home-hero__button group bg-[#92764f] text-white hover:bg-[#776142]">
+            <Button asChild size="lg" className="home-hero__button group">
               <Link to={settings?.hero?.cta_link || '/products'}>
                 {settings?.hero?.cta_text || 'Shop Now'}
                 <ArrowRight className="transition-transform group-hover:translate-x-1" />

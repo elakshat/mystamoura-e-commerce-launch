@@ -17,16 +17,13 @@ export default function CollectionPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="page-heading mb-12"
         >
-          <p className="text-primary font-medium tracking-[0.2em] text-sm mb-3">
-            COLLECTION
-          </p>
-          <h1 className="font-display text-4xl md:text-5xl font-semibold mb-4">
+          <h1 className="font-display text-4xl md:text-6xl font-normal mb-4">
             {category?.name || 'Collection'}
           </h1>
           {category?.description && (
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p className="text-muted-foreground text-base max-w-2xl">
               {category.description}
             </p>
           )}

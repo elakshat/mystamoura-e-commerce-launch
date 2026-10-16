@@ -36,141 +36,86 @@
 
 @layer base {
   :root {
-    /* Light theme - improved readability with proper contrast */
-    --background: 60 5% 98%;
-    --foreground: 160 8% 12%;
-
+    --background: 0 0% 100%;
+    --foreground: 150 4% 13%;
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 8%;
-
+    --card-foreground: 150 4% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 8%;
-
-    --primary: 43 74% 38%;
+    --popover-foreground: 150 4% 13%;
+    --primary: 150 4% 13%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 60 4% 95%;
-    --secondary-foreground: 220 25% 12%;
-
-    --muted: 60 4% 93%;
-    --muted-foreground: 160 3% 42%;
-
-    --accent: 43 74% 38%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 50%;
+    --secondary: 40 9% 97%;
+    --secondary-foreground: 150 4% 13%;
+    --muted: 40 6% 95%;
+    --muted-foreground: 150 2% 43%;
+    --accent: 40 6% 94%;
+    --accent-foreground: 150 4% 13%;
+    --destructive: 0 69% 44%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 60 4% 86%;
-    --input: 60 4% 80%;
-    --ring: 43 74% 38%;
-
-    --radius: 0.375rem;
-    --hero-foreground: 60 10% 98%;
-    --hero-muted: 60 5% 85%;
+    --border: 40 5% 88%;
+    --input: 40 4% 80%;
+    --ring: 150 4% 28%;
+    --radius: 0.125rem;
+    --hero-foreground: 0 0% 100%;
+    --hero-muted: 40 5% 85%;
     --hero-shade: 150 10% 5%;
-    --hero-overlay: linear-gradient(90deg, hsl(var(--hero-shade) / 0.88), hsl(var(--hero-shade) / 0.42) 45%, hsl(var(--hero-shade) / 0.02) 80%);
-    --hero-mobile-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.94), hsl(var(--hero-shade) / 0.2) 85%);
-    --collection-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.84), hsl(var(--hero-shade) / 0) 65%);
-    --home-paper: 38 25% 97%;
-    --home-ink: 30 18% 12%;
-    --home-gold: 37 31% 42%;
-    --home-rule: 38 17% 76%;
-
-    /* Custom luxury colors */
-    --gold: 43 74% 45%;
-    --gold-light: 43 80% 60%;
-    --gold-dark: 43 70% 32%;
-    --cream: 40 28% 92%;
-    --champagne: 40 22% 86%;
-    --rose-gold: 15 50% 58%;
-    --bronze: 30 60% 38%;
-
-    /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(43 74% 38%), hsl(43 80% 50%));
-    --gradient-dark: linear-gradient(180deg, hsl(40 25% 97%), hsl(40 22% 94%));
-    --gradient-card: linear-gradient(145deg, hsl(40 30% 99%), hsl(40 28% 96%));
-    --gradient-hero: radial-gradient(ellipse at center top, hsl(40 22% 92%), hsl(40 25% 97%));
-
-    /* Shadows */
-    --shadow-gold: 0 4px 30px hsl(43 74% 38% / 0.18);
-    --shadow-soft: 0 10px 40px hsl(220 25% 8% / 0.06);
-    --shadow-card: 0 4px 20px hsl(220 25% 8% / 0.04);
-
-    /* Sidebar */
-    --sidebar-background: 40 22% 95%;
-    --sidebar-foreground: 220 25% 12%;
-    --sidebar-primary: 43 74% 38%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 18% 90%;
-    --sidebar-accent-foreground: 220 25% 12%;
-    --sidebar-border: 40 18% 86%;
-    --sidebar-ring: 43 74% 38%;
+    --collection-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.7), transparent 75%);
+    --home-paper: var(--background);
+    --home-ink: var(--foreground);
+    --home-gold: var(--foreground);
+    --home-rule: var(--border);
+    --gold: 38 24% 42%;
+    --gold-light: 38 22% 62%;
+    --gold-dark: 38 22% 32%;
+    --cream: 40 15% 96%;
+    --champagne: 40 12% 90%;
+    --rose-gold: 15 30% 55%;
+    --bronze: 30 30% 38%;
+    --gradient-gold: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
+    --gradient-dark: linear-gradient(hsl(var(--background)), hsl(var(--background)));
+    --gradient-card: linear-gradient(hsl(var(--card)), hsl(var(--card)));
+    --gradient-hero: linear-gradient(hsl(var(--secondary)), hsl(var(--secondary)));
+    --shadow-gold: none;
+    --shadow-soft: none;
+    --shadow-card: none;
+    --sidebar-background: 40 9% 98%;
+    --sidebar-foreground: 150 4% 20%;
+    --sidebar-primary: 40 6% 92%;
+    --sidebar-primary-foreground: 150 4% 13%;
+    --sidebar-accent: 40 6% 94%;
+    --sidebar-accent-foreground: 150 4% 13%;
+    --sidebar-border: 40 5% 88%;
+    --sidebar-ring: 150 4% 28%;
   }
 
   .dark {
-    /* Luxury dark theme with gold accents */
-    --background: 150 5% 7%;
-    --foreground: 40 20% 95%;
-
-    --card: 150 4% 10%;
-    --card-foreground: 40 20% 95%;
-
-    --popover: 150 4% 10%;
-    --popover-foreground: 40 20% 95%;
-
-    --primary: 43 74% 49%;
-    --primary-foreground: 20 14% 4%;
-
-    --secondary: 150 4% 13%;
-    --secondary-foreground: 40 20% 95%;
-
-    --muted: 150 4% 16%;
-    --muted-foreground: 60 4% 65%;
-
-    --accent: 43 74% 49%;
-    --accent-foreground: 20 14% 4%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 40 20% 95%;
-
-    --border: 150 4% 23%;
-    --input: 150 4% 29%;
-    --ring: 43 74% 49%;
-
-    /* Custom luxury colors - dark mode */
-    --gold: 43 74% 49%;
-    --gold-light: 43 80% 65%;
-    --gold-dark: 43 70% 35%;
-    --cream: 40 30% 92%;
-    --champagne: 40 25% 85%;
-    --rose-gold: 15 50% 60%;
-    --bronze: 30 60% 40%;
-
-    /* Gradients - dark mode */
-    --gradient-gold: linear-gradient(135deg, hsl(43 74% 49%), hsl(43 80% 65%));
-    --gradient-dark: linear-gradient(180deg, hsl(20 14% 4%), hsl(20 14% 8%));
-    --gradient-card: linear-gradient(145deg, hsl(20 14% 8%), hsl(20 14% 5%));
-    --gradient-hero: radial-gradient(ellipse at center top, hsl(20 14% 12%), hsl(20 14% 4%));
-
-    /* Shadows - dark mode */
-    --shadow-gold: 0 4px 30px hsl(43 74% 49% / 0.15);
-    --shadow-soft: 0 10px 40px hsl(0 0% 0% / 0.3);
-    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.2);
-
-    /* Sidebar - dark mode */
-    --sidebar-background: 20 14% 6%;
-    --sidebar-foreground: 40 20% 95%;
-    --sidebar-primary: 43 74% 49%;
-    --sidebar-primary-foreground: 20 14% 4%;
-    --sidebar-accent: 20 14% 12%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 40 15% 15%;
-    --sidebar-ring: 43 74% 49%;
-    --home-paper: 150 5% 7%;
-    --home-ink: 40 20% 95%;
-    --home-gold: 43 74% 60%;
-    --home-rule: 40 12% 32%;
+    --background: 150 4% 8%;
+    --foreground: 40 8% 94%;
+    --card: 150 3% 10%;
+    --card-foreground: 40 8% 94%;
+    --popover: 150 3% 11%;
+    --popover-foreground: 40 8% 94%;
+    --primary: 40 8% 94%;
+    --primary-foreground: 150 4% 8%;
+    --secondary: 150 3% 12%;
+    --secondary-foreground: 40 8% 94%;
+    --muted: 150 3% 15%;
+    --muted-foreground: 40 3% 65%;
+    --accent: 150 3% 17%;
+    --accent-foreground: 40 8% 94%;
+    --destructive: 0 68% 61%;
+    --destructive-foreground: 150 4% 8%;
+    --border: 150 2% 23%;
+    --input: 150 2% 32%;
+    --ring: 40 8% 74%;
+    --sidebar-background: 150 4% 9%;
+    --sidebar-foreground: 40 8% 90%;
+    --sidebar-primary: 150 3% 17%;
+    --sidebar-primary-foreground: 40 8% 94%;
+    --sidebar-accent: 150 3% 14%;
+    --sidebar-accent-foreground: 40 8% 94%;
+    --sidebar-border: 150 2% 23%;
+    --sidebar-ring: 40 8% 74%;
   }
 }
 
@@ -236,7 +181,7 @@
 
   /* Improved text rendering for light mode */
   :root:not(.dark) body {
-    font-weight: 450;
+    font-weight: 400;
     letter-spacing: 0;
   }
 
@@ -249,21 +194,12 @@
   }
 
   /* Use Inter for UI elements that need better legibility */
-  button, input, select, textarea, label, .font-sans,
-  [class*="text-sm"], [class*="text-xs"] {
+  button, input, select, textarea, label, .font-sans {
     font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 500;
+    font-weight: 400;
   }
 
-  /* Better touch targets for mobile */
-  button, a, input, select, textarea {
-    min-height: 44px;
-  }
-
-  /* Small text elements don't need minimum height */
-  .text-xs, .text-sm, small, span, p {
-    min-height: auto;
-  }
+  button, a { touch-action: manipulation; }
 
   /* Link styling for consistency */
   a:not([class]) {
@@ -385,56 +321,140 @@
     .collection-image { aspect-ratio: 4 / 3; }
   }
 
-  /* Homepage editorial system. Keep it scoped so checkout and admin layout stay stable. */
-  .home-page { background: hsl(var(--home-paper)); color: hsl(var(--home-ink)); }
-  .home-page h2, .home-page h3 { color: hsl(var(--home-ink)); }
-  .home-hero { position: relative; isolation: isolate; min-height: clamp(620px, calc(100svh - 130px), 780px); overflow: hidden; background: #eadac3; }
-  .home-hero__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
-  .home-hero__inner { position: relative; z-index: 1; display: flex; align-items: center; min-height: inherit; padding: 72px clamp(24px, 5.5vw, 88px); }
-  .home-hero__copy { width: min(60%, 760px); color: #201914; }
-  .home-hero__title { margin: 0; color: inherit; font-size: clamp(76px, 8vw, 132px); font-weight: 400; line-height: 0.9; letter-spacing: -0.045em; white-space: nowrap; }
-  .home-hero__lead { margin-top: 24px; font-size: clamp(32px, 3.6vw, 56px); line-height: 1.05; letter-spacing: -0.025em; }
-  .home-hero__description { max-width: 570px; margin-top: 22px; font-family: 'EB Garamond', Georgia, serif; font-size: clamp(19px, 1.7vw, 27px); line-height: 1.35; }
-  .home-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 32px; margin-top: 38px; }
-  .home-hero__button { min-width: 185px; height: 58px; border-radius: 0; padding: 0 28px; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
-  .home-hero__story { min-height: 44px; display: inline-flex; align-items: center; border-bottom: 1px solid currentColor; color: #201914; font-size: 14px; font-weight: 500; }
-  .home-hero__story:hover { color: #715938; }
-  .home-features { background: hsl(var(--home-paper)); border-color: hsl(var(--home-rule)); }
-  .home-features > .container > div + div { border-left: 1px solid hsl(var(--home-rule)); padding-left: clamp(12px, 2vw, 32px); }
-  .home-features svg { color: hsl(var(--home-gold)); }
-  .home-features h2 { font-size: 12px; letter-spacing: 0.03em; }
-  .home-featured, .home-collections { background: hsl(var(--home-paper)); }
-  .home-section-heading { display: flex; align-items: baseline; gap: 28px; }
-  .home-section-heading::after { content: ''; height: 1px; flex: 1; background: hsl(var(--home-rule)); }
-  .home-section-heading h2 { flex-shrink: 0; letter-spacing: -0.025em; }
-  .home-featured .home-section-heading::after { order: 1; }
-  .home-section-link { order: 2; font-family: 'EB Garamond', Georgia, serif; font-size: 18px; text-decoration: none; }
-  .home-section-link:hover { text-decoration: underline; }
-  .home-featured .product-card-media { aspect-ratio: 4 / 5; border-radius: 0; }
-  .home-collections { border-color: hsl(var(--home-rule)); }
-  .home-collections .collection-image { aspect-ratio: 4 / 3; }
-  .home-collections .collection-caption { padding: clamp(20px, 3vw, 36px); }
-  .home-collections .collection-caption h3 { color: hsl(var(--hero-foreground)); }
+  /* One visual system across the storefront, forms, and administration. */
+  .brand-wordmark { letter-spacing: 0.12em; }
+  .site-announcement { font-size: 11px; letter-spacing: 0.01em; }
+  .site-header { background: hsl(var(--background) / 0.98); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-header svg, .mobile-bottom-nav svg { stroke-width: 1.5; }
+  .site-header .editorial-nav { min-height: 44px; }
+  .site-header .editorial-nav::after { bottom: 4px; }
+  .site-header .editorial-nav[aria-current="page"] { color: hsl(var(--foreground)); }
+  .site-header .editorial-nav[aria-current="page"]::after { transform: scaleX(1); }
+  .site-footer { background: hsl(var(--background)); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer h4 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+  .site-footer a { display: inline-flex; align-items: center; }
+  .site-footer li a { min-height: 28px; font-size: 12px; }
+  .site-footer p, .site-footer li { font-size: 12px; line-height: 1.8; }
+  .storefront-main > div > .container { max-width: 1320px; padding: 64px 48px 88px; }
+  .storefront-main h1:not(.home-hero__title) { font-size: clamp(36px, 4.2vw, 58px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.08; }
+  .storefront-main h2, .storefront-main h3 { font-weight: 400; }
+  .storefront-main .bg-card, .storefront-main .glass-card, .admin-shell .glass-card, .admin-shell .bg-card { border-radius: var(--radius); box-shadow: none; }
+  .storefront-main .prose { --tw-prose-body: hsl(var(--muted-foreground)); --tw-prose-headings: hsl(var(--foreground)); --tw-prose-bold: hsl(var(--foreground)); --tw-prose-links: hsl(var(--foreground)); --tw-prose-bullets: hsl(var(--muted-foreground)); line-height: 1.85; }
+  .storefront-main .prose h2 { margin-top: 2.5rem; font-size: 28px; }
+  .storefront-main :is([data-page="privacy"], [data-page="terms"]) { font-size: 14px; }
+  .page-heading { padding: 12px 0 8px; text-align: left; }
+  .page-heading h1 { margin-bottom: 20px; }
+  .page-heading p { max-width: 650px; line-height: 1.7; }
+  .catalog-tabs { border-bottom: 1px solid hsl(var(--border)); gap: 24px; }
+  .catalog-tabs .ui-button { min-width: 0; height: 48px; padding: 0 4px; border: 0; border-bottom: 1px solid transparent; border-radius: 0; background: transparent; color: hsl(var(--muted-foreground)); box-shadow: none; }
+  .catalog-tabs .ui-button[aria-pressed="true"] { color: hsl(var(--foreground)); border-bottom-color: hsl(var(--foreground)); }
+  .catalog-tabs .ui-button:hover { background: transparent; color: hsl(var(--foreground)); }
+  .product-card-media { border-radius: var(--radius); aspect-ratio: 4 / 5; }
+  .product-card h3 { font-family: 'Inter', sans-serif; font-size: 12px; line-height: 1.5; letter-spacing: 0.015em; font-weight: 500; }
+  .product-card .product-card-price { font-size: 13px; font-weight: 500; }
+  .product-card .product-card-details { margin-top: 16px; }
+  .home-page { background: hsl(var(--background)); }
+  .home-hero { position: relative; min-height: 610px; background: hsl(var(--background)); overflow: hidden; }
+  .home-hero__image { position: absolute; inset: 0 0 0 50%; width: 50%; height: 100%; object-fit: cover; object-position: 80% center; }
+  .home-hero__inner { position: relative; display: flex; align-items: center; min-height: inherit; padding: 72px 64px; }
+  .home-hero__copy { width: 47%; color: hsl(var(--foreground)); }
+  .home-hero__title { margin: 0; color: inherit; font-size: clamp(64px, 6vw, 100px); font-weight: 400; line-height: 0.98; letter-spacing: -0.04em; }
+  .home-hero__lead { margin-top: 20px; font-size: clamp(28px, 3vw, 44px); line-height: 1.1; letter-spacing: -0.025em; }
+  .home-hero__description { max-width: 400px; margin-top: 24px; color: hsl(var(--muted-foreground)); font-family: 'EB Garamond', Georgia, serif; font-size: 21px; line-height: 1.5; }
+  .home-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 28px; margin-top: 34px; }
+  .home-hero__button { min-width: 160px; height: 48px; padding: 0 26px; border-radius: var(--radius); font-size: 13px; font-weight: 500; }
+  .home-hero__story { min-height: 44px; display: inline-flex; align-items: center; border-bottom: 1px solid hsl(var(--border)); font-size: 13px; }
+  .home-hero__story:hover { border-color: currentColor; }
+  .home-features { background: hsl(var(--background)); }
+  .home-features > .container > div + div { border-left: 1px solid hsl(var(--border)); padding-left: 24px; }
+  .home-features svg { color: hsl(var(--foreground)); }
+  .home-features h2 { font-size: 12px; font-weight: 500; }
+  .home-featured, .home-collections { background: hsl(var(--background)); padding-block: 64px; }
+  .home-collections { border-top: 0; padding-top: 12px; }
+  .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+  .home-section-heading h2 { font-size: clamp(32px, 3.4vw, 46px); letter-spacing: -0.025em; }
+  .home-section-link { font-size: 12px; font-family: 'Inter', sans-serif; border-bottom: 1px solid hsl(var(--border)); }
+  .home-collections .collection-image { aspect-ratio: 1.6; }
+  .home-collections .collection-caption { padding: 24px; }
+  .home-collections .collection-caption h3 { color: white; font-size: 32px; }
+  .home-collections .collection-image + p { font-size: 12px; }
+  .product-detail-layout { gap: 64px; }
+  .product-detail-gallery .aspect-square { border-radius: var(--radius); }
+  .product-detail-info { padding-top: 24px; }
+  .storefront-main .product-detail-info h1 { font-size: clamp(30px, 3.5vw, 48px); }
+  .product-detail-price { padding-bottom: 24px; border-bottom: 1px solid hsl(var(--border)); }
+  .storefront-main[data-page="cart"] .lg\:col-span-2 > div { border-width: 0 0 1px; border-radius: 0; padding: 24px 0; }
+  .storefront-main[data-page="cart"] .sticky, .storefront-main[data-page="checkout"] .sticky { background: hsl(var(--secondary)); border: 0; padding: 28px; top: 104px; }
+  .storefront-main[data-page="checkout"] form > .grid { gap: 48px; }
+  .storefront-main[data-page="checkout"] .border-2 { border-width: 1px; border-radius: var(--radius); }
+  .storefront-main[data-page="auth"] > div > .container, .storefront-main[data-page="reset-password"] > div > .container { padding-block: 80px 100px; }
+  .storefront-main[data-page="auth"] .glass-card, .storefront-main[data-page="reset-password"] .glass-card { border: 0; padding: 0; box-shadow: none; }
+  .storefront-main[data-page="auth"] .text-center.mb-8, .storefront-main[data-page="reset-password"] .text-center.mb-8 { text-align: left; }
+  .storefront-main[data-page="auth"] h1, .storefront-main[data-page="reset-password"] h1 { font-size: 48px; }
+  .storefront-main[data-page="auth"] form, .storefront-main[data-page="reset-password"] form { padding-top: 12px; }
+  .storefront-main[data-page="auth"] form > div, .storefront-main[data-page="reset-password"] form > div { margin-top: 20px; }
+  .storefront-main[data-page="account"] .bg-card { padding: 28px; }
+  .storefront-main[data-page="contact"] .text-center.mb-12 { text-align: left; margin-bottom: 56px; }
+  .storefront-main[data-page="contact"] .text-center.mb-12 > p { margin-left: 0; }
+  .storefront-main[data-page="contact"] .text-center.mb-12 > p:first-child { display: none; }
+  .storefront-main[data-page="contact"] .glass-card { padding: 28px; }
+  .storefront-main[data-page="about"] .text-center { text-align: left; }
+  .storefront-main[data-page="about"] .text-center > p:first-child { display: none; }
+  .storefront-main[data-page="about"] .max-w-4xl { max-width: 760px; }
+  .admin-shell { font-size: 14px; }
+  .admin-shell > aside:first-child { position: sticky; top: 0; height: 100svh; width: 240px; flex-shrink: 0; }
+  .admin-shell > div { min-width: 0; }
+  .admin-shell main { padding: 40px; }
+  .admin-shell h1 { font-weight: 400; font-size: 40px; letter-spacing: -0.03em; }
+  .admin-shell aside h1 { font-size: 21px; letter-spacing: 0.07em; }
+  .admin-shell header h1 { font-size: 18px; letter-spacing: 0.06em; }
+  .admin-shell h2, .admin-shell h3 { font-weight: 400; }
+  .admin-shell aside nav a { border-radius: var(--radius); font-size: 13px; }
+  .admin-shell aside nav a svg { width: 18px; height: 18px; stroke-width: 1.5; }
+  .admin-shell .admin-stat { border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); padding: 24px; }
+  .admin-shell .admin-stat-value { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 500; letter-spacing: -0.03em; }
+  .admin-shell .rounded-xl, .admin-shell .rounded-lg { border-radius: var(--radius); }
+  .admin-shell table th { font-size: 11px; font-weight: 500; letter-spacing: 0.02em; }
+  .admin-shell table td { font-size: 12px; padding-block: 18px; }
+  @media (min-width: 1280px) {
+    .admin-shell .admin-stats-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
   @media (max-width: 1023px) {
-    .home-hero__copy { width: min(68%, 700px); }
-    .home-hero__title { font-size: clamp(64px, 8vw, 100px); }
+    .home-hero__inner { padding-inline: 40px; }
+    .home-hero__title { font-size: 64px; }
+    .admin-shell main { padding: 24px; }
   }
   @media (max-width: 767px) {
+    .storefront-main > div > .container { padding: 40px 24px 56px; }
+    .storefront-main[data-page="auth"] > div > .container, .storefront-main[data-page="reset-password"] > div > .container { padding-block: 48px 72px; }
+    .site-header .container { padding-inline: 20px; }
+    .brand-wordmark { letter-spacing: 0.07em; }
+    .site-footer { padding-bottom: 64px; }
     .home-hero { display: flex; flex-direction: column; min-height: 0; }
-    .home-hero__inner { order: 0; min-height: 0; padding: 54px 24px 44px; }
+    .home-hero__inner { order: 0; min-height: 0; padding: 48px 24px 44px; }
     .home-hero__copy { width: 100%; }
-    .home-hero__title { font-size: clamp(55px, 13vw, 78px); white-space: normal; }
-    .home-hero__lead { margin-top: 16px; font-size: clamp(30px, 8vw, 42px); }
-    .home-hero__description { max-width: 360px; margin-top: 14px; font-size: 19px; }
-    .home-hero__actions { gap: 24px; margin-top: 26px; }
-    .home-hero__button { min-width: 160px; height: 52px; }
-    .home-hero__image { position: relative; order: 1; height: min(76vw, 400px); object-position: 74% 62%; }
-    .home-features > .container > div + div { border-left: 0; padding-left: 0; }
-    .home-features > .container > div:nth-child(even) { border-left: 1px solid hsl(var(--home-rule)); padding-left: 16px; }
-    .home-section-heading { align-items: flex-start; gap: 16px; }
-    .home-section-heading::after { display: none; }
-    .home-section-heading h2 { flex: 1; }
-    .home-section-link { font-size: 15px; }
+    .home-hero__title { font-size: clamp(52px, 13vw, 72px); }
+    .home-hero__lead { font-size: 30px; margin-top: 14px; }
+    .home-hero__description { font-size: 19px; margin-top: 18px; }
+    .home-hero__actions { margin-top: 24px; gap: 24px; }
+    .home-hero__image { position: relative; order: 1; inset: auto; width: 100%; height: 350px; object-position: 80% center; }
+    .home-features > .container > div + div { border: 0; padding-left: 0; }
+    .home-features > .container > div:nth-child(even) { border-left: 1px solid hsl(var(--border)); padding-left: 16px; }
+    .home-features h2 { font-size: 11px; }
+    .home-features p { font-size: 10px; }
+    .home-featured, .home-collections { padding-block: 44px; }
+    .home-collections { padding-top: 0; }
+    .home-section-heading { gap: 16px; }
+    .home-section-heading h2 { font-size: 30px; }
+    .home-section-link { font-size: 11px; }
+    .home-collections .collection-image { aspect-ratio: 1.4; }
+    .catalog-tabs { gap: 16px; margin-bottom: 32px; }
+    .catalog-tabs .ui-button { font-size: 12px; }
+    .product-detail-layout { gap: 28px; }
+    .product-detail-info { padding-top: 8px; }
+    .storefront-main[data-page="cart"] .sticky, .storefront-main[data-page="checkout"] .sticky { padding: 24px; }
+    .admin-shell main { padding: 24px 16px; }
+    .admin-shell h1 { font-size: 32px; }
   }
 
   .luxury-input {

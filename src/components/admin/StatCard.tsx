@@ -16,14 +16,14 @@ interface StatCardProps {
 
 const variantStyles = {
   default: 'glass-card',
-  gold: 'glass-gold',
-  success: 'glass-card bg-gradient-to-br from-green-500/15 to-green-500/5 border-green-500/30',
-  warning: 'glass-card bg-gradient-to-br from-orange-500/15 to-orange-500/5 border-orange-500/30',
+  gold: 'glass-card',
+  success: 'glass-card',
+  warning: 'glass-card',
 };
 
 const iconStyles = {
   default: 'bg-muted text-muted-foreground',
-  gold: 'bg-primary/20 text-primary',
+  gold: 'bg-muted text-foreground',
   success: 'bg-green-500/20 text-green-500',
   warning: 'bg-orange-500/20 text-orange-500',
 };
@@ -41,9 +41,8 @@ export function StatCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className={cn(
-        'relative overflow-hidden rounded-xl p-6 transition-shadow duration-300 hover:shadow-lg',
+        'admin-stat relative overflow-hidden rounded-sm p-6',
         variantStyles[variant]
       )}
     >
@@ -54,7 +53,7 @@ export function StatCard({
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
-            className="mt-2 text-3xl font-bold font-display"
+            className="admin-stat-value mt-2 text-3xl font-medium font-sans"
           >
             {value}
           </motion.p>
@@ -75,8 +74,6 @@ export function StatCard({
         </div>
       </div>
 
-      {/* Decorative element */}
-      <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full bg-gradient-to-br from-primary/5 to-transparent" />
     </motion.div>
   );
 }

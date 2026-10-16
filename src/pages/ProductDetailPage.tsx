@@ -190,12 +190,12 @@ export default function ProductDetailPage() {
           </Link>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
+        <div className="product-detail-layout grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           {/* Images */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="space-y-3"
+            className="product-detail-gallery space-y-3"
           >
             <div className="aspect-square overflow-hidden rounded-lg bg-secondary relative">
               {product.images?.[selectedImage] ? (
@@ -246,7 +246,7 @@ export default function ProductDetailPage() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="space-y-4 md:space-y-6"
+            className="product-detail-info space-y-4 md:space-y-6"
           >
             {product.category && (
               <Link
@@ -278,7 +278,7 @@ export default function ProductDetailPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-3 flex-wrap"
+                className="product-detail-price flex items-center gap-3 flex-wrap"
               >
                 {isOnSale ? (
                   <>
@@ -312,19 +312,6 @@ export default function ProductDetailPage() {
             {/* Show size only if no variants */}
             {!hasVariants && product.size && (
               <p className="text-muted-foreground text-sm md:text-base">{product.size}</p>
-            )}
-
-            {product.description && (
-              <p className="text-foreground leading-relaxed text-sm md:text-base">
-                {product.description}
-              </p>
-            )}
-
-            {product.notes && (
-              <div className="bg-secondary/50 p-4 rounded-lg">
-                <h3 className="font-medium mb-2 text-sm md:text-base">Fragrance Notes</h3>
-                <p className="text-sm text-muted-foreground">{product.notes}</p>
-              </div>
             )}
 
             {/* Quantity & Add to Cart */}
@@ -402,6 +389,19 @@ export default function ProductDetailPage() {
                 <span>100% authentic product guarantee</span>
               </div>
             </div>
+
+            {product.description && (
+              <p className="product-description border-t border-border pt-6 text-muted-foreground leading-relaxed text-sm md:text-base">
+                {product.description}
+              </p>
+            )}
+
+            {product.notes && (
+              <div className="bg-secondary/50 p-4 rounded-lg">
+                <h3 className="font-medium mb-2 text-sm md:text-base">Fragrance Notes</h3>
+                <p className="text-sm text-muted-foreground">{product.notes}</p>
+              </div>
+            )}
 
             {currentSku && (
               <p className="text-sm text-muted-foreground">

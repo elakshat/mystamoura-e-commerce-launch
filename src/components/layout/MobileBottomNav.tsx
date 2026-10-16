@@ -24,7 +24,7 @@ export function MobileBottomNav() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass-bar border-t shadow-lg safe-area-bottom">
+    <nav aria-label="Mobile navigation" className="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-50 md:hidden glass-bar border-t safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href || 
@@ -34,6 +34,7 @@ export function MobileBottomNav() {
             <Link
               key={item.id}
               to={item.href}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
                 'flex flex-col items-center justify-center flex-1 h-full relative transition-colors',
                 isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'

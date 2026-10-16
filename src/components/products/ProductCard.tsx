@@ -56,7 +56,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="group relative"
+      className="product-card group relative"
     >
       <Link to={`/products/${product.slug}`} className="block">
         <div className="product-card-media relative aspect-[3/4] overflow-hidden rounded-md bg-secondary">
@@ -103,20 +103,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             )}
           </div>
 
-          {/* Quick Actions - Desktop only */}
-          <div className="absolute bottom-2 left-2 right-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hidden md:block">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full bg-background/90 hover:bg-background text-foreground backdrop-blur-sm"
-              onClick={handleAddToCart}
-              disabled={isSoldOut}
-            >
-              <ShoppingBag className="h-4 w-4 mr-2" />
-              {isSoldOut ? 'Sold Out' : 'Add to Cart'}
-            </Button>
-          </div>
-
           {/* Wishlist */}
           <Button
             variant="ghost"
@@ -125,7 +111,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               'absolute top-2 right-2 h-10 w-10 rounded-md transition-colors duration-200',
               isInWishlist 
                 ? 'bg-primary text-primary-foreground' 
-                : 'bg-background/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground'
+                : 'bg-background/90 opacity-100 hover:bg-primary hover:text-primary-foreground'
             )}
             onClick={handleWishlistClick}
             disabled={isPending}
@@ -141,7 +127,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       </Link>
 
       {/* Product Info */}
-      <div className="mt-4 space-y-1.5">
+      <div className="product-card-details mt-4 space-y-1.5">
         <Link to={`/products/${product.slug}`}>
           <h3 className="font-display text-base md:text-xl font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
             {product.name}
@@ -151,7 +137,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         <div className="flex items-baseline gap-2 pt-0.5">
           {isOnSale ? (
             <>
-              <span className="font-bold text-sm md:text-base text-primary">
+              <span className="product-card-price font-medium text-sm md:text-base text-primary">
                 {formatPrice(product.sale_price ?? product.price, product.currency)}
               </span>
               <span className="text-xs text-muted-foreground line-through">
@@ -159,17 +145,17 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             </>
           ) : (
-            <span className="font-bold text-sm md:text-base text-foreground">
+            <span className="product-card-price font-medium text-sm md:text-base text-foreground">
               {formatPrice(product.price, product.currency)}
             </span>
           )}
         </div>
         
-        {/* Mobile Add to Cart */}
+        {/* The same purchase action remains visible at every screen size. */}
         <Button
-          variant="outline"
+          variant="default"
           size="sm"
-          className="w-full mt-2 md:hidden text-xs"
+          className="w-full mt-4 text-xs"
           onClick={handleAddToCart}
           disabled={isSoldOut}
         >
