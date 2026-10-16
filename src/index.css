@@ -37,8 +37,9 @@
     --hero-foreground: 60 10% 98%;
     --hero-muted: 60 5% 85%;
     --hero-shade: 150 10% 5%;
-    --hero-overlay: linear-gradient(90deg, hsl(var(--hero-shade) / 0.86), hsl(var(--hero-shade) / 0.5) 50%, hsl(var(--hero-shade) / 0.08));
+    --hero-overlay: linear-gradient(90deg, hsl(var(--hero-shade) / 0.88), hsl(var(--hero-shade) / 0.42) 45%, hsl(var(--hero-shade) / 0.02) 80%);
     --hero-mobile-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.94), hsl(var(--hero-shade) / 0.2) 85%);
+    --collection-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.84), hsl(var(--hero-shade) / 0) 65%);
 
     /* Custom luxury colors */
     --gold: 43 74% 45%;
@@ -334,7 +335,13 @@
     .glass-bar { background-color: hsl(var(--background)); }
   }
 
-  .hero-editorial { height: min(720px, calc(100svh - 190px)); min-height: 480px; }
+  .hero-editorial { height: min(740px, calc(100svh - 210px)); min-height: 520px; }
+  .hero-title { font-size: 96px; line-height: 0.88; }
+  .hero-eyebrow, .section-eyebrow { display: flex; align-items: center; gap: 14px; }
+  .hero-eyebrow::before, .section-eyebrow::before { content: ''; width: 28px; height: 1px; background: currentColor; opacity: 0.65; flex-shrink: 0; }
+  .editorial-nav { position: relative; }
+  .editorial-nav::after { content: ''; position: absolute; bottom: 6px; left: 0; right: 0; height: 1px; background: hsl(var(--primary)); transform: scaleX(0); transform-origin: left; transition: transform 280ms ease; }
+  .editorial-nav:hover::after, .editorial-nav:focus-visible::after { transform: scaleX(1); }
   .hero-shade { background: var(--hero-overlay); }
   .hero-copy, .hero-copy h1, .hero-copy p { color: hsl(var(--hero-foreground)); }
   .hero-copy .hero-subtitle { color: hsl(var(--hero-muted)); }
@@ -342,10 +349,13 @@
   .hero-story:hover { color: hsl(var(--hero-muted)); }
   .hero-image { object-position: center 40%; }
   .collection-image { aspect-ratio: 4 / 5; }
+  .collection-shade { background: var(--collection-overlay); }
+  .collection-caption, .collection-caption h3 { color: hsl(var(--hero-foreground)); }
   @media (max-width: 767px) {
     .hero-editorial { height: min(680px, calc(100svh - 200px)); min-height: 440px; }
     .hero-shade { background: var(--hero-mobile-overlay); }
     .hero-image { object-position: 60% 30%; }
+    .hero-title { font-size: 64px; line-height: 0.9; }
     .collection-image { aspect-ratio: 4 / 3; }
   }
 
