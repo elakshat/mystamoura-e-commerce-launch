@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { DynamicFavicon } from "@/components/DynamicFavicon";
 import { AdminGuard } from "@/components/admin/AdminGuard";
@@ -52,7 +51,6 @@ const queryClient = new QueryClient({
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-        <ThemeProvider>
           <CartProvider>
             <TooltipProvider>
               <Toaster />
@@ -167,7 +165,6 @@ const App = () => (
               </BrowserRouter>
             </TooltipProvider>
           </CartProvider>
-        </ThemeProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

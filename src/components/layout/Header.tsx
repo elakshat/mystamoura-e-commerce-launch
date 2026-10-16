@@ -7,7 +7,6 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/hooks/useSettings';
 import { SearchDialog } from '@/components/search/SearchDialog';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,12 +34,12 @@ export function Header() {
 
       <header className="site-header sticky top-0 z-50 glass-bar border-b">
         <div className="container mx-auto px-4 md:px-12">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="site-header-row grid items-center h-16 md:h-20">
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden -ml-2"
+              className="lg:hidden -ml-2"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}>
@@ -53,14 +52,14 @@ export function Header() {
             </Button>
 
             {/* Logo */}
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="site-header-brand flex items-center">
               <span className="brand-wordmark font-display text-xl lg:text-2xl font-normal text-foreground whitespace-nowrap">
                 MYST AMOURA
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-4 lg:space-x-7">
+            <nav aria-label="Main navigation" className="hidden lg:flex items-center justify-center space-x-7">
               {navLinks.map((link) =>
               <NavLink
                 key={link.href}
@@ -73,17 +72,13 @@ export function Header() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 md:gap-2">
+            <div className="site-header-actions flex items-center gap-1 md:gap-2">
               <SearchDialog />
-
-              <div className="hidden md:flex items-center">
-                <ThemeToggle />
-              </div>
 
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:text-primary h-9 w-9 md:h-10 md:w-10"
+                className="hidden md:inline-flex hover:text-primary h-10 w-10"
                 onClick={() => navigate(user ? '/account' : '/auth')}
                 aria-label={user ? 'My Account' : 'Sign In'}>
 
@@ -148,14 +143,14 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-bar border-t">
+            className="site-mobile-menu lg:hidden glass-bar border-t overflow-hidden">
 
-              <nav className="container mx-auto px-4 py-4 space-y-3">
+              <nav aria-label="Collections" className="container mx-auto px-6 py-3">
                 {navLinks.map((link) =>
               <Link
                 key={link.href}
                 to={link.href}
-                className="block py-2 text-base font-medium text-foreground/80 hover:text-primary transition-colors border-b border-border/50 last:border-0"
+                className="flex items-center min-h-12 py-3 text-sm font-normal text-foreground/80 hover:text-primary transition-colors border-b border-border/50 last:border-0"
                 onClick={() => setIsMenuOpen(false)}>
 
                     {link.label}
@@ -182,10 +177,6 @@ export function Header() {
                   </Link>
               }
                 
-                <div className="pt-2 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Theme</span>
-                  <ThemeToggle />
-                </div>
               </nav>
             </motion.div>
           }

@@ -16,10 +16,10 @@ export function FeaturedProducts() {
             <Link to="/products">View All Products<ArrowRight /></Link>
           </Button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 md:gap-8">
+        <div className="product-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {isLoading ? Array.from({ length: 4 }, (_, index) => (
             <div key={index} className="space-y-4 animate-pulse">
-              <div className="aspect-[3/4] bg-muted rounded-md" />
+              <div className="product-card-media bg-muted" />
               <div className="h-4 w-3/4 bg-muted rounded" />
               <div className="h-4 w-1/2 bg-muted rounded" />
             </div>
