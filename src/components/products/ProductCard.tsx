@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ShoppingBag, Heart, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Product } from '@/types';
@@ -17,6 +17,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
+  const reducedMotion = useReducedMotion();
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { data: isInWishlist } = useIsInWishlist(product.id);
@@ -52,10 +53,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      transition={{ duration: reducedMotion ? 0 : 0.6, delay: reducedMotion ? 0 : Math.min(index, 7) * 0.05, ease: [0.22, 1, 0.36, 1] }}
       className="product-card group relative"
     >
       <div className="product-card-media relative overflow-hidden bg-secondary">

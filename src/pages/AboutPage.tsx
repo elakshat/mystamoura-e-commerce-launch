@@ -13,7 +13,7 @@ export default function AboutPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto"
+          className="story-layout"
         >
           <div className="text-center mb-12">
             <p className="text-primary font-medium tracking-[0.2em] text-sm mb-3">

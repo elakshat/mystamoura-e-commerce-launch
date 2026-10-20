@@ -52,6 +52,9 @@ export default function ProductsPage() {
               {category.name}
             </Button>
           ))}
+          <span className="catalog-count" aria-live="polite">
+            {isLoading ? 'Loading…' : `${products?.length || 0} fragrances`}
+          </span>
         </div>
 
         <ProductGrid products={products || []} loading={isLoading} />
