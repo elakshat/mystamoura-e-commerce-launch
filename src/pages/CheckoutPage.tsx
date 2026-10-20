@@ -252,7 +252,7 @@ export default function CheckoutPage() {
             // Send order confirmation emails
             await sendOrderEmails(orderNumber, validatedAddress);
 
-            clearCart();
+            clearCart(); saveAppliedCoupon(null);
             toast.success('Payment successful! Order placed.');
             navigate('/order-success', { 
               state: { 
@@ -369,7 +369,7 @@ export default function CheckoutPage() {
       } else {
         // Cash on Delivery
         await sendOrderEmails(orderNumber, validatedAddress);
-        clearCart();
+        clearCart(); saveAppliedCoupon(null);
         toast.success('Order placed successfully!');
         navigate('/order-success', {
           state: {
