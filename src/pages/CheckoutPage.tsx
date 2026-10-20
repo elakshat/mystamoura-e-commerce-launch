@@ -20,6 +20,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { trackBeginCheckout } from '@/lib/gtag';
 import { trackPixelInitiateCheckout } from '@/lib/meta-pixel';
 import { trackPixelEvent } from '@/utils/metaPixel';
+import { loadAppliedCoupon, calculateDiscount, saveAppliedCoupon } from '@/lib/coupon';
 
 declare global {
   interface Window {
@@ -151,8 +152,10 @@ export default function CheckoutPage() {
   const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
   const taxRate = taxSettings?.tax?.rate || 18;
   const shippingAmount = calculateShipping(subtotal, shippingSettings);
-  const taxAmount = calculateTax(subtotal, taxRate);
-  const total = calculateTotal(subtotal, 0, shippingAmount, taxAmount);
+  const [appliedCoupon] = useState(() => loadAppliedCoupon());
+  const discountAmount = calculateDiscount(appliedCoupon, subtotal);
+  const taxAmount = calculateTax(subtotal - discountAmount, taxRate);
+  const total = calculateTotal(subtotal, discountAmount, shippingAmount, taxAmount);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -333,6 +336,8 @@ export default function CheckoutPage() {
           user_id: user?.id || null,
           guest_email: formData.email,
           subtotal,
+          discount_amount: discountAmount,
+          coupon_id: discountAmount > 0 ? appliedCoupon?.id ?? null : null,
           shipping_amount: shippingAmount,
           tax_amount: taxAmount,
           total,
@@ -520,6 +525,12 @@ export default function CheckoutPage() {
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="text-foreground">{formatPrice(subtotal)}</span>
                   </div>
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-primary">
+                      <span>Discount ({appliedCoupon?.code})</span>
+                      <span>-{formatPrice(discountAmount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Shipping</span>
                     <span className="text-foreground">{shippingAmount === 0 ? <span className="text-primary">FREE</span> : formatPrice(shippingAmount)}</span>

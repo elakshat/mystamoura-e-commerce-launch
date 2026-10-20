@@ -12,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
 import { useState } from 'react';
 import { Coupon, CartItem } from '@/types';
 import { toast } from 'sonner';
+import { loadAppliedCoupon, saveAppliedCoupon, calculateDiscount } from '@/lib/coupon';
 
 function getItemPrice(item: CartItem): number {
   if (item.variant) {
@@ -32,22 +33,19 @@ export default function CartPage() {
   const { items, updateQuantity, removeFromCart, subtotal } = useCart();
   const { data: taxSettings, isLoading: taxLoading } = useTaxSettings();
   const navigate = useNavigate();
-  const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [appliedCoupon, setAppliedCouponState] = useState<Coupon | null>(() => loadAppliedCoupon());
+  const [couponCode, setCouponCode] = useState(() => loadAppliedCoupon()?.code || '');
+  const setAppliedCoupon = (c: Coupon | null) => {
+    setAppliedCouponState(c);
+    saveAppliedCoupon(c);
+  };
   const validateCoupon = useValidateCoupon();
 
   const shippingSettings = taxSettings?.shipping || { base_price: 99, free_threshold: 1500 };
   const taxRate = taxSettings?.tax?.rate || 18;
   const shippingAmount = calculateShipping(subtotal, shippingSettings);
-  
-  let discountAmount = 0;
-  if (appliedCoupon) {
-    if (appliedCoupon.discount_type === 'percentage') {
-      discountAmount = (subtotal * appliedCoupon.discount_value) / 100;
-    } else {
-      discountAmount = appliedCoupon.discount_value;
-    }
-  }
+
+  const discountAmount = calculateDiscount(appliedCoupon, subtotal);
 
   const taxableAmount = subtotal - discountAmount;
   const taxAmount = calculateTax(taxableAmount, taxRate);
