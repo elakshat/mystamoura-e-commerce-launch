@@ -52,10 +52,7 @@ export function useProductReviews(productId: string, sort: SortOption = 'recent'
     queryFn: async () => {
       let query = supabase
         .from('reviews')
-        .select(`
-          *,
-          user_profile:profiles!reviews_user_id_fkey(full_name, avatar_url)
-        `)
+        .select('*')
         .eq('product_id', productId)
         .eq('is_approved', true)
         .eq('is_spam', false);
