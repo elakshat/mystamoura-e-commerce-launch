@@ -1,5 +1,4 @@
-# UI refinement
-- [x] Polish the home page, collection imagery, and navigation; verify desktop and mobile views.
-- [x] Refine shared styling and storefront layouts without changing shopping logic.
-- [x] Verify desktop/mobile shopping screens and check for runtime errors.
-- [ ] Publish the verified update — blocked because publishing approval was declined.
+# Diwali theme
+- [ ] Apply a cohesive Diwali visual system across storefront and admin screens.
+- [ ] Refresh the homepage with seasonal perfume imagery and details.
+- [ ] Verify desktop/mobile presentation, core shopping screens, and preview health.
