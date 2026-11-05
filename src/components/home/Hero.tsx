@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSettings } from '@/hooks/useSettings';
 import { motion, useReducedMotion } from 'framer-motion';
+import diwaliPerfumeStillLife from '@/assets/diwali-perfume-still-life.jpg';
 
 export function Hero() {
   const { data: settings } = useSettings();
@@ -18,6 +19,7 @@ export function Hero() {
     <section className="home-hero" aria-labelledby="home-hero-title">
       <div className="home-hero__inner container mx-auto">
         <div className="home-hero__copy">
+          <motion.p {...entrance(0)} className="home-hero__eyebrow">A Diwali celebration of scent</motion.p>
           <motion.h1 {...entrance(0.05)} id="home-hero-title" className="home-hero__title font-display">{title.replace(/in India$/, 'in\u00a0India')}</motion.h1>
           <motion.p {...entrance(0.15)} className="home-hero__description">{settings?.hero?.subtitle || 'Handcrafted perfumes that leave a lasting impression.'}</motion.p>
           <motion.div {...entrance(0.25)} className="home-hero__actions">
@@ -32,10 +34,12 @@ export function Hero() {
         </div>
         <motion.div {...entrance(0.1)} className="home-hero__media">
           <img
-            src="/images/home-hero-still-life.webp"
-            alt="Amber perfume bottle arranged with limestone and a flower petal"
+            src={diwaliPerfumeStillLife}
+            alt="Amber perfume bottle with glowing brass diyas and marigolds for Diwali"
             loading="eager"
             fetchPriority="high"
+            width={1024}
+            height={1280}
             className="home-hero__image"
           />
         </motion.div>

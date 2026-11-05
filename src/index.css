@@ -37,41 +37,41 @@
 @layer base {
   :root {
     color-scheme: only light;
-    --background: 0 0% 100%;
-    --foreground: 150 4% 13%;
-    --card: 0 0% 100%;
-    --card-foreground: 150 4% 13%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 150 4% 13%;
-    --primary: 150 4% 13%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 40 9% 97%;
-    --secondary-foreground: 150 4% 13%;
-    --muted: 40 6% 95%;
-    --muted-foreground: 150 2% 43%;
-    --accent: 40 6% 94%;
-    --accent-foreground: 150 4% 13%;
-    --destructive: 0 69% 44%;
+    --background: 40 38% 97%;
+    --foreground: 275 26% 14%;
+    --card: 40 34% 99%;
+    --card-foreground: 275 26% 14%;
+    --popover: 40 34% 99%;
+    --popover-foreground: 275 26% 14%;
+    --primary: 278 38% 23%;
+    --primary-foreground: 40 38% 97%;
+    --secondary: 39 58% 91%;
+    --secondary-foreground: 275 26% 14%;
+    --muted: 39 26% 93%;
+    --muted-foreground: 275 9% 39%;
+    --accent: 9 58% 44%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 69% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 5% 88%;
-    --input: 40 4% 80%;
-    --ring: 150 4% 28%;
+    --border: 38 24% 84%;
+    --input: 38 22% 77%;
+    --ring: 42 68% 40%;
     --radius: 0.25rem;
-    --hero-foreground: 0 0% 100%;
-    --hero-muted: 40 5% 85%;
-    --hero-shade: 150 10% 5%;
+    --hero-foreground: 40 38% 97%;
+    --hero-muted: 39 28% 88%;
+    --hero-shade: 278 35% 9%;
     --collection-overlay: linear-gradient(0deg, hsl(var(--hero-shade) / 0.7), transparent 75%);
     --home-paper: var(--background);
     --home-ink: var(--foreground);
-    --home-gold: var(--foreground);
+    --home-gold: 38 67% 35%;
     --home-rule: var(--border);
-    --gold: 38 24% 42%;
-    --gold-light: 38 22% 62%;
-    --gold-dark: 38 22% 32%;
-    --cream: 40 15% 96%;
-    --champagne: 40 12% 90%;
-    --rose-gold: 15 30% 55%;
-    --bronze: 30 30% 38%;
+    --gold: 42 68% 40%;
+    --gold-light: 42 70% 70%;
+    --gold-dark: 37 64% 29%;
+    --cream: 40 38% 97%;
+    --champagne: 39 46% 88%;
+    --rose-gold: 9 52% 46%;
+    --bronze: 24 43% 33%;
     --gradient-gold: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
     --gradient-dark: linear-gradient(hsl(var(--background)), hsl(var(--background)));
     --gradient-card: linear-gradient(hsl(var(--card)), hsl(var(--card)));
@@ -79,14 +79,14 @@
     --shadow-gold: none;
     --shadow-soft: none;
     --shadow-card: none;
-    --sidebar-background: 40 9% 98%;
-    --sidebar-foreground: 150 4% 20%;
-    --sidebar-primary: 40 6% 92%;
-    --sidebar-primary-foreground: 150 4% 13%;
-    --sidebar-accent: 40 6% 94%;
-    --sidebar-accent-foreground: 150 4% 13%;
-    --sidebar-border: 40 5% 88%;
-    --sidebar-ring: 150 4% 28%;
+    --sidebar-background: 39 30% 95%;
+    --sidebar-foreground: 275 25% 18%;
+    --sidebar-primary: 278 38% 23%;
+    --sidebar-primary-foreground: 40 38% 97%;
+    --sidebar-accent: 39 40% 89%;
+    --sidebar-accent-foreground: 275 26% 14%;
+    --sidebar-border: 38 24% 84%;
+    --sidebar-ring: 42 68% 40%;
   }
 
 }
@@ -326,13 +326,16 @@
   .home-hero { background: hsl(var(--background)); }
   .home-hero__inner { display: grid; grid-template-columns: 1fr 1.05fr; align-items: center; gap: clamp(32px, 4vw, 64px); padding: 36px 48px 40px; }
   .home-hero__copy { min-width: 0; padding-block: 32px; color: hsl(var(--foreground)); }
+  .home-hero__eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; color: hsl(var(--gold-dark)); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .home-hero__eyebrow::before { content: ''; width: 32px; height: 1px; background: hsl(var(--gold)); }
   .home-hero__title { margin: 0; max-width: 680px; color: inherit; font-size: clamp(58px, 6.3vw, 96px); font-weight: 400; line-height: 1.01; letter-spacing: -0.045em; }
   .home-hero__description { max-width: 460px; margin-top: 28px; color: hsl(var(--muted-foreground)); font-size: clamp(15px, 1.4vw, 19px); line-height: 1.7; }
   .home-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 32px; margin-top: 32px; }
   .home-hero__button { min-width: 168px; height: 52px; padding: 0 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; }
   .home-hero__story { min-height: 44px; display: inline-flex; align-items: center; border-bottom: 1px solid hsl(var(--border)); font-size: 14px; }
   .home-hero__story:hover { border-color: currentColor; }
-  .home-hero__media { min-width: 0; height: clamp(440px, 42vw, 600px); overflow: hidden; border-radius: var(--radius); background: hsl(var(--secondary)); }
+  .home-hero__media { position: relative; min-width: 0; height: clamp(440px, 42vw, 600px); overflow: hidden; border: 1px solid hsl(var(--gold) / 0.42); border-radius: var(--radius); background: hsl(var(--secondary)); box-shadow: 0 20px 56px hsl(var(--gold-dark) / 0.12); }
+  .home-hero__media::after { content: ''; position: absolute; inset: 12px; border: 1px solid hsl(var(--champagne) / 0.42); pointer-events: none; }
   .home-hero__image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 80% center; }
   .home-features { background: hsl(var(--background)); }
   .home-features > .container > div + div { border-left: 1px solid hsl(var(--border)); padding-left: 24px; }
@@ -342,11 +345,18 @@
   .home-collections { border-top: 0; padding-top: 12px; }
   .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
   .home-section-heading h2 { font-size: clamp(32px, 3.4vw, 46px); letter-spacing: -0.025em; }
+  .home-section-heading h2::after { content: ''; display: block; width: 38px; height: 1px; margin-top: 10px; background: hsl(var(--gold)); }
   .home-section-link { font-size: 12px; font-family: 'Inter', sans-serif; border-bottom: 1px solid hsl(var(--border)); }
   .home-section-link:hover { text-decoration: none; border-bottom-color: currentColor; }
   .home-collections .collection-image { aspect-ratio: 1.6; border-radius: var(--radius); }
   .home-collections .collection-caption { padding: 24px; }
   .home-collections .collection-caption h3 { color: white; font-size: 32px; }
+  .site-announcement { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--gold) / 0.5); }
+  .site-header { border-bottom-color: hsl(var(--gold) / 0.25); }
+  .site-footer { border-top-color: hsl(var(--gold) / 0.32); }
+  .product-card .product-card-price { color: hsl(var(--gold-dark)); }
+  .storefront-main[data-page="cart"] .sticky, .storefront-main[data-page="checkout"] .sticky { background: hsl(var(--secondary)); border-color: hsl(var(--gold) / 0.35); }
+  .admin-shell > aside:first-child { background: hsl(var(--sidebar-background)); }
   .home-collections .collection-image + p { font-size: 13px; line-height: 1.75; }
   .product-detail-layout { gap: 64px; }
   .product-detail-gallery .aspect-square { border-radius: var(--radius); }
@@ -424,6 +434,7 @@
     .home-hero { min-height: 0; }
     .home-hero__inner { grid-template-columns: 1fr; gap: 28px; padding: 32px 24px; }
     .home-hero__copy { padding: 0; }
+    .home-hero__eyebrow { margin-bottom: 14px; }
     .home-hero__title { max-width: 520px; font-size: clamp(48px, 12vw, 68px); }
     .home-hero__description { font-size: 15px; margin-top: 20px; }
     .home-hero__actions { margin-top: 24px; gap: 24px; }
