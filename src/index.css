@@ -72,10 +72,12 @@
     --champagne: 39 46% 88%;
     --rose-gold: 9 52% 46%;
     --bronze: 24 43% 33%;
+    --shadow-diwali-hero: 0 20px 56px hsl(37 64% 29% / 0.12);
     --gradient-gold: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
     --gradient-dark: linear-gradient(hsl(var(--background)), hsl(var(--background)));
     --gradient-card: linear-gradient(hsl(var(--card)), hsl(var(--card)));
     --gradient-hero: linear-gradient(hsl(var(--secondary)), hsl(var(--secondary)));
+    --diwali-rule: linear-gradient(90deg, hsl(var(--gold-dark)), hsl(var(--gold-light)), hsl(var(--accent)));
     --shadow-gold: none;
     --shadow-soft: none;
     --shadow-card: none;
@@ -239,9 +241,7 @@
     box-shadow: none;
   }
 
-  .border-gold {
-    border-color: hsl(43 74% 42%);
-  }
+  .border-gold { border-color: hsl(var(--gold)); }
 
   /* Quiet shared surfaces, with opacity reserved for floating navigation. */
   .glass, .glass-card {
@@ -282,16 +282,30 @@
   /* One visual system across the storefront, forms, and administration. */
   .brand-wordmark { letter-spacing: 0.12em; }
   .site-announcement { font-size: 11px; letter-spacing: 0.01em; }
-  .site-header { background: hsl(var(--background) / 0.98); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-header { position: sticky; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--diwali-rule); pointer-events: none; }
+  .site-header .brand-wordmark { color: hsl(var(--gold-light)); }
+  .site-header .ui-button { color: hsl(var(--primary-foreground)); }
+  .site-header .ui-button:hover { background: hsl(var(--primary-foreground) / 0.12); color: hsl(var(--gold-light)); }
+  .site-header .border-primary { border-color: hsl(var(--gold) / 0.8); color: hsl(var(--gold-light)); }
+  .site-header .border-primary:hover { background: hsl(var(--gold)); color: hsl(var(--primary)); }
+  .site-header .ui-button[aria-label="Toggle menu"] { color: hsl(var(--primary-foreground)); }
+  .site-header > .site-mobile-menu { background: hsl(var(--primary)); }
   .site-header-row { grid-template-columns: auto 1fr auto; column-gap: 32px; }
   .site-header-brand { min-width: 0; }
   .site-header-actions { justify-self: end; }
   .site-header svg, .mobile-bottom-nav svg { stroke-width: 1.5; }
+  .mobile-bottom-nav { background: hsl(var(--primary)); border-color: hsl(var(--gold) / 0.5); }
+  .mobile-bottom-nav a { color: hsl(var(--primary-foreground) / 0.76); }
+  .mobile-bottom-nav a[aria-current="page"] { color: hsl(var(--gold-light)); }
+  .mobile-bottom-nav a > div > span { background: hsl(var(--gold)); color: hsl(var(--primary)); }
+  .mobile-bottom-nav a[aria-current="page"] > div:last-child { background: hsl(var(--gold)); }
   .site-header .editorial-nav { min-height: 44px; }
   .site-header .editorial-nav::after { bottom: 4px; }
-  .site-header .editorial-nav[aria-current="page"] { color: hsl(var(--foreground)); }
+  .site-header .editorial-nav[aria-current="page"] { color: hsl(var(--gold-light)); }
   .site-header .editorial-nav[aria-current="page"]::after { transform: scaleX(1); }
-  .site-footer { background: hsl(var(--background)); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer { position: relative; background: hsl(var(--background)); padding-bottom: env(safe-area-inset-bottom); }
+  .site-footer::before { content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 1px; background: var(--diwali-rule); }
   .site-footer h4 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
   .site-footer a { display: inline-flex; align-items: center; }
   .site-footer li a { min-height: 30px; font-size: 13px; }
@@ -331,18 +345,18 @@
   .home-hero__title { margin: 0; max-width: 680px; color: inherit; font-size: clamp(58px, 6.3vw, 96px); font-weight: 400; line-height: 1.01; letter-spacing: -0.045em; }
   .home-hero__description { max-width: 460px; margin-top: 28px; color: hsl(var(--muted-foreground)); font-size: clamp(15px, 1.4vw, 19px); line-height: 1.7; }
   .home-hero__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 32px; margin-top: 32px; }
-  .home-hero__button { min-width: 168px; height: 52px; padding: 0 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; }
+  .home-hero__button { min-width: 168px; height: 52px; padding: 0 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; box-shadow: 0 8px 20px hsl(var(--primary) / 0.16); }
   .home-hero__story { min-height: 44px; display: inline-flex; align-items: center; border-bottom: 1px solid hsl(var(--border)); font-size: 14px; }
   .home-hero__story:hover { border-color: currentColor; }
   .home-hero__media { position: relative; min-width: 0; height: clamp(440px, 42vw, 600px); overflow: hidden; border: 1px solid hsl(var(--gold) / 0.42); border-radius: var(--radius); background: hsl(var(--secondary)); box-shadow: 0 20px 56px hsl(var(--gold-dark) / 0.12); }
   .home-hero__media::after { content: ''; position: absolute; inset: 12px; border: 1px solid hsl(var(--champagne) / 0.42); pointer-events: none; }
   .home-hero__image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 80% center; }
-  .home-features { background: hsl(var(--background)); }
+  .home-features { background: hsl(var(--secondary) / 0.42); border-color: hsl(var(--gold) / 0.28); }
   .home-features > .container > div + div { border-left: 1px solid hsl(var(--border)); padding-left: 24px; }
   .home-features svg { color: hsl(var(--foreground)); }
   .home-features h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 20px; font-weight: 400; }
   .home-featured, .home-collections { background: hsl(var(--background)); padding-block: 72px; }
-  .home-collections { border-top: 0; padding-top: 12px; }
+  .home-collections { border-top: 1px solid hsl(var(--gold) / 0.22); padding-top: 72px; }
   .home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
   .home-section-heading h2 { font-size: clamp(32px, 3.4vw, 46px); letter-spacing: -0.025em; }
   .home-section-heading h2::after { content: ''; display: block; width: 38px; height: 1px; margin-top: 10px; background: hsl(var(--gold)); }
@@ -350,9 +364,16 @@
   .home-section-link:hover { text-decoration: none; border-bottom-color: currentColor; }
   .home-collections .collection-image { aspect-ratio: 1.6; border-radius: var(--radius); }
   .home-collections .collection-caption { padding: 24px; }
-  .home-collections .collection-caption h3 { color: white; font-size: 32px; }
-  .site-announcement { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--gold) / 0.5); }
-  .site-header { border-bottom-color: hsl(var(--gold) / 0.25); }
+  .home-collections .collection-caption h3 { color: hsl(var(--hero-foreground)); font-size: 32px; }
+  .home-hero__media { box-shadow: var(--shadow-diwali-hero); }
+  .site-announcement { background: hsl(var(--gold)); color: hsl(var(--primary)); border-color: hsl(var(--gold-light)); }
+  .site-header { border-bottom-color: hsl(var(--gold) / 0.5); }
+  .site-header .editorial-nav { color: hsl(var(--primary-foreground) / 0.82); }
+  .site-header .editorial-nav:hover, .site-header .editorial-nav[aria-current="page"] { color: hsl(var(--gold-light)); }
+  .site-header .editorial-nav::after { background: hsl(var(--gold)); }
+  .site-mobile-menu { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--gold) / 0.4); }
+  .site-mobile-menu nav a { color: hsl(var(--primary-foreground) / 0.88); border-color: hsl(var(--gold) / 0.2); }
+  .site-mobile-menu nav a:hover { color: hsl(var(--gold-light)); }
   .site-footer { border-top-color: hsl(var(--gold) / 0.32); }
   .product-card .product-card-price { color: hsl(var(--gold-dark)); }
   .storefront-main[data-page="cart"] .sticky, .storefront-main[data-page="checkout"] .sticky { background: hsl(var(--secondary)); border-color: hsl(var(--gold) / 0.35); }
