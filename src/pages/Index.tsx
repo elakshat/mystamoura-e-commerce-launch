@@ -7,6 +7,7 @@ import { Features } from '@/components/home/Features';
 import { ScentAnatomy } from '@/components/home/ScentAnatomy';
 import { Manifesto } from '@/components/home/Manifesto';
 import { Ritual } from '@/components/home/Ritual';
+import { WornAndLoved } from '@/components/home/WornAndLoved';
 import { Marquee } from '@/components/brand/Marquee';
 
 const notes = ['Saffron', 'Bergamot', 'Oud', 'Jasmine Sambac', 'Vetiver', 'Amber', 'Rose', 'Sandalwood', 'Pink Pepper', 'Musk'];
@@ -26,6 +27,7 @@ const Index = () => {
       <Collections />
       <ScentAnatomy />
       <Manifesto />
+      <WornAndLoved />
       <Ritual />
       <Features />
     </MainLayout>

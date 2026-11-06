@@ -17,6 +17,13 @@ export function Hero() {
 
   return (
     <section className="grain relative overflow-hidden bg-background" aria-labelledby="home-hero-title">
+      {/* drifting mist — warm haze that slowly moves behind the bottle */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="mist mist-a" />
+        <div className="mist mist-b" />
+        <div className="mist mist-c" />
+      </div>
+
       {/* faint vertical rules */}
       <div className="pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
         <div className="container mx-auto grid h-full grid-cols-4 px-12">

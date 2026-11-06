@@ -394,6 +394,34 @@
     background-image: var(--grain); opacity: .06; mix-blend-mode: multiply;
   }
 
+  /* Drifting mist (home hero). Large blurred warm blobs moving very slowly. */
+  .mist {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(60px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+  .mist-a {
+    width: 46vw; height: 46vw; right: -8vw; top: -10vw;
+    background: radial-gradient(circle, hsl(38 60% 80% / 0.9), transparent 68%);
+    animation: mist-drift-a 26s ease-in-out infinite alternate;
+  }
+  .mist-b {
+    width: 38vw; height: 38vw; right: 18vw; bottom: -14vw;
+    background: radial-gradient(circle, hsl(30 45% 74% / 0.7), transparent 70%);
+    animation: mist-drift-b 32s ease-in-out infinite alternate;
+  }
+  .mist-c {
+    width: 30vw; height: 30vw; left: -10vw; top: 30%;
+    background: radial-gradient(circle, hsl(40 40% 86% / 0.8), transparent 70%);
+    animation: mist-drift-c 38s ease-in-out infinite alternate;
+  }
+  @keyframes mist-drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(-6vw, 4vw) scale(1.12); } }
+  @keyframes mist-drift-b { from { transform: translate(0, 0) scale(1.05); } to { transform: translate(5vw, -5vw) scale(0.92); } }
+  @keyframes mist-drift-c { from { transform: translate(0, 0); } to { transform: translate(8vw, -3vw); } }
+  @media (prefers-reduced-motion: reduce) { .mist { animation: none; } }
+
   /* Legacy helpers still used by checkout/admin — mapped to the new system */
   .text-gradient-gold { color: hsl(var(--foreground)); }
   .bg-gradient-gold { background: hsl(var(--foreground)); color: hsl(var(--background)); }
