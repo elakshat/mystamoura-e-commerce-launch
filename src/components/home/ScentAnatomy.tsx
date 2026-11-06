@@ -47,7 +47,7 @@ export function ScentAnatomy() {
           <ol className="border-t border-foreground/80">
             {tiers.map((tier, i) => (
               <Reveal as="li" key={tier.name} delay={i * 0.1} className="grid gap-3 border-b py-8 md:grid-cols-[80px_1fr_1.4fr] md:gap-8 md:py-10">
-                <span className="font-display text-5xl font-light italic leading-none text-brass">{`0${i + 1}`}</span>
+                <span className="foil pr-1 font-display text-5xl font-light italic leading-none">{`0${i + 1}`}</span>
                 <div>
                   <h3 className="font-display text-[32px] leading-none">{tier.name}</h3>
                   <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">{tier.time}</p>

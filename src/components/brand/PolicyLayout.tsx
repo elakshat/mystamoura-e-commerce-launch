@@ -82,7 +82,7 @@ export function PolicyLayout({ title, seoDescription, updated, intro, sections }
           {sections.map((s, i) => (
             <section key={s.title} id={slug(s.title)} className="scroll-mt-28 border-t py-10 first:border-t-0 first:pt-0 md:py-12">
               <div className="grid gap-4 md:grid-cols-[64px_1fr]">
-                <span className="font-display text-3xl font-light italic text-brass">{String(i + 1).padStart(2, '0')}</span>
+                <span className="foil pr-1 font-display text-3xl font-light italic">{String(i + 1).padStart(2, '0')}</span>
                 <div>
                   <h2 className="font-display text-[30px] leading-tight md:text-[36px]">{s.title.replace(/^\d+\.\s*/, '')}</h2>
                   <div className="maison-prose mt-4">{s.body}</div>

@@ -13,7 +13,7 @@ export function FeaturedProducts() {
         <Reveal className="mb-12 grid gap-6 md:mb-20 md:grid-cols-[1fr_auto] md:items-end">
           <div>
             <p className="eyebrow mb-5 flex items-center gap-4 text-brass-light">
-              <span className="font-display text-base italic tracking-normal normal-case">No. 01</span>
+              <span className="foil pr-0.5 font-display text-base italic tracking-normal normal-case">No. 01</span>
               <span className="h-px w-10 bg-current" /> The Signatures
             </p>
             <h2 id="home-featured-title" className="display-lg max-w-2xl text-balance">

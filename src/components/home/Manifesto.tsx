@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
 import { Reveal } from '@/components/brand/Reveal';
-import { Monogram } from '@/components/brand/Monogram';
+import { WaxSeal } from '@/components/brand/WaxSeal';
 
 /** Full-bleed brand statement, using the hero subtitle from site settings. */
 export function Manifesto() {
@@ -18,7 +18,7 @@ export function Manifesto() {
       />
       <div className="container relative z-[2] mx-auto px-5 text-center md:px-12">
         <Reveal>
-          <Monogram className="mx-auto h-16 w-16 text-2xl text-brass-light" />
+          <WaxSeal className="mx-auto h-24 w-24 -rotate-6" />
         </Reveal>
         <Reveal delay={0.1}>
           <blockquote className="mx-auto mt-10 max-w-4xl font-display text-[clamp(34px,5vw,72px)] font-light italic leading-[1.05] tracking-[-0.02em] text-balance">

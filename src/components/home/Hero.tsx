@@ -2,24 +2,9 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ArrowDown } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
+import { WaxSeal } from '@/components/brand/WaxSeal';
 
 const ease = [0.22, 1, 0.36, 1] as const;
-
-function RotatingSeal() {
-  return (
-    <div className="relative h-28 w-28 md:h-32 md:w-32">
-      <svg viewBox="0 0 120 120" className="h-full w-full animate-[spin_28s_linear_infinite] motion-reduce:animate-none">
-        <defs>
-          <path id="seal-circle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
-        </defs>
-        <text className="fill-current font-sans text-[9px] uppercase">
-          <textPath href="#seal-circle" textLength="286" lengthAdjust="spacing">Eau de Parfum · Made in India ·</textPath>
-        </text>
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center font-display text-2xl tracking-[-0.06em]">MA</span>
-    </div>
-  );
-}
 
 export function Hero() {
   const { data: settings } = useSettings();
@@ -108,9 +93,14 @@ export function Hero() {
               />
             </div>
           </div>
-          <div className="absolute -bottom-8 -left-6 rounded-full bg-background p-2 md:-left-14">
-            <RotatingSeal />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 1.25, rotate: -18 }}
+            animate={{ opacity: 1, scale: 1, rotate: -8 }}
+            transition={{ duration: 0.9, ease, delay: 0.9 }}
+            className="absolute -bottom-10 -left-1 md:-left-14"
+          >
+            <WaxSeal ring="Eau de Parfum · Made in India ·" className="h-28 w-28 md:h-36 md:w-36" />
+          </motion.div>
         </motion.div>
       </div>
 

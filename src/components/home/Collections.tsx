@@ -36,7 +36,7 @@ export function Collections() {
                   </span>
                 </div>
                 <div className="mt-6 flex items-baseline gap-4">
-                  <span className="font-display text-lg italic text-brass">0{i + 1}</span>
+                  <span className="foil pr-0.5 font-display text-lg italic">0{i + 1}</span>
                   <h3 className="font-display text-[34px] font-light leading-none md:text-[40px]">{category.name}</h3>
                 </div>
                 {category.description && (

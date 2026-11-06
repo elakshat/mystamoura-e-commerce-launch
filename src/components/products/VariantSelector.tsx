@@ -35,19 +35,19 @@ export function VariantSelector({ variants, selectedVariant, onSelect }: Variant
               disabled={isOutOfStock}
               aria-pressed={isSelected}
               className={cn(
-                'relative h-12 min-w-[84px] border px-5 text-sm transition-colors duration-300',
-                isSelected ? 'border-foreground text-background' : 'border-foreground/25 hover:border-foreground',
+                'relative h-12 min-w-[84px] px-5 text-sm transition-[box-shadow,color] duration-300',
+                isSelected ? 'text-foreground' : 'emboss text-foreground/80 hover:text-foreground',
                 isOutOfStock && 'cursor-not-allowed text-muted-foreground line-through opacity-50'
               )}
             >
               {isSelected && (
                 <motion.span
                   layoutId="variant-selected"
-                  className="absolute inset-0 bg-foreground"
+                  className="deboss absolute inset-0"
                   transition={{ type: 'spring', stiffness: 400, damping: 34 }}
                 />
               )}
-              <span className="relative tabular tracking-wide">{variant.size}</span>
+              <span className="relative tabular font-medium tracking-wide">{variant.size}</span>
             </button>
           );
         })}

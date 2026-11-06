@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Reveal } from '@/components/brand/Reveal';
-import { Monogram } from '@/components/brand/Monogram';
+import { WaxSeal } from '@/components/brand/WaxSeal';
 import { Marquee } from '@/components/brand/Marquee';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -82,36 +82,38 @@ export default function AboutPage() {
       </div>
 
       {/* Letter */}
-      <section className="bg-background py-20 md:py-32">
-        <div className="container mx-auto grid gap-12 px-5 md:px-12 lg:grid-cols-12">
+      <section className="grain bg-secondary py-20 md:py-32">
+        <div className="container relative z-[2] mx-auto grid gap-12 px-5 md:px-12 lg:grid-cols-12">
           <Reveal className="lg:col-span-3">
             <p className="eyebrow text-brass">A note from the house</p>
           </Reveal>
-          <Reveal delay={0.1} className="lg:col-span-8 lg:col-start-5">
-            <div className="space-y-6 font-display text-[22px] leading-[1.6] md:text-[27px] [&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:mt-1 [&>p:first-child]:first-letter:font-display [&>p:first-child]:first-letter:text-[88px] [&>p:first-child]:first-letter:font-light [&>p:first-child]:first-letter:leading-[0.8] [&>p:first-child]:first-letter:text-brass">
+          <Reveal delay={0.1} className="paper-stack lg:col-span-8 lg:col-start-5">
+           <div className="paper-sheet px-6 py-10 md:px-14 md:py-16">
+            <div className="space-y-6 font-display text-[21px] leading-[1.6] md:text-[25px] [&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:mt-1 [&>p:first-child]:first-letter:font-display [&>p:first-child]:first-letter:text-[88px] [&>p:first-child]:first-letter:font-light [&>p:first-child]:first-letter:leading-[0.8] [&>p:first-child]:first-letter:text-brass">
               {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
             </div>
-            <div className="mt-12 flex items-center gap-4">
-              <Monogram className="h-12 w-12 text-lg" />
+            <div className="mt-12 flex items-center gap-5 border-t border-dashed border-foreground/20 pt-8">
+              <WaxSeal className="h-16 w-16 shrink-0 -rotate-12 md:h-20 md:w-20" />
               <div>
-                <p className="font-display text-xl italic">Myst Amoura</p>
+                <p className="font-display text-2xl italic">Myst Amoura</p>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Maison de Parfum · India</p>
               </div>
             </div>
+           </div>
           </Reveal>
         </div>
       </section>
 
       {/* Pillars */}
-      <section className="grain bg-secondary py-20 md:py-32">
+      <section className="grain border-t bg-background py-20 md:py-32">
         <div className="container relative z-[2] mx-auto px-5 md:px-12">
           <Reveal className="mb-14 md:mb-20">
             <h2 className="display-lg max-w-2xl">What we <em className="font-light">stand for</em></h2>
           </Reveal>
           <div className="grid gap-px bg-foreground/15 md:grid-cols-3">
             {pillars.map((pillar, i) => (
-              <Reveal key={pillar.title} delay={i * 0.1} className="bg-secondary p-0 py-8 md:px-10 md:py-4 md:first:pl-0">
-                <span className="font-display text-6xl font-light italic text-brass">0{i + 1}</span>
+              <Reveal key={pillar.title} delay={i * 0.1} className="bg-background p-0 py-8 md:px-10 md:py-4 md:first:pl-0">
+                <span className="foil pr-1 font-display text-6xl font-light italic">0{i + 1}</span>
                 <h3 className="mt-6 font-display text-[32px] leading-tight">{pillar.title}</h3>
                 <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">{pillar.copy}</p>
               </Reveal>
