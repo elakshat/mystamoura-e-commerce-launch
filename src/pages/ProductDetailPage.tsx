@@ -124,14 +124,15 @@ export default function ProductDetailPage() {
   if (isLoading) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 animate-pulse">
-            <div className="aspect-square bg-muted rounded-lg" />
-            <div className="space-y-4">
-              <div className="h-4 bg-muted rounded w-1/4" />
-              <div className="h-8 bg-muted rounded w-3/4" />
-              <div className="h-6 bg-muted rounded w-1/4" />
-              <div className="h-24 bg-muted rounded" />
+        <div className="container mx-auto px-5 py-10 md:px-12">
+          <div className="grid animate-pulse grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+            <div className="aspect-[5/7] bg-secondary lg:col-span-6" />
+            <div className="space-y-5 lg:col-span-6">
+              <div className="h-3 w-1/4 bg-secondary" />
+              <div className="h-12 w-3/4 bg-secondary" />
+              <div className="h-8 w-1/3 bg-secondary" />
+              <div className="h-14 bg-secondary" />
+              <div className="h-32 bg-secondary" />
             </div>
           </div>
         </div>
@@ -142,10 +143,11 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-12 text-center">
-          <h1 className="font-display text-3xl mb-4">Product Not Found</h1>
-          <Link to="/products" className="text-primary hover:underline">
-            Back to Products
+        <div className="container mx-auto px-5 py-28 text-center md:px-12">
+          <p className="eyebrow mb-5 text-brass">Not found</p>
+          <h1 className="display-md mb-8">This fragrance has <em className="font-light">drifted away</em></h1>
+          <Link to="/products" className="btn-maison">
+            Back to the collection
           </Link>
         </div>
       </MainLayout>
@@ -169,6 +171,22 @@ export default function ProductDetailPage() {
 
   const filteredRelated = relatedProducts?.filter((p) => p.id !== product.id).slice(0, 4);
 
+  const splitNotes = (text: string) => text.split(/[,\n•|]+/).map((n) => n.trim().replace(/[.;]$/, '')).filter(Boolean);
+  const noteList = product.notes ? splitNotes(product.notes) : [];
+
+  // "Top Notes: a, b Heart Notes: c Base Notes: d" → tiers for the pyramid view
+  const noteTiers: { label: string; notes: string[] }[] = [];
+  if (product.notes) {
+    const tierRe = /(top|heart|middle|base)\s*notes?\s*[:–-]/gi;
+    const matches = [...product.notes.matchAll(tierRe)];
+    matches.forEach((m, i) => {
+      const start = (m.index ?? 0) + m[0].length;
+      const end = matches[i + 1]?.index ?? product.notes!.length;
+      const label = m[1].toLowerCase() === 'middle' ? 'Heart' : m[1][0].toUpperCase() + m[1].slice(1).toLowerCase();
+      noteTiers.push({ label, notes: splitNotes(product.notes!.slice(start, end)) });
+    });
+  }
+
   return (
     <MainLayout>
       <Helmet>
@@ -179,245 +197,300 @@ export default function ProductDetailPage() {
         {product.images?.[0] && <meta property="og:image" content={product.images[0]} />}
       </Helmet>
 
-      <div className="container mx-auto px-4 py-6 md:py-8">
-        <nav className="mb-6">
-          <Link
-            to="/products"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Products
+      <div className="container mx-auto px-5 pb-16 pt-6 md:px-12 md:pb-24 md:pt-8">
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground md:mb-10">
+          <Link to="/products" className="inline-flex items-center gap-2 hover:text-foreground">
+            <ArrowLeft className="h-3 w-3" /> Shop
           </Link>
+          {product.category && (
+            <>
+              <span aria-hidden="true">/</span>
+              <Link to={`/collections/${product.category.slug}`} className="hover:text-foreground">{product.category.name}</Link>
+            </>
+          )}
+          <span aria-hidden="true">/</span>
+          <span className="text-foreground">{product.name}</span>
         </nav>
 
-        <div className="product-detail-layout grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
-          {/* Images */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+          {/* Gallery */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="product-detail-gallery space-y-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-6"
           >
-            <div className="aspect-square overflow-hidden rounded-lg bg-secondary relative">
-              {product.images?.[selectedImage] ? (
-                <img
-                  src={product.images[selectedImage]}
-                  alt={product.name}
-                  className="h-full w-full object-cover"
-                  loading="eager"
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center text-muted-foreground">
-                  No Image
+            <div className="flex flex-col-reverse gap-3 md:flex-row md:gap-4">
+              {product.images && product.images.length > 1 && (
+                <div className="scrollbar-hide flex gap-2 overflow-x-auto md:w-20 md:flex-col md:gap-3 md:overflow-visible">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      aria-label={`Show image ${index + 1}`}
+                      className={`relative aspect-[5/7] w-16 flex-shrink-0 overflow-hidden bg-nuit transition-opacity md:w-full ${
+                        selectedImage === index ? 'opacity-100 ring-1 ring-foreground ring-offset-2 ring-offset-background' : 'opacity-50 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={image} alt={`${product.name} ${index + 1}`} className="h-full w-full object-cover" loading="lazy" />
+                    </button>
+                  ))}
                 </div>
               )}
-              
-              <button
-                onClick={handleShare}
-                className="absolute top-3 right-3 p-2 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background transition-colors"
-                aria-label="Share product"
-              >
-                <Share2 className="h-4 w-4" />
-              </button>
-            </div>
-            
-            {product.images && product.images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === index ? 'border-primary' : 'border-transparent'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
+
+              <div className="relative flex-1 overflow-hidden bg-nuit">
+                <AnimatePresence mode="wait">
+                  {product.images?.[selectedImage] ? (
+                    <motion.img
+                      key={selectedImage}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                      src={product.images[selectedImage]}
+                      alt={product.name}
+                      className="aspect-[5/7] h-full w-full object-cover"
+                      loading="eager"
                     />
-                  </button>
-                ))}
+                  ) : (
+                    <div className="flex aspect-[5/7] w-full items-center justify-center bg-secondary font-display text-xl italic text-muted-foreground">
+                      Image coming soon
+                    </div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  onClick={handleShare}
+                  className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(var(--nuit)/0.4)] text-[hsl(var(--nuit-foreground))] backdrop-blur-md transition-colors hover:bg-[hsl(var(--nuit-foreground))] hover:text-[hsl(var(--nuit))]"
+                  aria-label="Share product"
+                >
+                  <Share2 className="h-4 w-4" strokeWidth={1.4} />
+                </button>
               </div>
-            )}
+            </div>
           </motion.div>
 
-          {/* Product Info */}
+          {/* Info */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="product-detail-info space-y-4 md:space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-6 lg:pl-6 xl:pl-12"
           >
-            {product.category && (
-              <Link
-                to={`/collections/${product.category.slug}`}
-                className="text-xs md:text-sm text-primary font-medium uppercase tracking-wider hover:underline"
-              >
-                {product.category.name}
-              </Link>
-            )}
+            <div className="lg:sticky lg:top-28">
+              {product.category && (
+                <Link to={`/collections/${product.category.slug}`} className="eyebrow text-brass hover:text-foreground">
+                  {product.category.name}
+                </Link>
+              )}
 
-            <h1 className="font-display text-2xl md:text-4xl font-bold text-foreground">
-              {product.name}
-            </h1>
+              <h1 className="mt-4 font-display text-[44px] font-light uppercase leading-[0.95] tracking-[0.04em] md:text-[60px]">
+                {product.name}
+              </h1>
 
-            {reviewStats && reviewStats.review_count > 0 && (
-              <div className="flex items-center gap-2">
-                <ReviewStars rating={Math.round(reviewStats.average_rating)} size="sm" />
-                <span className="text-sm text-muted-foreground">
-                  {reviewStats.average_rating} ({reviewStats.review_count} reviews)
-                </span>
-              </div>
-            )}
+              <p className="mt-3 font-display text-lg italic text-muted-foreground">
+                Eau de Parfum{!hasVariants && product.size ? ` · ${product.size}` : ''}
+              </p>
 
-            {/* Price - animated on variant change */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedVariant?.id || 'default'}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.2 }}
-                className="product-detail-price flex items-center gap-3 flex-wrap"
-              >
-                {isOnSale ? (
-                  <>
-                    <span className="text-xl md:text-2xl font-semibold text-primary">
-                      {formatPrice(currentPrice, product.currency)}
-                    </span>
-                    <span className="text-lg md:text-xl text-muted-foreground line-through">
-                      {formatPrice(originalPrice, product.currency)}
-                    </span>
-                    <span className="bg-primary/20 text-primary text-xs md:text-sm font-bold px-2 py-1 rounded">
-                      SAVE {Math.round((1 - currentPrice / originalPrice) * 100)}%
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-xl md:text-2xl font-semibold">
+              {reviewStats && reviewStats.review_count > 0 && (
+                <a href="#reviews" className="mt-4 flex items-center gap-2">
+                  <ReviewStars rating={Math.round(reviewStats.average_rating)} size="sm" />
+                  <span className="text-xs text-muted-foreground underline-offset-4 hover:underline">
+                    {reviewStats.average_rating} · {reviewStats.review_count} reviews
+                  </span>
+                </a>
+              )}
+
+              {/* Price */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedVariant?.id || 'default'}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                  className="mt-8 flex flex-wrap items-baseline gap-3 border-b pb-8"
+                >
+                  <span className="tabular font-display text-4xl">
                     {formatPrice(currentPrice, product.currency)}
                   </span>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                  {isOnSale && (
+                    <>
+                      <span className="tabular text-lg text-muted-foreground line-through">
+                        {formatPrice(originalPrice, product.currency)}
+                      </span>
+                      <span className="bg-foreground px-2 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-background">
+                        Save {Math.round((1 - currentPrice / originalPrice) * 100)}%
+                      </span>
+                    </>
+                  )}
+                  <span className="w-full text-xs text-muted-foreground">Inclusive of all taxes</span>
+                </motion.div>
+              </AnimatePresence>
 
-            {/* Variant Selector */}
-            {hasVariants && (
-              <VariantSelector
-                variants={visibleVariants as any}
-                selectedVariant={selectedVariant as any}
-                onSelect={handleVariantSelect}
-              />
-            )}
+              {hasVariants && (
+                <div className="mt-8">
+                  <VariantSelector
+                    variants={visibleVariants as any}
+                    selectedVariant={selectedVariant as any}
+                    onSelect={handleVariantSelect}
+                  />
+                </div>
+              )}
 
-            {/* Show size only if no variants */}
-            {!hasVariants && product.size && (
-              <p className="text-muted-foreground text-sm md:text-base">{product.size}</p>
-            )}
+              {/* Quantity & Add to Bag */}
+              <div ref={addToCartRef} className="mt-8 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="label-caps text-[11px] text-muted-foreground">Quantity</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={currentStock}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-xs text-muted-foreground"
+                    >
+                      {currentStock > 0 ? (currentStock <= 5 ? `Only ${currentStock} left` : 'In stock') : 'Out of stock'}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
 
-            {/* Quantity & Add to Cart */}
-            <div ref={addToCartRef} className="space-y-4 pt-4">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium">Quantity</span>
-                <div className="flex items-center border border-border rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-3 hover:bg-secondary transition-colors"
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="h-4 w-4" />
+                <div className="flex gap-3">
+                  <div className="flex h-[52px] items-center border border-foreground/30">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="flex h-full w-11 items-center justify-center hover:bg-secondary disabled:opacity-30"
+                      disabled={quantity <= 1}
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="tabular w-8 text-center text-sm">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
+                      className="flex h-full w-11 items-center justify-center hover:bg-secondary disabled:opacity-30"
+                      disabled={quantity >= currentStock}
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+
+                  <button type="button" className="btn-maison flex-1" onClick={handleAddToCart} disabled={isSoldOut}>
+                    <ShoppingBag className="!translate-x-0" strokeWidth={1.4} />
+                    {isSoldOut ? 'Sold Out' : 'Add to Bag'}
                   </button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
+
                   <button
-                    onClick={() => setQuantity(Math.min(currentStock, quantity + 1))}
-                    className="p-3 hover:bg-secondary transition-colors"
-                    disabled={quantity >= currentStock}
+                    type="button"
+                    className={`flex h-[52px] w-[52px] shrink-0 items-center justify-center border transition-colors ${
+                      isInWishlist ? 'border-foreground bg-foreground text-background' : 'border-foreground/30 hover:border-foreground'
+                    }`}
+                    onClick={() => {
+                      if (!user) {
+                        toast.info('Please sign in to save items to your wishlist', {
+                          action: { label: 'Sign In', onClick: () => window.location.assign('/auth') },
+                        });
+                        return;
+                      }
+                      toggleWishlist(product.id, isInWishlist || false);
+                    }}
+                    disabled={wishlistPending}
+                    aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} strokeWidth={1.4} />
                   </button>
                 </div>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={currentStock}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-sm text-muted-foreground"
-                  >
-                    {currentStock > 0 ? `${currentStock} in stock` : 'Out of stock'}
-                  </motion.span>
-                </AnimatePresence>
               </div>
 
-              <div className="flex gap-3">
-                <Button
-                  size="lg"
-                  className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 h-12 md:h-14"
-                  onClick={handleAddToCart}
-                  disabled={isSoldOut}
-                >
-                  <ShoppingBag className="h-5 w-5 mr-2" />
-                  {isSoldOut ? 'Sold Out' : 'Add to Cart'}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className={`h-12 md:h-14 px-4 border-border hover:bg-secondary ${isInWishlist ? 'text-primary' : ''}`}
-                  onClick={() => {
-                    if (!user) {
-                      toast.info('Please sign in to save items to your wishlist', {
-                        action: { label: 'Sign In', onClick: () => window.location.assign('/auth') },
-                      });
-                      return;
-                    }
-                    toggleWishlist(product.id, isInWishlist || false);
-                  }}
-                  disabled={wishlistPending}
-                  aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                >
-                  <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-primary' : ''}`} />
-                </Button>
+              {/* Assurances */}
+              <div className="mt-8 grid grid-cols-2 gap-px bg-border">
+                <div className="flex items-center gap-3 bg-background py-4 pr-3">
+                  <Truck className="h-5 w-5 shrink-0 text-brass" strokeWidth={1} />
+                  <span className="text-xs leading-snug text-muted-foreground">Free shipping on orders above ₹999</span>
+                </div>
+                <div className="flex items-center gap-3 bg-background py-4 pl-4">
+                  <Shield className="h-5 w-5 shrink-0 text-brass" strokeWidth={1} />
+                  <span className="text-xs leading-snug text-muted-foreground">100% authentic product guarantee</span>
+                </div>
               </div>
+
+              {/* Details */}
+              <div className="mt-8 border-t">
+                {product.description && (
+                  <details className="group border-b" open>
+                    <summary className="flex cursor-pointer list-none items-center justify-between py-5 label-caps text-[11px] [&::-webkit-details-marker]:hidden">
+                      The Story
+                      <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-open:rotate-45" />
+                    </summary>
+                    <p className="product-description pb-6 text-[15px] leading-relaxed text-muted-foreground">{product.description}</p>
+                  </details>
+                )}
+
+                {noteList.length > 0 && (
+                  <details className="group border-b" open>
+                    <summary className="flex cursor-pointer list-none items-center justify-between py-5 label-caps text-[11px] [&::-webkit-details-marker]:hidden">
+                      Fragrance Notes
+                      <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-open:rotate-45" />
+                    </summary>
+                    {noteTiers.length > 0 ? (
+                      <dl className="pb-6">
+                        {noteTiers.map((tier) => (
+                          <div key={tier.label} className="grid grid-cols-[72px_1fr] items-baseline gap-4 border-t border-dashed py-3 first:border-t-0 first:pt-0">
+                            <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-brass">{tier.label}</dt>
+                            <dd className="font-display text-[19px] italic leading-snug">{tier.notes.join(' · ')}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : (
+                      <div className="flex flex-wrap gap-2 pb-6">
+                        {noteList.map((note) => (
+                          <span key={note} className="rounded-full border px-4 py-1.5 font-display text-[17px] italic">
+                            {note}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </details>
+                )}
+
+                <details className="group border-b">
+                  <summary className="flex cursor-pointer list-none items-center justify-between py-5 label-caps text-[11px] [&::-webkit-details-marker]:hidden">
+                    Shipping & Returns
+                    <Plus className="h-3.5 w-3.5 transition-transform duration-300 group-open:rotate-45" />
+                  </summary>
+                  <div className="space-y-2 pb-6 text-sm leading-relaxed text-muted-foreground">
+                    <p>Orders are processed within 1–2 business days and shipped across India in our signature gift box.</p>
+                    <p>
+                      Read our <Link to="/shipping" className="underline underline-offset-4 hover:text-foreground">shipping</Link> and{' '}
+                      <Link to="/refund" className="underline underline-offset-4 hover:text-foreground">refund</Link> policies.
+                    </p>
+                  </div>
+                </details>
+              </div>
+
+              {currentSku && (
+                <p className="mt-5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  SKU · {currentSku}
+                </p>
+              )}
             </div>
-
-            {/* Features */}
-            <div className="flex flex-col gap-3 pt-4 border-t border-border">
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Truck className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>Free shipping on orders above ₹999</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Shield className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>100% authentic product guarantee</span>
-              </div>
-            </div>
-
-            {product.description && (
-              <p className="product-description border-t border-border pt-6 text-muted-foreground leading-relaxed text-sm md:text-base">
-                {product.description}
-              </p>
-            )}
-
-            {product.notes && (
-              <div className="bg-secondary/50 p-4 rounded-lg">
-                <h3 className="font-medium mb-2 text-sm md:text-base">Fragrance Notes</h3>
-                <p className="text-sm text-muted-foreground">{product.notes}</p>
-              </div>
-            )}
-
-            {currentSku && (
-              <p className="text-sm text-muted-foreground">
-                SKU: {currentSku}
-              </p>
-            )}
           </motion.div>
         </div>
 
         {/* Related Products */}
         {filteredRelated && filteredRelated.length > 0 && (
-          <section className="mt-16 md:mt-20">
-            <h2 className="font-display text-xl md:text-3xl font-bold mb-6 md:mb-8 text-foreground">
-              You May Also Like
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+          <section className="mt-24 md:mt-32">
+            <div className="mb-10 flex items-end justify-between gap-6 border-b pb-6 md:mb-14">
+              <div>
+                <p className="eyebrow mb-3 text-brass">You may also like</p>
+                <h2 className="display-md">From the same <em className="font-light">family</em></h2>
+              </div>
+              {product.category && (
+                <Link to={`/collections/${product.category.slug}`} className="link-line hidden sm:inline-flex">View collection</Link>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4 md:gap-x-6">
               {filteredRelated.map((p, index) => (
                 <ProductCard key={p.id} product={p} index={index} />
               ))}
@@ -426,7 +499,9 @@ export default function ProductDetailPage() {
         )}
 
         {/* Reviews Section */}
-        <ProductReviews productId={product.id} />
+        <div id="reviews" className="scroll-mt-28">
+          <ProductReviews productId={product.id} />
+        </div>
       </div>
 
       {/* Sticky Add to Cart for Mobile */}

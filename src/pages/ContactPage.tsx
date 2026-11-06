@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
-import { Button } from '@/components/ui/button';
+import { PageHero } from '@/components/brand/PageHero';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -64,188 +64,129 @@ export default function ContactPage() {
     }
   };
 
+  const fields: { name: keyof typeof formData; label: string; type?: string }[] = [
+    { name: 'name', label: 'Your Name' },
+    { name: 'email', label: 'Email Address', type: 'email' },
+  ];
+
   return (
     <MainLayout>
-      <SEOHead 
-        title="Contact Us" 
+      <SEOHead
+        title="Contact Us"
         description="Get in touch with Mystamoura. We'd love to hear from you about our luxury fragrances."
       />
-      <div className="container mx-auto px-4 py-12">
+
+      <PageHero
+        eyebrow="Get in touch"
+        title={<>Write to <em className="font-light">the house</em></>}
+        description="Have a question or feedback? We'd love to hear from you."
+      />
+
+      <div className="container mx-auto grid gap-16 px-5 py-16 md:px-12 md:py-24 lg:grid-cols-12 lg:gap-12">
+        {/* Contact Form */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          transition={{ delay: 0.1 }}
+          className="lg:col-span-7"
         >
-          <p className="text-primary font-medium tracking-[0.2em] text-sm mb-3">
-            GET IN TOUCH
-          </p>
-          <h1 className="font-display text-4xl md:text-5xl font-semibold mb-4">
-            Contact Us
-          </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Have a question or feedback? We'd love to hear from you.
-          </p>
+          <form onSubmit={handleSubmit} className="space-y-7">
+            <div className="grid gap-7 md:grid-cols-2">
+              {fields.map((f) => (
+                <div key={f.name}>
+                  <Label htmlFor={f.name}>{f.label}</Label>
+                  <Input
+                    id={f.name}
+                    name={f.name}
+                    type={f.type}
+                    value={formData[f.name]}
+                    onChange={handleChange}
+                    className={errors[f.name] ? 'border-destructive' : ''}
+                  />
+                  {errors[f.name] && <p className="mt-1.5 text-xs text-destructive">{errors[f.name]}</p>}
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <Label htmlFor="subject">Subject</Label>
+              <Input
+                id="subject"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                className={errors.subject ? 'border-destructive' : ''}
+              />
+              {errors.subject && <p className="mt-1.5 text-xs text-destructive">{errors.subject}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="message">Message</Label>
+              <Textarea
+                id="message"
+                name="message"
+                rows={6}
+                value={formData.message}
+                onChange={handleChange}
+                className={`rounded-none bg-card/60 ${errors.message ? 'border-destructive' : ''}`}
+              />
+              {errors.message && <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>}
+            </div>
+
+            <button type="submit" className="btn-maison w-full md:w-auto" disabled={loading}>
+              {loading ? 'Sending…' : 'Send message'} <ArrowRight />
+            </button>
+          </form>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Label htmlFor="name">Your Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={errors.name ? 'border-destructive' : ''}
-                />
-                {errors.name && (
-                  <p className="text-destructive text-sm mt-1">{errors.name}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? 'border-destructive' : ''}
-                />
-                {errors.email && (
-                  <p className="text-destructive text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="subject">Subject</Label>
-                <Input
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className={errors.subject ? 'border-destructive' : ''}
-                />
-                {errors.subject && (
-                  <p className="text-destructive text-sm mt-1">{errors.subject}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="message">Message</Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  value={formData.message}
-                  onChange={handleChange}
-                  className={errors.message ? 'border-destructive' : ''}
-                />
-                {errors.message && (
-                  <p className="text-destructive text-sm mt-1">{errors.message}</p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 py-6"
-                disabled={loading}
-              >
-                {loading ? 'Sending...' : 'Send Message'}
-                <Send className="ml-2 h-4 w-4" />
-              </Button>
-            </form>
-          </motion.div>
-
-          {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-8"
-          >
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h2 className="font-display text-xl font-semibold mb-6">
-                Contact Information
-              </h2>
-
-              <div className="space-y-4">
-                {settings?.footer?.email && (
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Mail className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Email</p>
-                      <a
-                        href={`mailto:${settings.footer.email}`}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {settings.footer.email}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                {settings?.footer?.phone && (
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Phone className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Phone</p>
-                      <a
-                        href={`tel:${settings.footer.phone}`}
-                        className="text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        {settings.footer.phone}
-                      </a>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MapPin className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Address</p>
-                    <p className="text-muted-foreground">
-                      Mumbai, Maharashtra, India
-                    </p>
-                  </div>
+        {/* Contact Info */}
+        <motion.aside
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="lg:col-span-4 lg:col-start-9"
+        >
+          <div className="on-nuit grain p-8 md:p-10">
+            <div className="relative z-[2] space-y-8">
+              {settings?.footer?.email && (
+                <div>
+                  <p className="eyebrow mb-2 text-[10px] text-brass-light">Email</p>
+                  <a href={`mailto:${settings.footer.email}`} className="font-display text-2xl hover:text-brass-light break-all">
+                    {settings.footer.email}
+                  </a>
                 </div>
+              )}
+              {settings?.footer?.phone && (
+                <div>
+                  <p className="eyebrow mb-2 text-[10px] text-brass-light">Phone</p>
+                  <a href={`tel:${settings.footer.phone}`} className="font-display text-2xl hover:text-brass-light">
+                    {settings.footer.phone}
+                  </a>
+                </div>
+              )}
+              <div>
+                <p className="eyebrow mb-2 text-[10px] text-brass-light">Address</p>
+                <p className="font-display text-2xl">Mumbai, Maharashtra, India</p>
               </div>
             </div>
+          </div>
 
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="font-display text-lg font-semibold mb-4">
-                Business Hours
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday</span>
-                  <span>10:00 AM - 7:00 PM</span>
+          <div className="mt-8">
+            <h3 className="label-caps mb-4 text-[11px]">Business Hours</h3>
+            <dl className="divide-y border-y text-sm">
+              {[
+                ['Monday - Friday', '10:00 AM - 7:00 PM'],
+                ['Saturday', '10:00 AM - 5:00 PM'],
+                ['Sunday', 'Closed'],
+              ].map(([day, hours]) => (
+                <div key={day} className="flex justify-between py-3">
+                  <dt className="text-muted-foreground">{day}</dt>
+                  <dd>{hours}</dd>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday</span>
-                  <span>10:00 AM - 5:00 PM</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
-                  <span>Closed</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+              ))}
+            </dl>
+          </div>
+        </motion.aside>
       </div>
     </MainLayout>
   );

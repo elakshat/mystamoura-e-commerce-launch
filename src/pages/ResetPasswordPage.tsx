@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { AuthShell } from '@/components/brand/AuthShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -61,7 +62,7 @@ export default function ResetPasswordPage() {
     return (
       <MainLayout>
         <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="font-display text-2xl font-bold text-foreground mb-4">Invalid Reset Link</h1>
+          <h1 className="display-md mb-4">Invalid Reset Link</h1>
           <p className="text-muted-foreground mb-6">This password reset link is invalid or has expired.</p>
           <Button onClick={() => navigate('/auth')} className="bg-gradient-gold text-primary-foreground">
             Go to Sign In
@@ -73,19 +74,19 @@ export default function ResetPasswordPage() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-12">
+      <AuthShell>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md mx-auto"
+          className="w-full"
         >
-          <div className="text-center mb-8">
-            <h1 className="font-display text-3xl font-bold mb-2 text-foreground">Set New Password</h1>
+          <div className="mb-10">
+            <h1 className="display-md mb-3">Set New Password</h1>
             <p className="text-muted-foreground">Enter your new password below</p>
           </div>
 
-          <div className="bg-card border border-border rounded-lg p-8">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label htmlFor="password">New Password</Label>
                 <div className="relative">
@@ -125,7 +126,7 @@ export default function ResetPasswordPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 py-6"
+                className="w-full h-[52px] rounded-none bg-foreground text-background text-xs uppercase tracking-[0.2em] hover:bg-brass"
                 disabled={loading}
               >
                 {loading ? 'Updating...' : 'Update Password'}
@@ -133,7 +134,7 @@ export default function ResetPasswordPage() {
             </form>
           </div>
         </motion.div>
-      </div>
+      </AuthShell>
     </MainLayout>
   );
 }

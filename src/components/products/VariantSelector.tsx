@@ -1,5 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ProductVariant } from '@/hooks/useVariants';
 
@@ -19,39 +18,37 @@ export function VariantSelector({ variants, selectedVariant, onSelect }: Variant
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-muted-foreground">Size</p>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex items-center justify-between">
+        <p className="label-caps text-[11px] text-muted-foreground">Size</p>
+        {selectedVariant && <p className="font-display text-base italic">{selectedVariant.size}</p>}
+      </div>
+      <div className="flex flex-wrap gap-2">
         {sortedVariants.map((variant) => {
           const isSelected = selectedVariant?.id === variant.id;
           const isOutOfStock = variant.stock <= 0;
 
           return (
-            <motion.button
+            <button
+              type="button"
               key={variant.id}
               onClick={() => !isOutOfStock && onSelect(variant)}
               disabled={isOutOfStock}
+              aria-pressed={isSelected}
               className={cn(
-                'relative px-6 py-3 rounded-sm border transition-colors duration-200 min-w-[88px]',
-                isSelected
-                  ? 'border-primary bg-secondary text-foreground'
-                  : 'border-border bg-card hover:border-primary/50',
-                isOutOfStock && 'opacity-50 cursor-not-allowed line-through'
+                'relative h-12 min-w-[84px] border px-5 text-sm transition-colors duration-300',
+                isSelected ? 'border-foreground text-background' : 'border-foreground/25 hover:border-foreground',
+                isOutOfStock && 'cursor-not-allowed text-muted-foreground line-through opacity-50'
               )}
             >
-              <span className="font-medium">{variant.size}</span>
-              <AnimatePresence>
-                {isSelected && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center"
-                  >
-                    <Check className="w-3 h-3 text-primary-foreground" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
+              {isSelected && (
+                <motion.span
+                  layoutId="variant-selected"
+                  className="absolute inset-0 bg-foreground"
+                  transition={{ type: 'spring', stiffness: 400, damping: 34 }}
+                />
+              )}
+              <span className="relative tabular tracking-wide">{variant.size}</span>
+            </button>
           );
         })}
       </div>

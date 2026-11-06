@@ -17,7 +17,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="storefront relative min-h-screen flex flex-col bg-background overflow-x-hidden">
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header />
-        <main data-page={page} className="storefront-main flex-1 pb-16 md:pb-0">
+        <main data-page={page} className="storefront-main flex-1">
           <PageTransition>{children}</PageTransition>
         </main>
         <Footer />

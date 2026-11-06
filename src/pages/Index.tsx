@@ -4,20 +4,30 @@ import { Hero } from '@/components/home/Hero';
 import { FeaturedProducts } from '@/components/home/FeaturedProducts';
 import { Collections } from '@/components/home/Collections';
 import { Features } from '@/components/home/Features';
+import { ScentAnatomy } from '@/components/home/ScentAnatomy';
+import { Manifesto } from '@/components/home/Manifesto';
+import { Ritual } from '@/components/home/Ritual';
+import { Marquee } from '@/components/brand/Marquee';
+
+const notes = ['Saffron', 'Bergamot', 'Oud', 'Jasmine Sambac', 'Vetiver', 'Amber', 'Rose', 'Sandalwood', 'Pink Pepper', 'Musk'];
 
 const Index = () => {
   return (
     <MainLayout>
-      <SEOHead 
-        title="Luxury Fragrances" 
+      <SEOHead
+        title="Luxury Fragrances"
         description="Discover Mystamoura's collection of luxury perfumes. Premium fragrances crafted with the finest ingredients for an unforgettable sensory experience."
       />
-      <div className="home-page">
-        <Hero />
-        <Features />
-        <FeaturedProducts />
-        <Collections />
+      <Hero />
+      <div className="on-nuit border-y border-nuit-line py-5">
+        <Marquee items={notes} />
       </div>
+      <FeaturedProducts />
+      <Collections />
+      <ScentAnatomy />
+      <Manifesto />
+      <Ritual />
+      <Features />
     </MainLayout>
   );
 };

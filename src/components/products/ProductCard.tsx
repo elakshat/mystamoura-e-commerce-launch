@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ShoppingBag, Heart, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { Heart, Loader2, Plus } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,7 +16,6 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const reducedMotion = useReducedMotion();
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { data: isInWishlist } = useIsInWishlist(product.id);
@@ -52,115 +50,101 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
   };
 
   return (
-    <motion.div
-      initial={reducedMotion ? false : { opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: reducedMotion ? 0 : 0.6, delay: reducedMotion ? 0 : Math.min(index, 7) * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      className="product-card group relative"
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.8, delay: (index % 4) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      className="product-card group relative flex min-w-0 flex-col"
     >
-      <div className="product-card-media relative overflow-hidden bg-secondary">
+      <div className="product-card-media relative overflow-hidden bg-nuit">
         <Link to={`/products/${product.slug}`} className="block h-full focus-ring" aria-label={`View ${product.name}`}>
-          {/* Image with lazy loading */}
           {product.images?.[0] && !imageError ? (
             <>
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-secondary animate-pulse" />
-              )}
-              <motion.img
+              {!imageLoaded && <div className="absolute inset-0 animate-pulse bg-secondary" />}
+              <img
                 src={product.images[0]}
                 alt={product.name}
                 loading="lazy"
                 decoding="async"
-                className={cn(
-                  'h-full w-full object-cover transition-all duration-500',
-                  imageLoaded ? 'opacity-100' : 'opacity-0',
-                  'group-hover:scale-[1.025]'
-                )}
+                className={cn('h-full w-full object-cover', imageLoaded ? 'opacity-100' : 'opacity-0')}
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageError(true)}
               />
             </>
           ) : (
-            <div className="h-full w-full flex items-center justify-center text-muted-foreground">
-              No Image
+            <div className="flex h-full w-full items-center justify-center bg-secondary font-display text-lg italic text-muted-foreground">
+              Image coming soon
             </div>
           )}
         </Link>
 
         {/* Badges */}
-        <div className="pointer-events-none absolute top-3 left-3 flex flex-col gap-1.5">
+        <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1.5">
           {isOnSale && (
-            <span className="product-card-badge bg-primary text-primary-foreground">
-              SALE
+            <span className="bg-[hsl(var(--nuit-foreground))] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-[hsl(var(--nuit))]">
+              Sale
             </span>
           )}
           {isSoldOut && (
-            <span className="product-card-badge bg-background text-muted-foreground">
-              SOLD OUT
+            <span className="border border-[hsl(var(--nuit-foreground)/0.5)] px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-[hsl(var(--nuit-foreground))]">
+              Sold out
             </span>
           )}
         </div>
 
         {/* Wishlist */}
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
+          type="button"
           className={cn(
-            'absolute top-2 right-2 h-10 w-10 rounded-sm transition-colors duration-200',
+            'absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-md transition-colors duration-300',
             isInWishlist
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-background/90 opacity-100 hover:bg-primary hover:text-primary-foreground'
+              ? 'bg-[hsl(var(--nuit-foreground))] text-[hsl(var(--nuit))]'
+              : 'bg-[hsl(var(--nuit)/0.35)] text-[hsl(var(--nuit-foreground))] hover:bg-[hsl(var(--nuit-foreground))] hover:text-[hsl(var(--nuit))]'
           )}
           onClick={handleWishlistClick}
           disabled={isPending}
           aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Heart className={cn('h-4 w-4', isInWishlist && 'fill-current')} />
+            <Heart className={cn('h-3.5 w-3.5', isInWishlist && 'fill-current')} strokeWidth={1.5} />
           )}
-        </Button>
-      </div>
+        </button>
 
-      {/* Product Info */}
-      <div className="product-card-details">
-        <Link to={`/products/${product.slug}`}>
-          <h3 className="font-display text-base md:text-xl font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-            {product.name}
-          </h3>
-        </Link>
-        <p className="text-xs text-muted-foreground font-medium">{product.size}</p>
-        <div className="flex items-baseline gap-2 pt-0.5">
-          {isOnSale ? (
-            <>
-              <span className="product-card-price font-medium text-sm md:text-base text-primary">
-                {formatPrice(product.sale_price ?? product.price, product.currency)}
-              </span>
-              <span className="text-xs text-muted-foreground line-through">
-                {formatPrice(product.price, product.currency)}
-              </span>
-            </>
-          ) : (
-            <span className="product-card-price font-medium text-sm md:text-base text-foreground">
-              {formatPrice(product.price, product.currency)}
-            </span>
-          )}
-        </div>
-
-        {/* The same purchase action remains visible at every screen size. */}
-        <Button
-          variant="outline"
-          size="sm"
-          className="product-card-action"
+        {/* Quick add — slides up on hover, always visible on touch */}
+        <button
+          type="button"
           onClick={handleAddToCart}
           disabled={isSoldOut}
+          className="product-quick-add absolute inset-x-0 bottom-0 flex h-12 items-center justify-center gap-2 bg-[hsl(var(--nuit-foreground)/0.94)] text-[11px] font-medium uppercase tracking-[0.2em] text-[hsl(var(--nuit))] backdrop-blur-sm transition-colors hover:bg-[hsl(var(--nuit-foreground))] disabled:cursor-not-allowed disabled:opacity-70 max-md:h-10 max-md:text-[10px]"
         >
-          <ShoppingBag className="h-3 w-3 mr-1.5" />
-          {isSoldOut ? 'Sold Out' : 'Add to Cart'}
-        </Button>
+          {isSoldOut ? 'Sold out' : (<><Plus className="h-3.5 w-3.5" strokeWidth={1.5} /> Add to bag</>)}
+        </button>
       </div>
-    </motion.div>
+
+      {/* Details */}
+      <Link to={`/products/${product.slug}`} className="mt-3 flex flex-col gap-1.5 md:mt-5 md:flex-row md:items-start md:justify-between md:gap-3">
+        <div className="min-w-0">
+          <h3 className="font-display text-[17px] font-normal uppercase leading-tight tracking-[0.05em] md:text-[22px]">
+            {product.name}
+          </h3>
+          <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {[product.category?.name, product.size].filter(Boolean).join(' · ') || 'Eau de Parfum'}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-baseline gap-2 md:block md:text-right">
+          <p className="product-card-price tabular text-sm font-medium md:text-[15px]">
+            {formatPrice(isOnSale ? (product.sale_price ?? product.price) : product.price, product.currency)}
+          </p>
+          {isOnSale && (
+            <p className="tabular text-xs text-muted-foreground line-through">
+              {formatPrice(product.price, product.currency)}
+            </p>
+          )}
+        </div>
+      </Link>
+    </motion.article>
   );
 }

@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"EB Garamond"', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['"EB Garamond"', 'Georgia', 'serif'],
+        display: ['"Cormorant Garamond"', '"EB Garamond"', 'Georgia', 'serif'],
+        sans: ['Jost', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', '"EB Garamond"', 'Georgia', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -67,6 +67,16 @@ export default {
           light: "hsl(var(--gold-light))",
           dark: "hsl(var(--gold-dark))",
         },
+        brass: {
+          DEFAULT: "hsl(var(--brass))",
+          light: "hsl(var(--brass-light))",
+        },
+        nuit: {
+          DEFAULT: "hsl(var(--nuit))",
+          foreground: "hsl(var(--nuit-foreground))",
+          muted: "hsl(var(--nuit-muted))",
+          line: "hsl(var(--nuit-line))",
+        },
         cream: "hsl(var(--cream))",
         champagne: "hsl(var(--champagne))",
         "rose-gold": "hsl(var(--rose-gold))",
@@ -98,6 +108,10 @@ export default {
           "0%, 100%": { opacity: "0.5" },
           "50%": { opacity: "1" },
         },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -105,6 +119,7 @@ export default {
         shimmer: "shimmer 2.5s linear infinite",
         float: "float 6s cubic-bezier(0.45, 0, 0.55, 1) infinite",
         glow: "glow 3s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+        marquee: "marquee 40s linear infinite",
       },
       transitionTimingFunction: {
         'silk': 'cubic-bezier(0.22, 1, 0.36, 1)',

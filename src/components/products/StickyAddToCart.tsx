@@ -39,15 +39,15 @@ export function StickyAddToCart({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="sticky-purchase fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 bg-card border-t border-border p-4 md:hidden"
+          className="sticky-purchase glass-bar fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 right-0 z-40 border-t border-border px-4 py-3 md:hidden"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm truncate">
-                {product.name}{variant ? ` - ${variant.size}` : ''}
+              <h4 className="truncate font-display text-base uppercase tracking-[0.06em]">
+                {product.name}{variant ? ` · ${variant.size}` : ''}
               </h4>
               <div className="flex items-center gap-2">
-                <span className="text-primary font-semibold">
+                <span className="tabular text-sm font-medium">
                   {formatPrice(price, product.currency)}
                 </span>
                 {isOnSale && (
@@ -58,7 +58,7 @@ export function StickyAddToCart({
               </div>
             </div>
 
-            <div className="flex items-center border border-border rounded-sm">
+            <div className="flex h-11 items-center border border-foreground/30">
               <button
                 onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
                 className="p-2 hover:bg-secondary transition-colors"
@@ -79,7 +79,7 @@ export function StickyAddToCart({
             </div>
 
             <Button
-              className="bg-gradient-gold text-primary-foreground hover:opacity-90"
+              className="h-11 w-11 rounded-none bg-foreground p-0 text-background hover:bg-brass"
               onClick={onAddToCart}
               disabled={isSoldOut}
               aria-label={isSoldOut ? 'Sold Out' : 'Add to Cart'}

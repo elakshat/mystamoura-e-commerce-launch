@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion';
-import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Button } from '@/components/ui/button';
+import { PageHero } from '@/components/brand/PageHero';
 import { ProductCard } from '@/components/products/ProductCard';
 import { useWishlist, useRemoveFromWishlist } from '@/hooks/useWishlist';
 import { useAuth } from '@/contexts/AuthContext';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 
 export default function WishlistPage() {
@@ -16,81 +15,63 @@ export default function WishlistPage() {
   if (!user) {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-20 text-center">
-          <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-          <h1 className="font-display text-3xl font-semibold mb-4">Your Wishlist</h1>
-          <p className="text-muted-foreground mb-8">Sign in to view your saved items</p>
-          <Button asChild>
-            <Link to="/auth">Sign In</Link>
-          </Button>
-        </div>
+        <section className="grain bg-background">
+          <div className="container relative z-[2] mx-auto px-5 py-28 text-center md:px-12 md:py-40">
+            <p className="eyebrow mb-6 text-brass">Wishlist</p>
+            <h1 className="display-lg">Keep what you <em className="font-light">love</em></h1>
+            <p className="lede mx-auto mt-6 max-w-md text-muted-foreground">Sign in to view your saved items</p>
+            <Link to="/auth" className="btn-maison mt-10">Sign in <ArrowRight /></Link>
+          </div>
+        </section>
       </MainLayout>
     );
   }
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="font-display text-3xl md:text-4xl font-semibold">Your Wishlist</h1>
-          <p className="text-muted-foreground mt-2">
-            {wishlistItems?.length || 0} saved items
-          </p>
-        </motion.div>
+      <PageHero
+        eyebrow="Wishlist"
+        title={<>Your <em className="font-light">saved</em> scents</>}
+        aside={<p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{wishlistItems?.length || 0} saved items</p>}
+      />
 
+      <div className="container mx-auto px-5 py-12 md:px-12 md:py-20">
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4 md:gap-x-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-3">
-                <Skeleton className="aspect-square rounded-lg" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
+              <div key={i} className="animate-pulse space-y-4">
+                <div className="product-card-media bg-secondary" />
+                <div className="h-4 w-3/4 bg-secondary" />
               </div>
             ))}
           </div>
         ) : wishlistItems && wishlistItems.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4 md:gap-x-6 md:gap-y-16">
             {wishlistItems.map((item, index) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="relative group"
+                className="group relative"
               >
                 <ProductCard product={item.product} index={index} />
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                <button
+                  type="button"
+                  className="absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-[hsl(var(--nuit-foreground))] text-[hsl(var(--nuit))] opacity-100 transition-opacity hover:bg-destructive hover:text-white md:opacity-0 md:group-hover:opacity-100"
                   onClick={() => removeFromWishlist.mutate(item.product.id)}
+                  aria-label={`Remove ${item.product.name} from wishlist`}
                 >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                  <X className="h-4 w-4" strokeWidth={1.5} />
+                </button>
               </motion.div>
             ))}
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <Heart className="h-16 w-16 mx-auto text-muted-foreground mb-6" />
-            <h2 className="font-display text-2xl font-semibold mb-4">Your wishlist is empty</h2>
-            <p className="text-muted-foreground mb-8">
-              Save your favorite products to view them later
-            </p>
-            <Button asChild>
-              <Link to="/products">
-                <ShoppingBag className="h-4 w-4 mr-2" />
-                Start Shopping
-              </Link>
-            </Button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-y py-24 text-center">
+            <h2 className="font-display text-4xl font-light italic">Your wishlist is empty</h2>
+            <p className="mt-4 text-muted-foreground">Save your favorite products to view them later</p>
+            <Link to="/products" className="btn-maison mt-10">Start shopping <ArrowRight /></Link>
           </motion.div>
         )}
       </div>

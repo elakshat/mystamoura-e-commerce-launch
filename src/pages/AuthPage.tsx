@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
+import { AuthShell } from '@/components/brand/AuthShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -137,23 +138,23 @@ export default function AuthPage() {
   if (view === 'forgot') {
     return (
       <MainLayout>
-        <div className="container mx-auto px-4 py-12">
+        <AuthShell>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-md mx-auto"
+            className="w-full"
           >
-            <div className="text-center mb-8">
-              <h1 className="font-display text-3xl md:text-4xl font-bold mb-2 text-foreground">
+            <div className="mb-10">
+              <h1 className="display-md mb-3">
                 Reset Password
               </h1>
-              <p className="text-muted-foreground font-medium">
+              <p className="text-muted-foreground">
                 Enter your email and we'll send you a reset link
               </p>
             </div>
 
-            <div className="glass-card rounded-xl p-8">
-              <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="">
+              <form onSubmit={handleForgotPassword} className="space-y-5">
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <div className="relative">
@@ -175,7 +176,7 @@ export default function AuthPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 py-6"
+                  className="w-full h-[52px] rounded-none bg-foreground text-background text-xs uppercase tracking-[0.2em] hover:bg-brass"
                   disabled={loading}
                 >
                   {loading ? 'Sending...' : 'Send Reset Link'}
@@ -193,7 +194,7 @@ export default function AuthPage() {
               </div>
             </div>
           </motion.div>
-        </div>
+        </AuthShell>
       </MainLayout>
     );
   }
@@ -202,25 +203,25 @@ export default function AuthPage() {
 
   return (
     <MainLayout>
-      <div className="container mx-auto px-4 py-12">
+      <AuthShell>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md mx-auto"
+          className="w-full"
         >
-          <div className="text-center mb-8">
-            <h1 className="font-display text-3xl md:text-4xl font-bold mb-2 text-foreground">
+          <div className="mb-10">
+            <h1 className="display-md mb-3">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h1>
-            <p className="text-muted-foreground font-medium">
+            <p className="text-muted-foreground">
               {isLogin
                 ? 'Sign in to access your account'
                 : 'Join us for an exclusive fragrance experience'}
             </p>
           </div>
 
-          <div className="glass-card rounded-xl p-8">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div>
                   <Label htmlFor="fullName">Full Name</Label>
@@ -320,7 +321,7 @@ export default function AuthPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 py-6"
+                className="w-full h-[52px] rounded-none bg-foreground text-background text-xs uppercase tracking-[0.2em] hover:bg-brass"
                 disabled={loading}
               >
                 {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
@@ -354,7 +355,7 @@ export default function AuthPage() {
             </Link>
           </p>
         </motion.div>
-      </div>
+      </AuthShell>
     </MainLayout>
   );
 }

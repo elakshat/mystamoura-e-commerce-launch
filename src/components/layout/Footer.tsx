@@ -1,162 +1,123 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Twitter, ArrowRight } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
+import { Monogram } from '@/components/brand/Monogram';
+
+const columns = [
+  {
+    title: 'Shop',
+    links: [
+      { to: '/products', label: 'All Fragrances' },
+      { to: '/collections/for-him', label: 'For Him' },
+      { to: '/collections/for-her', label: 'For Her' },
+      { to: '/collections/unisex', label: 'Unisex' },
+    ],
+  },
+  {
+    title: 'The House',
+    links: [
+      { to: '/about', label: 'Our Story' },
+      { to: '/contact', label: 'Contact' },
+      { to: '/account', label: 'My Account' },
+      { to: '/wishlist', label: 'Wishlist' },
+    ],
+  },
+  {
+    title: 'Care',
+    links: [
+      { to: '/shipping', label: 'Shipping' },
+      { to: '/refund', label: 'Returns & Refunds' },
+      { to: '/privacy', label: 'Privacy' },
+      { to: '/terms', label: 'Terms' },
+    ],
+  },
+];
 
 export function Footer() {
   const { data: settings } = useSettings();
+  const footer = (settings?.footer || {}) as Partial<Record<string, string>>;
+  const socials = [
+    { href: footer.instagram || settings?.social?.instagram, label: 'Instagram', Icon: Instagram },
+    { href: footer.facebook || settings?.social?.facebook, label: 'Facebook', Icon: Facebook },
+    { href: footer.twitter || settings?.social?.twitter, label: 'Twitter', Icon: Twitter },
+  ].filter((s) => s.href);
 
   return (
-    <footer className="site-footer border-t mt-auto">
-      <div className="container mx-auto px-6 py-12 md:px-12 md:py-20">
-        <div className="grid grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 md:gap-12">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="brand-wordmark font-display text-xl md:text-2xl font-normal text-foreground">
-              MYST AMOURA
-            </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs line-clamp-5">
-              {settings?.footer?.about_text || 'Luxury fragrances crafted with passion and precision.'}
-            </p>
-            <div className="flex items-center gap-4 pt-2">
-              {(settings?.footer?.instagram || settings?.social?.instagram) && (
-                <a
-                  href={settings?.footer?.instagram || settings?.social?.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Instagram className="h-5 w-5" />
-                </a>
-              )}
-              {(settings?.footer?.facebook || settings?.social?.facebook) && (
-                <a
-                  href={settings?.footer?.facebook || settings?.social?.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Facebook className="h-5 w-5" />
-                </a>
-              )}
-              {(settings?.footer?.twitter || settings?.social?.twitter) && (
-                <a
-                  href={settings?.footer?.twitter || settings?.social?.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  <Twitter className="h-5 w-5" />
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Links */}
+    <footer className="on-nuit grain mt-auto overflow-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+      <div className="container relative z-[2] mx-auto px-5 md:px-12">
+        {/* Invitation */}
+        <div className="grid gap-10 border-b border-nuit-line py-16 md:grid-cols-[1.2fr_1fr] md:items-end md:py-24">
           <div>
-            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Quick Links</h4>
-            <ul className="space-y-2.5">
-              <li>
-                <Link to="/products" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Shop All
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/for-him" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  For Him
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/for-her" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  For Her
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
+            <p className="eyebrow mb-5 text-brass-light">Write to the house</p>
+            <h2 className="display-md max-w-xl text-balance text-nuit-foreground">
+              Need help choosing a scent? <em className="font-light">We would love to help.</em>
+            </h2>
           </div>
-
-          {/* Policies */}
-          <div>
-            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Policies</h4>
-            <ul className="space-y-2.5">
-              <li>
-                <Link to="/privacy" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/shipping" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/refund" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Refund Policy
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
+          <div className="flex flex-col items-start gap-6 md:items-end">
+            <Link to="/contact" className="btn-ghost-maison text-nuit-foreground">
+              Contact us <ArrowRight className="h-4 w-4" />
+            </Link>
+            {(footer.email || footer.phone) && (
+              <div className="flex flex-col gap-1 text-sm text-nuit-muted md:text-right">
+                {footer.email && <a href={`mailto:${footer.email}`} className="hover:text-nuit-foreground">{footer.email}</a>}
+                {footer.phone && <a href={`tel:${footer.phone}`} className="hover:text-nuit-foreground">{footer.phone}</a>}
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Contact */}
+        {/* Columns */}
+        <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
           <div className="col-span-2 md:col-span-1">
-            <h4 className="font-display text-base md:text-lg font-semibold mb-3 md:mb-4 text-foreground">Contact Us</h4>
-            <ul className="space-y-3">
-              {(settings?.footer as Record<string, string>)?.email && (
-                <li className="flex items-center space-x-2 text-muted-foreground text-sm">
-                  <Mail className="h-4 w-4" />
-                  <a href={`mailto:${(settings?.footer as Record<string, string>)?.email}`} className="hover:text-primary transition-colors">
-                    {(settings?.footer as Record<string, string>)?.email}
+            <Monogram className="h-14 w-14 text-xl text-brass-light" />
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-nuit-muted line-clamp-5">
+              {footer.about_text || 'Luxury fragrances crafted with passion and precision.'}
+            </p>
+            {socials.length > 0 && (
+              <div className="mt-6 flex items-center gap-3">
+                {socials.map(({ href, label, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-nuit-line text-nuit-muted transition-colors hover:border-nuit-foreground hover:text-nuit-foreground"
+                  >
+                    <Icon className="h-4 w-4" strokeWidth={1.4} />
                   </a>
-                </li>
-              )}
-              {(settings?.footer as Record<string, string>)?.phone && (
-                <li className="flex items-center space-x-2 text-muted-foreground text-sm">
-                  <Phone className="h-4 w-4" />
-                  <a href={`tel:${(settings?.footer as Record<string, string>)?.phone}`} className="hover:text-primary transition-colors">
-                    {(settings?.footer as Record<string, string>)?.phone}
-                  </a>
-                </li>
-              )}
-              {(settings?.footer as Record<string, string>)?.location && (
-                <li className="flex items-start space-x-2 text-muted-foreground text-sm">
-                  <MapPin className="h-4 w-4 mt-0.5" />
-                  <span>{(settings?.footer as Record<string, string>)?.location}</span>
-                </li>
-              )}
-              {/* Fallback if no contact info is set */}
-              {!(settings?.footer as Record<string, string>)?.email && 
-               !(settings?.footer as Record<string, string>)?.phone && 
-               !(settings?.footer as Record<string, string>)?.location && (
-                <li className="flex items-start space-x-2 text-muted-foreground text-sm">
-                  <MapPin className="h-4 w-4 mt-0.5" />
-                  <span>Mumbai, India</span>
-                </li>
-              )}
-            </ul>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="border-t border-border mt-10 md:mt-12 pt-6 md:pt-8 text-center">
-          <p className="text-muted-foreground text-xs md:text-sm">
-            © {new Date().getFullYear()} Mystamoura. All rights reserved.
-          </p>
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h3 className="eyebrow mb-5 text-[10px] text-nuit-muted">{col.title}</h3>
+              <ul className="space-y-3">
+                {col.links.map((link) => (
+                  <li key={link.to}>
+                    <Link to={link.to} className="text-[15px] text-nuit-foreground/85 transition-colors hover:text-brass-light">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Oversized wordmark */}
+      <div className="relative z-[2] select-none px-2" aria-hidden="true">
+        <p className="brand-wordmark whitespace-nowrap text-center text-[10.4vw] font-light leading-[0.8] !tracking-[0.04em] text-nuit-foreground/[0.07]">
+          Myst Amoura
+        </p>
+      </div>
+
+      <div className="container relative z-[2] mx-auto flex flex-col gap-2 border-t border-nuit-line px-5 py-6 text-xs text-nuit-muted md:flex-row md:items-center md:justify-between md:px-12">
+        <p>© {new Date().getFullYear()} Mystamoura. All rights reserved.</p>
+        <p>{footer.location || 'Mumbai, India'}</p>
       </div>
     </footer>
   );

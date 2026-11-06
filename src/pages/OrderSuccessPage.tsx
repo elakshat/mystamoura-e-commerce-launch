@@ -1,10 +1,9 @@
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Package, ArrowRight, CreditCard, Mail } from 'lucide-react';
+import { ArrowRight, Mail } from 'lucide-react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
-import { Button } from '@/components/ui/button';
 import { trackPurchase } from '@/lib/gtag';
 import { trackPixelPurchase } from '@/lib/meta-pixel';
 import { trackPixelEvent } from '@/utils/metaPixel';
@@ -36,69 +35,63 @@ export default function OrderSuccessPage() {
   return (
     <MainLayout>
       <SEOHead title="Order Confirmed" description="Your order has been successfully placed." />
-      <div className="container mx-auto px-4 py-20">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center"
-        >
+      <section className="grain bg-background">
+        <div className="container relative z-[2] mx-auto px-5 py-20 md:px-12 md:py-32">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-8"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto max-w-2xl text-center"
           >
-            <CheckCircle className="h-12 w-12 text-primary" />
-          </motion.div>
+            <motion.svg
+              viewBox="0 0 64 64"
+              className="mx-auto h-16 w-16 text-brass"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1"
+            >
+              <motion.circle cx="32" cy="32" r="30" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: 'easeInOut' }} />
+              <motion.path d="M20 33 L28 41 L45 24" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6, delay: 1 }} />
+            </motion.svg>
 
-          <h1 className="font-display text-3xl md:text-4xl font-semibold mb-4 text-foreground">
-            Order Confirmed!
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Thank you for your purchase. Your order has been received and is being processed.
-          </p>
-
-          <div className="bg-card border border-border rounded-lg p-6 mb-6">
-            <div className="flex items-center justify-center gap-2 text-primary mb-2">
-              <Package className="h-5 w-5" />
-              <span className="font-medium">Order Number</span>
-            </div>
-            <p className="font-display text-2xl font-semibold text-foreground">{orderNumber}</p>
-          </div>
-
-          {paymentId && (
-            <div className="bg-card border border-border rounded-lg p-4 mb-6">
-              <div className="flex items-center justify-center gap-2 text-muted-foreground mb-1">
-                <CreditCard className="h-4 w-4" />
-                <span className="text-sm">Payment ID</span>
-              </div>
-              <p className="font-mono text-sm text-foreground">{paymentId}</p>
-            </div>
-          )}
-
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-8">
-            <div className="flex items-center justify-center gap-2 text-primary mb-2">
-              <Mail className="h-4 w-4" />
-              <span className="text-sm font-medium">Confirmation Email Sent</span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              We'll also send you tracking information once your order ships.
+            <p className="eyebrow mb-5 mt-10 text-brass">Order confirmed</p>
+            <h1 className="display-lg text-balance">Thank you — <em className="font-light">it’s on its way</em></h1>
+            <p className="lede mx-auto mt-6 max-w-lg text-muted-foreground">
+              Thank you for your purchase. Your order has been received and is being processed.
             </p>
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild className="bg-gradient-gold text-primary-foreground">
-              <Link to="/products">
-                Continue Shopping
-                <ArrowRight className="ml-2 h-4 w-4" />
+            <dl className="mx-auto mt-12 grid max-w-lg gap-px bg-border text-left sm:grid-cols-2">
+              <div className="bg-background p-6 sm:pl-0">
+                <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">Order number</dt>
+                <dd className="mt-2 font-display text-3xl">{orderNumber}</dd>
+              </div>
+              {paymentId && (
+                <div className="bg-background p-6 sm:pr-0">
+                  <dt className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">Payment ID</dt>
+                  <dd className="mt-3 break-all font-mono text-sm">{paymentId}</dd>
+                </div>
+              )}
+            </dl>
+
+            <div className="mx-auto mt-10 flex max-w-lg items-start gap-4 border border-dashed border-foreground/30 p-5 text-left">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-brass" strokeWidth={1.4} />
+              <div>
+                <p className="text-sm font-medium">Confirmation Email Sent</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  We'll also send you tracking information once your order ships.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
+              <Link to="/products" className="btn-maison">
+                Continue shopping <ArrowRight />
               </Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link to="/account">View Orders</Link>
-            </Button>
-          </div>
-        </motion.div>
-      </div>
+              <Link to="/account" className="link-line">View orders</Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </MainLayout>
   );
 }
