@@ -68,7 +68,7 @@ export function Header() {
             <div className="flex items-center">
               <button
                 type="button"
-                className="-ml-2 flex h-11 w-11 items-center justify-center lg:hidden"
+                className="-ml-2 flex h-11 w-11 items-center justify-center xl:hidden"
                 onClick={() => setIsMenuOpen((v) => !v)}
                 aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={isMenuOpen}
@@ -78,7 +78,7 @@ export function Header() {
                   <span className={cn('absolute bottom-0 left-0 h-px bg-foreground transition-all duration-500', isMenuOpen ? 'w-6 -translate-y-[5px] -rotate-45' : 'w-4')} />
                 </span>
               </button>
-              <nav aria-label="Shop" className="hidden items-center gap-8 lg:flex">
+              <nav aria-label="Shop" className="hidden items-center gap-8 xl:flex">
                 {shopLinks.map((link) => (
                   <NavLink key={link.href} to={link.href} end={link.href === '/products'} className={navClass}>
                     {link.label}
@@ -97,7 +97,7 @@ export function Header() {
 
             {/* Right: house links + actions */}
             <div className="flex items-center justify-end gap-1 md:gap-2">
-              <nav aria-label="The house" className="mr-4 hidden items-center gap-8 xl:flex">
+              <nav aria-label="The house" className="mr-4 hidden items-center gap-8 2xl:flex">
                 {houseLinks.map((link) => (
                   <NavLink key={link.href} to={link.href} className={navClass}>
                     {link.label}
@@ -176,7 +176,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
-            className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-background lg:hidden"
+            className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-background xl:hidden"
           >
             <nav aria-label="Menu" className="flex min-h-full flex-col px-6 pb-28 pt-8">
               <p className="eyebrow mb-4 text-brass">Shop</p>
