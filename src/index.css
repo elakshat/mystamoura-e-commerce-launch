@@ -72,6 +72,7 @@
     --champagne: 39 46% 88%;
     --rose-gold: 9 52% 46%;
     --bronze: 24 43% 33%;
+    --shadow-diwali-hero: 0 20px 56px hsl(37 64% 29% / 0.12);
     --gradient-gold: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
     --gradient-dark: linear-gradient(hsl(var(--background)), hsl(var(--background)));
     --gradient-card: linear-gradient(hsl(var(--card)), hsl(var(--card)));
@@ -239,9 +240,7 @@
     box-shadow: none;
   }
 
-  .border-gold {
-    border-color: hsl(43 74% 42%);
-  }
+  .border-gold { border-color: hsl(var(--gold)); }
 
   /* Quiet shared surfaces, with opacity reserved for floating navigation. */
   .glass, .glass-card {
@@ -282,7 +281,10 @@
   /* One visual system across the storefront, forms, and administration. */
   .brand-wordmark { letter-spacing: 0.12em; }
   .site-announcement { font-size: 11px; letter-spacing: 0.01em; }
-  .site-header { background: hsl(var(--background) / 0.98); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-header { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-header .brand-wordmark { color: hsl(var(--gold-light)); }
+  .site-header .ui-button { color: hsl(var(--primary-foreground)); }
+  .site-header .ui-button:hover { background: hsl(var(--primary-foreground) / 0.12); color: hsl(var(--gold-light)); }
   .site-header-row { grid-template-columns: auto 1fr auto; column-gap: 32px; }
   .site-header-brand { min-width: 0; }
   .site-header-actions { justify-self: end; }
@@ -350,9 +352,16 @@
   .home-section-link:hover { text-decoration: none; border-bottom-color: currentColor; }
   .home-collections .collection-image { aspect-ratio: 1.6; border-radius: var(--radius); }
   .home-collections .collection-caption { padding: 24px; }
-  .home-collections .collection-caption h3 { color: white; font-size: 32px; }
-  .site-announcement { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--gold) / 0.5); }
-  .site-header { border-bottom-color: hsl(var(--gold) / 0.25); }
+  .home-collections .collection-caption h3 { color: hsl(var(--hero-foreground)); font-size: 32px; }
+  .home-hero__media { box-shadow: var(--shadow-diwali-hero); }
+  .site-announcement { background: hsl(var(--gold)); color: hsl(var(--primary)); border-color: hsl(var(--gold-light)); }
+  .site-header { border-bottom-color: hsl(var(--gold) / 0.5); }
+  .site-header .editorial-nav { color: hsl(var(--primary-foreground) / 0.82); }
+  .site-header .editorial-nav:hover, .site-header .editorial-nav[aria-current="page"] { color: hsl(var(--gold-light)); }
+  .site-header .editorial-nav::after { background: hsl(var(--gold)); }
+  .site-mobile-menu { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--gold) / 0.4); }
+  .site-mobile-menu nav a { color: hsl(var(--primary-foreground) / 0.88); border-color: hsl(var(--gold) / 0.2); }
+  .site-mobile-menu nav a:hover { color: hsl(var(--gold-light)); }
   .site-footer { border-top-color: hsl(var(--gold) / 0.32); }
   .product-card .product-card-price { color: hsl(var(--gold-dark)); }
   .storefront-main[data-page="cart"] .sticky, .storefront-main[data-page="checkout"] .sticky { background: hsl(var(--secondary)); border-color: hsl(var(--gold) / 0.35); }
