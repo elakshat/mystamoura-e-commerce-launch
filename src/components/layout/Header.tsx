@@ -63,7 +63,7 @@ export function Header() {
         )}
       >
         <div className="container mx-auto px-5 md:px-12">
-          <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center md:h-[76px]">
+          <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-4 md:h-[76px] md:gap-x-10">
             {/* Left: menu toggle (mobile) / shop links (desktop) */}
             <div className="flex items-center">
               <button
@@ -84,6 +84,9 @@ export function Header() {
                     {link.label}
                   </NavLink>
                 ))}
+                <NavLink to="/about" className={cn(navClass, 'hidden min-[1440px]:inline-flex')}>
+                  The House
+                </NavLink>
               </nav>
             </div>
 
@@ -96,14 +99,7 @@ export function Header() {
             </Link>
 
             {/* Right: house links + actions */}
-            <div className="flex items-center justify-end gap-1 md:gap-2">
-              <nav aria-label="The house" className="mr-4 hidden items-center gap-8 2xl:flex">
-                {houseLinks.map((link) => (
-                  <NavLink key={link.href} to={link.href} className={navClass}>
-                    {link.label}
-                  </NavLink>
-                ))}
-              </nav>
+            <div className="flex min-w-0 items-center justify-end gap-1 md:gap-2">
 
               <SearchDialog />
 
