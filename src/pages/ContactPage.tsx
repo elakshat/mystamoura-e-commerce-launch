@@ -166,7 +166,7 @@ export default function ContactPage() {
               )}
               <div>
                 <p className="eyebrow mb-2 text-[10px] text-brass-light">Address</p>
-                <p className="font-display text-2xl">Mumbai, Maharashtra, India</p>
+                <p className="font-display text-2xl">{(settings?.footer as Record<string, string> | undefined)?.location || 'Mumbai, Maharashtra, India'}</p>
               </div>
             </div>
           </div>

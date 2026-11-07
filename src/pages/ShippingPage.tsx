@@ -1,6 +1,12 @@
 import { PolicyLayout } from '@/components/brand/PolicyLayout';
+import { useTaxSettings } from '@/hooks/useTaxSettings';
+import { formatPrice } from '@/lib/utils';
 
 export default function ShippingPage() {
+  // Rates come from the same store settings checkout uses, so this page never drifts.
+  const { data: settings } = useTaxSettings();
+  const shipping = settings?.shipping;
+
   return (
     <PolicyLayout
       title="Shipping Policy"
@@ -11,9 +17,8 @@ export default function ShippingPage() {
           title: 'Shipping Rates',
           body: (
             <ul>
-              <li>Standard Shipping: ₹99 (5-7 business days)</li>
-              <li>Express Shipping: ₹199 (2-3 business days)</li>
-              <li>FREE Shipping on orders above ₹1,500</li>
+              <li>Standard Shipping: {shipping ? formatPrice(shipping.base_price) : '—'} (5-7 business days)</li>
+              <li>FREE Shipping on orders above {shipping ? formatPrice(shipping.free_threshold) : '—'}</li>
             </ul>
           ),
         },

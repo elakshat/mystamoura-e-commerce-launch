@@ -262,6 +262,7 @@
     border: 1px solid hsl(var(--foreground));
     overflow: hidden;
     isolation: isolate;
+    white-space: nowrap;
   }
   .btn-maison::before {
     content: '';

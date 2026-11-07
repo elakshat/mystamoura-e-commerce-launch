@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, User, Heart, ArrowUpRight } from 'lucide-react';
@@ -25,6 +25,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [compact, setCompact] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const [menuTop, setMenuTop] = useState(64);
   const { itemCount, isAnimating } = useCart();
   const { user, isAdmin } = useAuth();
   const { data: settings } = useSettings();
@@ -49,6 +51,8 @@ export function Header() {
   }, [compact]);
 
   useEffect(() => {
+    // Open the menu flush under the header, wherever the announcement bar has left it.
+    if (isMenuOpen && headerRef.current) setMenuTop(Math.max(0, headerRef.current.getBoundingClientRect().bottom));
     document.documentElement.style.overflow = isMenuOpen ? 'hidden' : '';
     return () => { document.documentElement.style.overflow = ''; };
   }, [isMenuOpen]);
@@ -66,6 +70,7 @@ export function Header() {
       )}
 
       <header
+        ref={headerRef}
         className={cn(
           'sticky top-0 z-50 border-b transition-[background-color,border-color] duration-500',
           scrolled ? 'glass-bar border-border' : 'border-transparent bg-background'
@@ -181,7 +186,8 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
-            className="fixed inset-x-0 bottom-0 top-16 z-40 overflow-y-auto bg-background xl:hidden"
+            style={{ top: menuTop }}
+            className="fixed inset-x-0 bottom-0 z-40 overflow-y-auto bg-background xl:hidden"
           >
             <nav aria-label="Menu" className="flex min-h-full flex-col px-6 pb-28 pt-8">
               <p className="eyebrow mb-4 text-brass">Shop</p>

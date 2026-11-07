@@ -42,13 +42,15 @@ export default function ProductDetailPage() {
   // Visible variants only
   const visibleVariants = (variants || []).filter(v => v.is_visible);
 
-  // Auto-select default variant
+  // Auto-select default variant. Also re-runs after the product-change reset below,
+  // so a cached variant list still gets a default; never overrides the shopper's choice.
   useEffect(() => {
-    if (visibleVariants.length > 0 && !selectedVariant) {
-      const defaultVariant = visibleVariants.find(v => v.is_default) || visibleVariants[0];
+    const own = visibleVariants.filter(v => v.product_id === product?.id);
+    if (own.length > 0 && !selectedVariant) {
+      const defaultVariant = own.find(v => v.is_default) || own[0];
       setSelectedVariant(defaultVariant as ProductVariantInfo);
     }
-  }, [variants]);
+  }, [variants, selectedVariant, product?.id]);
 
   // Reset variant when product changes
   useEffect(() => {
@@ -362,7 +364,7 @@ export default function ProductDetailPage() {
                   </AnimatePresence>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3 sm:flex-nowrap">
                   <div className="flex h-[52px] items-center border border-foreground/30">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -383,14 +385,14 @@ export default function ProductDetailPage() {
                     </button>
                   </div>
 
-                  <button type="button" className="btn-maison flex-1" onClick={handleAddToCart} disabled={isSoldOut}>
+                  <button type="button" className="btn-maison order-last w-full whitespace-nowrap sm:order-none sm:w-auto sm:flex-1" onClick={handleAddToCart} disabled={isSoldOut}>
                     <ShoppingBag className="!translate-x-0" strokeWidth={1.4} />
                     {isSoldOut ? 'Sold Out' : 'Add to Bag'}
                   </button>
 
                   <button
                     type="button"
-                    className={`flex h-[52px] w-[52px] shrink-0 items-center justify-center border transition-colors ${
+                    className={`ml-auto flex h-[52px] w-[52px] shrink-0 items-center justify-center border transition-colors sm:ml-0 ${
                       isInWishlist ? 'border-foreground bg-foreground text-background' : 'border-foreground/30 hover:border-foreground'
                     }`}
                     onClick={() => {
