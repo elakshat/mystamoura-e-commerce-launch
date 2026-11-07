@@ -15,7 +15,6 @@ import {
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -78,7 +77,8 @@ export default function AdminProducts() {
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div>
-            <h1 className="font-display text-3xl font-semibold">Products</h1>
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-brass">Catalogue</p>
+            <h1 className="mt-2 font-display text-[36px] font-light leading-none tracking-[-0.02em] md:text-[40px]">Products</h1>
             <p className="text-muted-foreground mt-1">
               Manage your product catalog
             </p>
@@ -210,16 +210,25 @@ export default function AdminProducts() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={product.stock <= 5 ? 'destructive' : 'secondary'}
+                        <span
+                          className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] ${
+                            product.stock === 0
+                              ? 'border-[hsl(2_40%_82%)] bg-[hsl(2_55%_93%)] text-[hsl(2_55%_36%)]'
+                              : product.stock <= 5
+                                ? 'border-[hsl(36_60%_78%)] bg-[hsl(38_78%_91%)] text-[hsl(30_70%_30%)]'
+                                : 'border-border bg-secondary text-foreground/80'
+                          }`}
                         >
-                          {product.stock} in stock
-                        </Badge>
+                          {product.stock === 0 ? 'Out of stock' : `${product.stock} in stock`}
+                        </span>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={product.is_visible ? 'default' : 'outline'}>
-                          {product.is_visible ? 'Visible' : 'Hidden'}
-                        </Badge>
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.12em]">
+                          <span className={`h-1.5 w-1.5 rounded-full ${product.is_visible ? 'bg-[hsl(145_35%_38%)]' : 'bg-muted-foreground/50'}`} />
+                          <span className={product.is_visible ? 'text-foreground' : 'text-muted-foreground'}>
+                            {product.is_visible ? 'Visible' : 'Hidden'}
+                          </span>
+                        </span>
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>

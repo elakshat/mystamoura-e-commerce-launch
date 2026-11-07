@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { isRealOrder } from '@/lib/orders';
 
 export interface DashboardStats {
   todaySales: number;
@@ -34,38 +35,46 @@ export function useAdminStats() {
       today.setHours(0, 0, 0, 0);
 
       // Get today's orders
-      const { data: todayOrders, error: ordersError } = await supabase
+      const { data: todayAll, error: ordersError } = await supabase
         .from('orders')
-        .select('total')
+        .select('total, status, payment_status')
         .gte('created_at', today.toISOString());
 
       if (ordersError) throw ordersError;
+      // Abandoned online checkouts and cancelled/refunded orders are not sales.
+      const todayOrders = todayAll?.filter(isRealOrder);
 
       const todaySales = todayOrders?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
 
       // Get products count and low stock
       const { data: products, error: productsError } = await supabase
         .from('products')
-        .select('stock');
+        .select('stock, is_visible');
 
       if (productsError) throw productsError;
 
-      const lowStockProducts = products?.filter((p) => (p.stock || 0) <= 5).length || 0;
+      // Only products customers can see; hidden/'coming soon' items aren't a stock problem.
+      const lowStockProducts = products?.filter((p) => p.is_visible && (p.stock || 0) <= 5).length || 0;
 
       // Get pending orders
-      const { data: pendingOrders, error: pendingError } = await supabase
+      const { data: openAll, error: pendingError } = await supabase
         .from('orders')
-        .select('id')
+        .select('id, status, payment_status')
         .in('status', ['pending', 'paid', 'processing']);
 
       if (pendingError) throw pendingError;
+      const pendingOrders = openAll?.filter(isRealOrder);
 
-      // Get unique customers (approximation from profiles)
-      const { count: customersCount, error: customersError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
+      // Unique buyers across real orders (accounts + guest emails). Profiles can't be
+      // used here: row-level security only lets each user read their own profile.
+      const { data: buyers, error: customersError } = await supabase
+        .from('orders')
+        .select('user_id, guest_email, status, payment_status');
 
       if (customersError) throw customersError;
+      const customersCount = new Set(
+        (buyers ?? []).filter(isRealOrder).map((o) => o.user_id || o.guest_email?.toLowerCase()).filter(Boolean)
+      ).size;
 
       return {
         todaySales,

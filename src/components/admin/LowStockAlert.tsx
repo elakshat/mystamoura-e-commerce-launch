@@ -1,20 +1,18 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Package, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/types';
-import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Panel, PanelEmpty } from './Panel';
+import { cn } from '@/lib/utils';
 
 interface LowStockAlertProps {
   threshold?: number;
 }
 
+/** Inventory watch: visible products at or below the stock threshold. */
 export function LowStockAlert({ threshold = 5 }: LowStockAlertProps) {
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  const { data: lowStockProducts } = useQuery({
+  const { data: lowStockProducts, isLoading } = useQuery({
     queryKey: ['low-stock-products', threshold],
     queryFn: async (): Promise<Product[]> => {
       const { data, error } = await supabase
@@ -30,96 +28,39 @@ export function LowStockAlert({ threshold = 5 }: LowStockAlertProps) {
     },
   });
 
-  if (isDismissed || !lowStockProducts?.length) return null;
-
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 mb-6"
-      >
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-10 h-10 rounded-full bg-destructive/20 flex items-center justify-center"
-            >
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-            </motion.div>
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-destructive mb-2">
-              Low Stock Alert
-            </h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              {lowStockProducts.length} product{lowStockProducts.length > 1 ? 's' : ''} running low on stock
-            </p>
-
-            <div className="space-y-2">
-              {lowStockProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-center justify-between bg-background/50 rounded-lg p-2"
+    <Panel eyebrow={`${threshold} or fewer left`} title="Inventory watch" action={{ to: '/admin/products', label: 'Manage' }}>
+      {isLoading ? (
+        <div className="space-y-3">{[...Array(3)].map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
+      ) : lowStockProducts?.length ? (
+        <ul className="divide-y divide-border">
+          {lowStockProducts.map((product) => (
+            <li key={product.id}>
+              <Link to={`/admin/products/${product.id}/edit`} className="flex items-center gap-3 py-3 first:pt-0">
+                <span className="h-11 w-8 shrink-0 overflow-hidden rounded-t-full bg-nuit">
+                  {product.images?.[0] && <img src={product.images[0]} alt="" className="h-full w-full object-cover" />}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{product.name}</p>
+                  <p className="text-[11px] text-muted-foreground">SKU {product.sku || '—'}</p>
+                </div>
+                <span
+                  className={cn(
+                    'shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em]',
+                    product.stock === 0
+                      ? 'border-[hsl(2_40%_82%)] bg-[hsl(2_55%_93%)] text-[hsl(2_55%_36%)]'
+                      : 'border-[hsl(36_60%_78%)] bg-[hsl(38_78%_91%)] text-[hsl(30_70%_30%)]'
+                  )}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-muted overflow-hidden flex-shrink-0">
-                      {product.images?.[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Package className="w-5 h-5 m-2.5 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-sm truncate">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        SKU: {product.sku || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`text-sm font-bold px-2 py-1 rounded ${
-                      product.stock === 0
-                        ? 'bg-destructive/20 text-destructive'
-                        : 'bg-yellow-500/20 text-yellow-500'
-                    }`}
-                  >
-                    {product.stock === 0 ? 'Out of Stock' : `${product.stock} left`}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <Button asChild size="sm" variant="outline">
-                <Link to="/admin/products">
-                  <Package className="h-4 w-4 mr-2" />
-                  Manage Inventory
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="flex-shrink-0 -mt-1 -mr-1"
-            onClick={() => setIsDismissed(true)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+                  {product.stock === 0 ? 'Out of stock' : `${product.stock} left`}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <PanelEmpty title="All well stocked" hint={`No visible product has ${threshold} or fewer left.`} />
+      )}
+    </Panel>
   );
 }

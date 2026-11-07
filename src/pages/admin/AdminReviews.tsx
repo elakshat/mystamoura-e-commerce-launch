@@ -44,7 +44,8 @@ export default function AdminReviews() {
     <AdminLayout>
       <div className="space-y-6">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="font-display text-3xl font-semibold">Reviews</h1>
+          <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-brass">Catalogue</p>
+          <h1 className="mt-2 font-display text-[36px] font-light leading-none tracking-[-0.02em] md:text-[40px]">Reviews</h1>
           <p className="text-muted-foreground mt-1">Moderate customer reviews</p>
         </motion.div>
 

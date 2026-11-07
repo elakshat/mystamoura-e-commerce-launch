@@ -70,7 +70,8 @@ export default function AdminOrders() {
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
         >
           <div>
-            <h1 className="font-display text-3xl font-semibold">Orders</h1>
+            <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-brass">Sales</p>
+            <h1 className="mt-2 font-display text-[36px] font-light leading-none tracking-[-0.02em] md:text-[40px]">Orders</h1>
             <p className="text-muted-foreground mt-1">
               Manage and track customer orders
             </p>

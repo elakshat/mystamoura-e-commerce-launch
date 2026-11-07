@@ -1,10 +1,9 @@
-import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { TrendingUp, Package } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Link } from 'react-router-dom';
+import { Panel, PanelEmpty } from './Panel';
+import { isRealOrder } from '@/lib/orders';
 
 interface BestSeller {
   product_id: string;
@@ -20,8 +19,8 @@ export function BestSellingProducts() {
     queryFn: async (): Promise<BestSeller[]> => {
       const { data, error } = await supabase
         .from('order_items')
-        .select('product_id, product_name, product_image, quantity, total_price')
-        .limit(100);
+        .select('product_id, product_name, product_image, quantity, total_price, order:orders!inner(status, payment_status)')
+        .limit(2000);
 
       if (error) throw error;
 
@@ -29,7 +28,7 @@ export function BestSellingProducts() {
       const productMap = new Map<string, BestSeller>();
 
       data.forEach((item) => {
-        if (!item.product_id) return;
+        if (!item.product_id || !item.order || !isRealOrder(item.order)) return;
 
         const existing = productMap.get(item.product_id);
         if (existing) {
@@ -52,74 +51,38 @@ export function BestSellingProducts() {
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="bg-card rounded-xl border border-border p-6">
-        <Skeleton className="h-6 w-40 mb-6" />
-        <div className="space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="h-16" />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const top = bestSellers?.[0]?.total_sold || 1;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card rounded-xl border border-border p-6"
-    >
-      <div className="flex items-center gap-2 mb-6">
-        <TrendingUp className="h-5 w-5 text-primary" />
-        <h3 className="font-display text-xl font-semibold">Best Selling Products</h3>
-      </div>
-
-      {bestSellers?.length ? (
-        <div className="space-y-4">
-          {bestSellers.map((product, index) => (
-            <motion.div
-              key={product.product_id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/30 transition-colors"
-            >
-              <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                {index + 1}
+    <Panel eyebrow="By units sold" title="Best sellers" action={{ to: '/admin/products', label: 'Products' }}>
+      {isLoading ? (
+        <div className="space-y-4">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-12" />)}</div>
+      ) : bestSellers?.length ? (
+        <ol className="space-y-4">
+          {bestSellers.map((p, i) => (
+            <li key={p.product_id} className="flex items-center gap-4">
+              <span className="w-5 font-display text-lg italic text-brass">{i + 1}</span>
+              <span className="h-12 w-9 shrink-0 overflow-hidden rounded-t-full bg-nuit">
+                {p.product_image && <img src={p.product_image} alt="" className="h-full w-full object-cover" />}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-3">
+                  <p className="truncate font-display text-[17px] uppercase tracking-[0.04em]">{p.product_name}</p>
+                  <p className="tabular shrink-0 text-sm">{formatPrice(p.revenue)}</p>
+                </div>
+                <div className="mt-1.5 flex items-center gap-3">
+                  <span className="h-[3px] flex-1 overflow-hidden rounded-full bg-secondary">
+                    <span className="block h-full rounded-full bg-brass" style={{ width: `${(p.total_sold / top) * 100}%` }} />
+                  </span>
+                  <span className="tabular w-14 text-right text-[11px] text-muted-foreground">{p.total_sold} sold</span>
+                </div>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-muted overflow-hidden flex-shrink-0">
-                {product.product_image ? (
-                  <img
-                    src={product.product_image}
-                    alt={product.product_name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Package className="w-6 h-6 m-3 text-muted-foreground" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{product.product_name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {product.total_sold} sold
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-primary">
-                  {formatPrice(product.revenue)}
-                </p>
-              </div>
-            </motion.div>
+            </li>
           ))}
-        </div>
+        </ol>
       ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
-          <p>No sales data yet</p>
-        </div>
+        <PanelEmpty title="No sales yet" hint="Best sellers appear once orders come in." />
       )}
-    </motion.div>
+    </Panel>
   );
 }

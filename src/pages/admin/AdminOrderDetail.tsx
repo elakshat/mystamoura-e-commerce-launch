@@ -101,7 +101,8 @@ export default function AdminOrderDetail() {
               </Link>
             </Button>
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-semibold">
+              <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-brass">Sales · Order</p>
+              <h1 className="mt-2 font-display text-[36px] font-light leading-none tracking-[-0.02em] md:text-[40px]">
                 Order {order.order_number}
               </h1>
               <p className="text-muted-foreground text-sm mt-1">

@@ -237,7 +237,8 @@ export default function AdminProductForm() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="font-display text-3xl font-semibold">
+              <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-brass">Catalogue</p>
+              <h1 className="mt-2 font-display text-[36px] font-light leading-none tracking-[-0.02em] md:text-[40px]">
                 {isEditing ? 'Edit Product' : 'New Product'}
               </h1>
               <p className="text-muted-foreground mt-1">
