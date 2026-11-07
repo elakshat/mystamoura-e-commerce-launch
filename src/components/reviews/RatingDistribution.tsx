@@ -12,7 +12,7 @@ export function RatingDistribution({ stats }: RatingDistributionProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <span className="font-display text-4xl font-semibold">
+        <span className="tabular font-display text-6xl font-light leading-none">
           {stats.average_rating.toFixed(1)}
         </span>
         <div>
@@ -32,17 +32,17 @@ export function RatingDistribution({ stats }: RatingDistributionProps) {
 
           return (
             <div key={star} className="flex items-center gap-2 text-sm">
-              <span className="w-3 text-muted-foreground">{star}</span>
+              <span className="tabular w-3 text-xs text-muted-foreground">{star}</span>
               <ReviewStars rating={1} maxRating={1} size="sm" />
-              <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-[3px] flex-1 overflow-hidden bg-foreground/10">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${percentage}%` }}
                   transition={{ duration: 0.5, delay: (5 - star) * 0.1 }}
-                  className="h-full bg-primary rounded-full"
+                  className="h-full bg-foreground"
                 />
               </div>
-              <span className="w-8 text-right text-muted-foreground">{count}</span>
+              <span className="tabular w-8 text-right text-xs text-muted-foreground">{count}</span>
             </div>
           );
         })}

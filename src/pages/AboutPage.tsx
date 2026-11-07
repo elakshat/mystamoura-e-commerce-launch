@@ -89,7 +89,7 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.1} className="paper-stack lg:col-span-8 lg:col-start-5">
            <div className="paper-sheet px-6 py-10 md:px-14 md:py-16">
-            <div className="space-y-6 font-display text-[21px] leading-[1.6] md:text-[25px] [&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:mt-1 [&>p:first-child]:first-letter:font-display [&>p:first-child]:first-letter:text-[88px] [&>p:first-child]:first-letter:font-light [&>p:first-child]:first-letter:leading-[0.8] [&>p:first-child]:first-letter:text-brass">
+            <div className="space-y-6 font-display text-[21px] leading-[1.6] md:text-[25px] [&>p:first-child]:text-[30px] [&>p:first-child]:leading-[1.25] [&>p:first-child]:text-foreground md:[&>p:first-child]:text-[36px]">
               {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
             </div>
             <div className="mt-12 flex items-center gap-5 border-t border-dashed border-foreground/20 pt-8">

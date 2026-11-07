@@ -157,6 +157,16 @@
 
   button, a { touch-action: manipulation; }
 
+  /* Typographic polish: no orphaned single words */
+  h1, h2, h3, blockquote { text-wrap: balance; }
+  p, li, figcaption { text-wrap: pretty; }
+
+  /* Clear, quiet keyboard focus (components with their own ring opt out) */
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 4px;
+  }
+
   a:not([class]) {
     color: hsl(var(--foreground));
     text-decoration: underline;
@@ -535,5 +545,5 @@
     overflow: hidden;
   }
   .text-balance { text-wrap: balance; }
-  .tabular { font-variant-numeric: tabular-nums; }
+  .tabular { font-variant-numeric: tabular-nums lining-nums; }
 }

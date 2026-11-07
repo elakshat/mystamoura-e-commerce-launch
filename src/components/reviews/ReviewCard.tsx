@@ -30,14 +30,14 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="border-b border-border pb-6 last:border-0"
+        className="border-b border-border pb-8 last:border-0"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <ReviewStars rating={review.rating} size="sm" />
               {review.is_verified_purchase && (
-                <span className="inline-flex items-center gap-1 text-xs text-primary font-medium">
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-[0.16em] text-brass">
                   <CheckCircle className="h-3 w-3" />
                   Verified Purchase
                 </span>
@@ -50,10 +50,10 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             </div>
 
             {review.title && (
-              <h4 className="font-medium mb-1">{review.title}</h4>
+              <h4 className="mb-1 font-display text-2xl">{review.title}</h4>
             )}
 
-            <p className="text-foreground/80 text-sm leading-relaxed mb-3">
+            <p className="mb-4 font-display text-xl italic leading-snug text-foreground/90 md:text-[22px]">
               {review.content}
             </p>
 
@@ -108,7 +108,7 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
             {/* Admin Reply */}
             {review.admin_reply && (
-              <div className="mt-4 ml-4 p-4 bg-secondary/50 rounded-lg border-l-2 border-primary">
+              <div className="mt-4 ml-4 border-l border-brass bg-secondary/60 p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <MessageSquare className="h-4 w-4 text-primary" />
                   <span className="font-medium text-sm">Response from Mystamoura</span>

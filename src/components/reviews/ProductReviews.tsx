@@ -36,12 +36,13 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
   const canReview = canReviewData?.canReview && user;
 
   return (
-    <section className="mt-16">
-      <h2 className="font-display text-2xl md:text-3xl font-semibold mb-8">
-        Customer Reviews
+    <section className="mt-24 border-t pt-16 md:mt-32 md:pt-20">
+      <p className="eyebrow mb-4 text-brass">Reviews</p>
+      <h2 className="display-md mb-12 md:mb-16">
+        Customer <em className="font-light">reviews</em>
       </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-16">
         {/* Left: Stats & Write Review */}
         <div className="space-y-6">
           {statsLoading ? (
@@ -69,7 +70,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
 
           {!user && (
             <p className="text-sm text-muted-foreground text-center">
-              <a href="/auth" className="text-primary hover:underline">Sign in</a> to write a review
+              <a href="/auth" className="text-foreground underline underline-offset-4 hover:text-brass">Sign in</a> to write a review
             </p>
           )}
 
@@ -139,7 +140,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           )}
 
           {/* Pagination */}
-          {reviews.length > 0 && (
+          {reviews.length > 0 && (page > 1 || reviews.length >= 10) && (
             <div className="flex justify-center gap-2 pt-4">
               <Button
                 variant="outline"

@@ -50,50 +50,52 @@ export function SearchDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover:text-primary" aria-label="Search">
-          <Search className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-transparent" aria-label="Search">
+          <Search className="h-[18px] w-[18px]" strokeWidth={1.3} />
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="top-[10%] w-[calc(100%_-_2rem)] max-w-lg translate-y-0 gap-0 overflow-hidden p-0">
+      <DialogContent
+        aria-describedby={undefined}
+        className="top-[12%] w-[calc(100%_-_2rem)] max-w-xl translate-y-0 gap-0 overflow-hidden rounded-none border-0 bg-background p-0 shadow-[0_30px_80px_-20px_hsl(24_20%_10%/0.45)]"
+      >
         <DialogTitle className="sr-only">Search fragrances</DialogTitle>
-        <div className="flex items-center gap-3 border-b border-border p-4 pr-12">
-          <Search className="h-5 w-5 text-muted-foreground shrink-0" />
+        <div className="flex items-center gap-4 border-b border-foreground/15 px-6 py-5 pr-14">
+          <Search className="h-5 w-5 shrink-0 text-brass" strokeWidth={1.3} />
           <Input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products..."
-            className="border-0 bg-transparent focus-visible:ring-0 px-0 text-base"
+            placeholder="Search fragrances…"
+            className="h-auto border-0 bg-transparent px-0 font-display text-xl md:text-2xl placeholder:italic placeholder:text-muted-foreground/70 focus-visible:ring-0"
           />
-          {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />}
+          {isLoading && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />}
         </div>
-        <div className="max-h-[60vh] md:max-h-80 overflow-y-auto">
+        <div className="max-h-[60vh] overflow-y-auto md:max-h-[420px]">
           {query.length < 2 ? (
-            <div className="p-4 md:p-6 text-center text-muted-foreground">
-              <p className="text-sm md:text-base">Type at least 2 characters to search</p>
-              <p className="text-xs mt-2 hidden md:block">
-                <kbd className="px-2 py-1 bg-muted rounded">⌘K</kbd> to open search
+            <div className="px-6 py-10 text-center">
+              <p className="font-display text-xl italic text-muted-foreground">Begin typing to explore the collection</p>
+              <p className="mt-3 hidden text-[10px] uppercase tracking-[0.2em] text-muted-foreground md:block">
+                <kbd className="mr-1 border border-foreground/20 px-1.5 py-0.5 font-sans">⌘K</kbd> opens search anywhere
               </p>
             </div>
           ) : data?.products?.length === 0 && data?.categories?.length === 0 ? (
-            <div className="p-6 text-center text-muted-foreground">
-              No results found for "{query}"
+            <div className="px-6 py-10 text-center">
+              <p className="font-display text-xl italic">Nothing found for “{query}”</p>
+              <p className="mt-2 text-sm text-muted-foreground">Try a fragrance name or a collection.</p>
             </div>
           ) : (
-            <div className="p-2">
+            <div className="py-3">
               {data?.categories && data.categories.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs font-medium text-muted-foreground px-2 mb-2">Collections</p>
+                <div className="mb-2">
+                  <p className="eyebrow px-6 py-2 text-[10px] text-brass">Collections</p>
                   {data.categories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => handleCategorySelect(category.slug)}
-                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors text-left"
+                      className="flex w-full items-center justify-between px-6 py-3 text-left transition-colors hover:bg-secondary focus-visible:bg-secondary focus-visible:outline-none"
                     >
-                      <div className="w-10 h-10 rounded bg-primary/20 flex items-center justify-center">
-                        <span className="text-primary font-medium">{category.name[0]}</span>
-                      </div>
-                      <span className="font-medium">{category.name}</span>
+                      <span className="font-display text-2xl">{category.name}</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Collection</span>
                     </button>
                   ))}
                 </div>
@@ -101,32 +103,22 @@ export function SearchDialog() {
 
               {data?.products && data.products.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground px-2 mb-2">Products</p>
+                  <p className="eyebrow px-6 py-2 text-[10px] text-brass">Fragrances</p>
                   {data.products.map((product) => (
                     <button
                       key={product.id}
                       onClick={() => handleSelect(product.slug)}
-                      className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors text-left"
+                      className="flex w-full items-center gap-4 px-6 py-3 text-left transition-colors hover:bg-secondary focus-visible:bg-secondary focus-visible:outline-none"
                     >
-                      <div className="w-10 h-10 rounded bg-secondary overflow-hidden">
-                        {product.images?.[0] ? (
-                          <img
-                            src={product.images[0]}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                            No img
-                          </div>
+                      <div className="h-14 w-10 shrink-0 overflow-hidden rounded-t-full bg-nuit">
+                        {product.images?.[0] && (
+                          <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{product.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatPrice(product.sale_price || product.price, product.currency)}
-                        </p>
-                      </div>
+                      <p className="min-w-0 flex-1 truncate font-display text-xl uppercase tracking-[0.05em]">{product.name}</p>
+                      <p className="tabular text-sm text-muted-foreground">
+                        {formatPrice(product.sale_price || product.price, product.currency)}
+                      </p>
                     </button>
                   ))}
                 </div>

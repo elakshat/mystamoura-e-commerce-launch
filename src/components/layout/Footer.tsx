@@ -70,8 +70,10 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
           <div className="col-span-2 md:col-span-1">
             <Monogram className="h-14 w-14 text-xl text-brass-light" />
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-nuit-muted line-clamp-5">
-              {footer.about_text || 'Luxury fragrances crafted with passion and precision.'}
+            <p className="mt-6 max-w-xs font-display text-xl italic leading-snug text-nuit-muted">
+              {settings?.hero?.title && settings?.hero?.subtitle
+                ? `${settings.hero.title}. ${settings.hero.subtitle}.`
+                : 'Luxury fragrances crafted with passion and precision.'}
             </p>
             {socials.length > 0 && (
               <div className="mt-6 flex items-center gap-3">

@@ -10,9 +10,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+            "group toast group-[.toaster]:rounded-none group-[.toaster]:border-0 group-[.toaster]:bg-[hsl(var(--nuit))] group-[.toaster]:text-[hsl(var(--nuit-foreground))] group-[.toaster]:font-sans group-[.toaster]:shadow-[0_20px_50px_-15px_hsl(24_20%_10%/0.5)]",
+          title: "group-[.toast]:text-[13px] group-[.toast]:font-normal group-[.toast]:tracking-wide",
+          description: "group-[.toast]:text-[hsl(var(--nuit-muted))]",
+          icon: "group-[.toast]:text-[hsl(var(--brass-light))]",
+          actionButton: "group-[.toast]:rounded-none group-[.toast]:bg-[hsl(var(--nuit-foreground))] group-[.toast]:text-[hsl(var(--nuit))] group-[.toast]:uppercase group-[.toast]:tracking-[0.14em] group-[.toast]:text-[10px]",
           cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
         },
       }}

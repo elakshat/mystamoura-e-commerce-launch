@@ -47,7 +47,7 @@ export function ReviewStars({
             <Star
               className={cn(
                 sizeClasses[size],
-                filled ? 'text-primary fill-primary' : 'text-muted-foreground/30'
+                filled ? 'text-brass fill-brass' : 'text-foreground/15'
               )}
             />
           </button>
