@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/brand/Reveal';
+import { Curtain } from '@/components/brand/Curtain';
 import { useCategories } from '@/hooks/useProducts';
 
 const steps = [
@@ -35,6 +36,7 @@ export function Ritual() {
               loading="lazy"
               className="h-full w-full object-cover object-[60%_center]"
             />
+            <Curtain />
           </div>
           <div className="absolute -right-3 -top-3 hidden h-full w-full border border-brass/50 md:block" aria-hidden="true" />
         </Reveal>

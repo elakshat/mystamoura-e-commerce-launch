@@ -1,14 +1,18 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ArrowDown } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
 import { WaxSeal } from '@/components/brand/WaxSeal';
+import { introDelay } from '@/lib/intro';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function Hero() {
   const { data: settings } = useSettings();
   const reduced = useReducedMotion();
+  const { pathname } = useLocation();
+  const [d] = useState(() => introDelay(pathname));
   const { scrollY } = useScroll();
   const imageY = useTransform(scrollY, [0, 800], [0, reduced ? 0 : 90]);
 
@@ -37,35 +41,39 @@ export function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease }}
+            transition={{ duration: 0.8, ease, delay: d }}
             className="eyebrow mb-8 flex items-center gap-4 text-brass"
           >
             <span className="h-px w-10 bg-current" /> Maison de Parfum
           </motion.p>
 
           <h1 id="home-hero-title" className="display-xl">
-            <motion.span
-              className="block"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease, delay: 0.05 }}
-            >
-              Myst
-            </motion.span>
-            <motion.span
-              className="block pl-[0.55em] italic"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, ease, delay: 0.18 }}
-            >
-              Amoura
-            </motion.span>
+            <span className="block overflow-hidden pb-[0.1em]">
+              <motion.span
+                className="block"
+                initial={{ y: '105%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.2, ease, delay: d + 0.05 }}
+              >
+                Myst
+              </motion.span>
+            </span>
+            <span className="-mt-[0.1em] block overflow-hidden pb-[0.1em]">
+              <motion.span
+                className="block pl-[0.55em] italic"
+                initial={{ y: '105%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.2, ease, delay: d + 0.2 }}
+              >
+                Amoura
+              </motion.span>
+            </span>
           </h1>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease, delay: 0.4 }}
+            transition={{ duration: 1, ease, delay: d + 0.45 }}
             className="mt-10 grid max-w-xl gap-8 md:grid-cols-[auto_1fr] md:items-start"
           >
             <span className="hidden h-px w-16 translate-y-4 bg-foreground md:block" />
@@ -86,7 +94,7 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.4, ease, delay: 0.1 }}
+          transition={{ duration: 1.4, ease, delay: d + 0.1 }}
           className="relative mx-auto w-full max-w-[460px] lg:col-span-5 lg:max-w-none"
         >
           <div className="arch-outline">
@@ -103,7 +111,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, scale: 1.25, rotate: -18 }}
             animate={{ opacity: 1, scale: 1, rotate: -8 }}
-            transition={{ duration: 0.9, ease, delay: 0.9 }}
+            transition={{ duration: 0.9, ease, delay: d + 0.9 }}
             className="absolute -bottom-10 -left-1 md:-left-14"
           >
             <WaxSeal ring="Eau de Parfum · Made in India ·" className="h-28 w-28 md:h-36 md:w-36" />

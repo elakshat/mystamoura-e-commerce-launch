@@ -9,6 +9,7 @@ import { formatPrice } from '@/lib/utils';
 import { useIsInWishlist, useToggleWishlist } from '@/hooks/useWishlist';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { leadNotes } from '@/lib/notes';
 
 interface ProductCardProps {
   product: Product;
@@ -25,6 +26,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   const isOnSale = product.sale_price && product.sale_price < product.price;
   const isSoldOut = product.stock <= 0;
+  const notes = leadNotes(product.notes);
 
   const handleWishlistClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -112,6 +114,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <Heart className={cn('h-3.5 w-3.5', isInWishlist && 'fill-current')} strokeWidth={1.5} />
           )}
         </button>
+
+        {/* Opening notes, revealed on hover (pointer devices only) */}
+        {notes.length > 0 && (
+          <div className="product-notes pointer-events-none absolute inset-x-0 bottom-12 bg-gradient-to-t from-[hsl(var(--nuit)/0.8)] via-[hsl(var(--nuit)/0.35)] to-transparent px-4 pb-4 pt-16 text-center">
+            <p className="text-[9px] font-medium uppercase tracking-[0.24em] text-[hsl(var(--brass-light))]">Opens with</p>
+            <p className="mt-1.5 font-display text-lg italic leading-snug text-[hsl(var(--nuit-foreground))]">{notes.join(' · ')}</p>
+          </div>
+        )}
 
         {/* Quick add — slides up on hover, always visible on touch */}
         <button

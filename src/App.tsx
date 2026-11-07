@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { DynamicFavicon } from "@/components/DynamicFavicon";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { IntroCurtain } from "@/components/brand/IntroCurtain";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Index from "./pages/Index";
 import ProductsPage from "./pages/ProductsPage";
@@ -58,6 +59,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <ScrollToTop />
+                <IntroCurtain />
                 <RouteTracker />
                 <DynamicFavicon />
                 <Routes>

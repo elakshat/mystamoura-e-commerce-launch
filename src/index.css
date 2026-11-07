@@ -475,6 +475,22 @@
   }
   .product-card:hover .product-quick-add, .product-quick-add:focus-visible { transform: translateY(0); }
   @media (hover: none) { .product-quick-add { transform: none; } }
+  .product-notes { opacity: 0; transform: translateY(12px); transition: opacity 600ms var(--ease-silk), transform 700ms var(--ease-silk); }
+  @media (hover: hover) {
+    .product-card:hover .product-notes { opacity: 1; transform: translateY(0); }
+  }
+  @media (hover: none) { .product-notes { display: none; } }
+
+  /* Intro curtain failsafe: even if animation stalls, it can never stay over the page. */
+  .intro-curtain { animation: intro-failsafe 0s linear 4.5s forwards; }
+  @keyframes intro-failsafe { to { visibility: hidden; pointer-events: none; } }
+
+  /* ---- Product photo magnifier (desktop pointers only) ------------------ */
+  .zoom-frame img { transform-origin: var(--zx, 50%) var(--zy, 50%); transition: transform 600ms var(--ease-silk); }
+  @media (hover: hover) and (pointer: fine) {
+    .zoom-frame { cursor: zoom-in; }
+    .zoom-frame:hover img { transform: scale(1.9); }
+  }
 
   /* ---- Long-form text (policies, about) ----------------------------------- */
   .maison-prose { color: hsl(var(--muted-foreground)); font-size: 16px; line-height: 1.85; }

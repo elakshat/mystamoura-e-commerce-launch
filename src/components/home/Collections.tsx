@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { useCategories } from '@/hooks/useProducts';
 import { Reveal } from '@/components/brand/Reveal';
+import { Curtain } from '@/components/brand/Curtain';
 import { cn } from '@/lib/utils';
 
 export function Collections() {
@@ -31,6 +32,7 @@ export function Collections() {
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--nuit)/0.55)] via-transparent to-transparent" />
+                  <Curtain delay={i * 0.12} />
                   <span className="absolute bottom-5 right-5 flex h-12 w-12 items-center justify-center rounded-full bg-background/90 text-foreground backdrop-blur transition-transform duration-500 group-hover:rotate-45">
                     <ArrowUpRight className="h-5 w-5" strokeWidth={1.2} />
                   </span>

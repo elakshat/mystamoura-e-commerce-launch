@@ -177,7 +177,7 @@ export default function ProductDetailPage() {
   // "Top Notes: a, b Heart Notes: c Base Notes: d" → tiers for the pyramid view
   const noteTiers: { label: string; notes: string[] }[] = [];
   if (product.notes) {
-    const tierRe = /(top|heart|middle|base)\s*notes?\s*[:–-]/gi;
+    const tierRe = /\b(top|heart|middle|base)(?:\s*notes?)?\s*[:–-]/gi;
     const matches = [...product.notes.matchAll(tierRe)];
     matches.forEach((m, i) => {
       const start = (m.index ?? 0) + m[0].length;
@@ -239,7 +239,14 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              <div className="relative flex-1 overflow-hidden bg-nuit">
+              <div
+                className="zoom-frame relative flex-1 overflow-hidden bg-nuit"
+                onMouseMove={(e) => {
+                  const r = e.currentTarget.getBoundingClientRect();
+                  e.currentTarget.style.setProperty('--zx', `${((e.clientX - r.left) / r.width) * 100}%`);
+                  e.currentTarget.style.setProperty('--zy', `${((e.clientY - r.top) / r.height) * 100}%`);
+                }}
+              >
                 <AnimatePresence mode="wait">
                   {product.images?.[selectedImage] ? (
                     <motion.img
