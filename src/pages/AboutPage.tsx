@@ -5,6 +5,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { Reveal } from '@/components/brand/Reveal';
 import { WaxSeal } from '@/components/brand/WaxSeal';
+import { Ornament } from '@/components/brand/Ornament';
 import { Marquee } from '@/components/brand/Marquee';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -126,6 +127,7 @@ export default function AboutPage() {
       <section className="on-nuit grain py-24 text-center md:py-36">
         <div className="container relative z-[2] mx-auto px-5 md:px-12">
           <Reveal>
+            <Ornament className="mb-8" />
             <p className="eyebrow mb-6 text-brass-light">Begin here</p>
             <h2 className="display-lg mx-auto max-w-3xl text-balance">
               Find the scent that <em className="font-light">feels like you</em>

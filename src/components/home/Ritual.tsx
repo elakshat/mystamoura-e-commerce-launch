@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/brand/Reveal';
 import { Curtain } from '@/components/brand/Curtain';
+import { ParallaxImage } from '@/components/brand/ParallaxImage';
 import { useCategories } from '@/hooks/useProducts';
 
 const steps = [
@@ -30,12 +31,7 @@ export function Ritual() {
       <div className="container relative z-[2] mx-auto grid items-center gap-14 px-5 md:px-12 lg:grid-cols-2 lg:gap-24">
         <Reveal className="relative order-2 lg:order-1">
           <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
-            <img
-              src={image}
-              alt="Wearing Myst Amoura"
-              loading="lazy"
-              className="h-full w-full object-cover object-[60%_center]"
-            />
+            <ParallaxImage src={image} alt="Wearing Myst Amoura" imgClassName="object-[60%_center]" />
             <Curtain />
           </div>
           <div className="absolute -right-3 -top-3 hidden h-full w-full border border-brass/50 md:block" aria-hidden="true" />

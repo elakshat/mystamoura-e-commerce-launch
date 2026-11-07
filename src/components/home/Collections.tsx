@@ -3,6 +3,8 @@ import { ArrowUpRight } from 'lucide-react';
 import { useCategories } from '@/hooks/useProducts';
 import { Reveal } from '@/components/brand/Reveal';
 import { Curtain } from '@/components/brand/Curtain';
+import { ParallaxImage } from '@/components/brand/ParallaxImage';
+import { Ornament } from '@/components/brand/Ornament';
 import { cn } from '@/lib/utils';
 
 export function Collections() {
@@ -12,6 +14,7 @@ export function Collections() {
     <section className="grain bg-background py-20 md:py-32" aria-labelledby="home-collections-title">
       <div className="container relative z-[2] mx-auto px-5 md:px-12">
         <Reveal className="mx-auto mb-14 max-w-2xl text-center md:mb-20">
+          <Ornament className="mb-6" />
           <p className="eyebrow mb-5 text-brass">No. 02 — The Collections</p>
           <h2 id="home-collections-title" className="display-lg text-balance">
             Choose your <em className="font-light">character</em>
@@ -24,11 +27,11 @@ export function Collections() {
               <Link to={`/collections/${category.slug}`} className="group block">
                 <div className="arch relative aspect-[3/4] bg-secondary">
                   {category.image_url && (
-                    <img
+                    <ParallaxImage
                       src={category.image_url}
                       alt={category.name}
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-[1400ms] ease-silk group-hover:scale-105"
+                      strength={7}
+                      imgClassName="transition-transform duration-[1400ms] ease-silk group-hover:scale-105"
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--nuit)/0.55)] via-transparent to-transparent" />

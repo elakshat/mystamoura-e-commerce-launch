@@ -159,6 +159,11 @@
 
   /* Typographic polish: no orphaned single words */
   h1, h2, h3, blockquote { text-wrap: balance; }
+
+  /* Calligraphic ligatures & swashes on display italics, where the font offers them */
+  h1 em, h2 em, h1 .italic, h2 .italic, blockquote {
+    font-feature-settings: "liga" 1, "dlig" 1, "swsh" 1;
+  }
   p, li, figcaption { text-wrap: pretty; }
 
   /* Clear, quiet keyboard focus (components with their own ring opt out) */

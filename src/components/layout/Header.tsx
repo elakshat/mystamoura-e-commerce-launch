@@ -24,6 +24,7 @@ const houseLinks = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [compact, setCompact] = useState(false);
   const { itemCount, isAnimating } = useCart();
   const { user, isAdmin } = useAuth();
   const { data: settings } = useSettings();
@@ -31,13 +32,21 @@ export function Header() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      setCompact(window.scrollY > 140);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => setIsMenuOpen(false), [pathname]);
+
+  // Lets other sticky bars (e.g. the shop filter) sit flush under the header.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--header-h', compact ? '60px' : '76px');
+  }, [compact]);
 
   useEffect(() => {
     document.documentElement.style.overflow = isMenuOpen ? 'hidden' : '';
@@ -63,7 +72,7 @@ export function Header() {
         )}
       >
         <div className="container mx-auto px-5 md:px-12">
-          <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-4 md:h-[76px] md:gap-x-10">
+          <div className={cn('grid h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-4 transition-[height] duration-500 ease-silk md:gap-x-10', compact ? 'md:h-[60px]' : 'md:h-[76px]')}>
             {/* Left: menu toggle (mobile) / shop links (desktop) */}
             <div className="flex items-center">
               <button
@@ -92,8 +101,8 @@ export function Header() {
 
             {/* Center: wordmark */}
             <Link to="/" className="flex flex-col items-center leading-none" aria-label="Myst Amoura — home">
-              <span className="brand-wordmark whitespace-nowrap text-[17px] !tracking-[0.2em] sm:text-[20px] md:text-[24px] md:!tracking-[0.32em]">Myst Amoura</span>
-              <span className="mt-1.5 hidden text-[9px] font-medium uppercase tracking-[0.42em] text-muted-foreground md:block">
+              <span className={cn('brand-wordmark whitespace-nowrap text-[17px] !tracking-[0.2em] transition-[font-size] duration-500 ease-silk sm:text-[20px] md:!tracking-[0.32em]', compact ? 'md:text-[20px]' : 'md:text-[24px]')}>Myst Amoura</span>
+              <span className={cn('hidden overflow-hidden text-[9px] font-medium uppercase tracking-[0.42em] text-muted-foreground transition-all duration-500 md:block', compact ? 'md:mt-0 md:max-h-0 md:opacity-0' : 'md:mt-1.5 md:max-h-4 md:opacity-100')}>
                 Parfums · India
               </span>
             </Link>

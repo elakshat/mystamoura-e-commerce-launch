@@ -14,7 +14,7 @@ export function MainLayout({ children }: MainLayoutProps) {
   const page = pathname.split('/')[1] || 'home';
 
   return (
-    <div className="storefront relative min-h-screen flex flex-col bg-background overflow-x-hidden">
+    <div className="storefront relative min-h-screen flex flex-col bg-background [overflow-x:clip]">
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header />
         <main data-page={page} className="storefront-main flex-1">

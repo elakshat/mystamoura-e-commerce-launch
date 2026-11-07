@@ -46,7 +46,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Filter bar */}
-      <div className="sticky top-16 z-30 border-b bg-background/90 backdrop-blur-md md:top-[76px]">
+      <div className="sticky top-16 z-30 border-b bg-background/90 backdrop-blur-md transition-[top] duration-500 ease-silk md:top-[var(--header-h,76px)]">
         <div className="container mx-auto flex items-center justify-between gap-6 px-5 md:px-12">
           <div className="scrollbar-hide -mb-px flex gap-7 overflow-x-auto md:gap-10" role="group" aria-label="Filter by collection">
             {tabs.map((tab) => {
