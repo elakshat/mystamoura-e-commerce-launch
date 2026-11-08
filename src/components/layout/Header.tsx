@@ -63,8 +63,17 @@ export function Header() {
     <>
       {settings?.announcement?.enabled && (
         <div className="on-nuit px-4 py-2.5 text-center">
-          <p className="eyebrow text-[10px] tracking-[0.3em] text-nuit-foreground/85">
-            {settings.announcement.text}
+          <p className="eyebrow truncate text-[9.5px] tracking-[0.2em] text-nuit-foreground/85 sm:text-[10px] sm:tracking-[0.3em]">
+            {(() => {
+              // On phones, drop a lead-in before an em dash so the offer sits on one line.
+              const [lead, ...rest] = settings.announcement.text.split(' — ');
+              return rest.length ? (
+                <>
+                  <span className="hidden sm:inline">{lead} — </span>
+                  {rest.join(' — ')}
+                </>
+              ) : lead;
+            })()}
           </p>
         </div>
       )}

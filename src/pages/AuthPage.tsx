@@ -145,8 +145,9 @@ export default function AuthPage() {
             className="w-full"
           >
             <div className="mb-10">
+              <p className="eyebrow mb-4 text-brass">Account</p>
               <h1 className="display-md mb-3">
-                Reset Password
+                Reset your <em className="font-light">password</em>
               </h1>
               <p className="text-muted-foreground">
                 Enter your email and we'll send you a reset link
@@ -210,8 +211,9 @@ export default function AuthPage() {
           className="w-full"
         >
           <div className="mb-10">
+            <p className="eyebrow mb-4 text-brass">{isLogin ? 'Sign in' : 'Join the circle'}</p>
             <h1 className="display-md mb-3">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+              {isLogin ? <>Welcome <em className="font-light">back</em></> : <>Create your <em className="font-light">account</em></>}
             </h1>
             <p className="text-muted-foreground">
               {isLogin

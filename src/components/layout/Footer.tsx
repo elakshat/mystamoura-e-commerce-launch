@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, ArrowRight } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
 import { Monogram } from '@/components/brand/Monogram';
@@ -35,6 +35,9 @@ const columns = [
 
 export function Footer() {
   const { data: settings } = useSettings();
+  const { pathname } = useLocation();
+  // The contact page already is the invitation; don't repeat it underneath.
+  const showInvitation = pathname !== '/contact';
   const footer = (settings?.footer || {}) as Partial<Record<string, string>>;
   const socials = [
     { href: footer.instagram || settings?.social?.instagram, label: 'Instagram', Icon: Instagram },
@@ -44,27 +47,30 @@ export function Footer() {
 
   return (
     <footer className="on-nuit grain mt-auto overflow-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+      <div aria-hidden className="relative z-[2] h-px bg-gradient-to-r from-transparent via-[hsl(var(--brass)/0.4)] to-transparent" />
       <div className="container relative z-[2] mx-auto px-5 md:px-12">
         {/* Invitation */}
-        <div className="grid gap-10 border-b border-nuit-line py-16 md:grid-cols-[1.2fr_1fr] md:items-end md:py-24">
-          <div>
-            <p className="eyebrow mb-5 text-brass-light">Write to the house</p>
-            <h2 className="display-md max-w-xl text-balance text-nuit-foreground">
-              Need help choosing a scent? <em className="font-light">We would love to help.</em>
-            </h2>
+        {showInvitation && (
+          <div className="grid gap-10 border-b border-nuit-line py-16 md:grid-cols-[1.2fr_1fr] md:items-end md:py-24">
+            <div>
+              <p className="eyebrow mb-5 text-brass-light">Write to the house</p>
+              <h2 className="display-md max-w-xl text-balance text-nuit-foreground">
+                Need help choosing a scent? <em className="font-light">We would love to help.</em>
+              </h2>
+            </div>
+            <div className="flex flex-col items-start gap-6 md:items-end">
+              <Link to="/contact" className="btn-ghost-maison text-nuit-foreground">
+                Contact us <ArrowRight className="h-4 w-4" />
+              </Link>
+              {(footer.email || footer.phone) && (
+                <div className="flex flex-col gap-1 text-sm text-nuit-muted md:text-right">
+                  {footer.email && <a href={`mailto:${footer.email}`} className="hover:text-nuit-foreground">{footer.email}</a>}
+                  {footer.phone && <a href={`tel:${footer.phone}`} className="hover:text-nuit-foreground">{footer.phone}</a>}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col items-start gap-6 md:items-end">
-            <Link to="/contact" className="btn-ghost-maison text-nuit-foreground">
-              Contact us <ArrowRight className="h-4 w-4" />
-            </Link>
-            {(footer.email || footer.phone) && (
-              <div className="flex flex-col gap-1 text-sm text-nuit-muted md:text-right">
-                {footer.email && <a href={`mailto:${footer.email}`} className="hover:text-nuit-foreground">{footer.email}</a>}
-                {footer.phone && <a href={`tel:${footer.phone}`} className="hover:text-nuit-foreground">{footer.phone}</a>}
-              </div>
-            )}
-          </div>
-        </div>
+        )}
 
         {/* Columns */}
         <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, ShoppingBag, Heart, Truck, Shield, ArrowLeft, Share2 } from 'lucide-react';
@@ -27,13 +27,13 @@ export default function ProductDetailPage() {
   const { data: product, isLoading } = useProduct(slug || '');
   const { data: variants } = useProductVariants(product?.id || '');
   const { data: relatedProducts } = useProducts({ categorySlug: product?.category?.slug });
+  const { data: allProducts } = useProducts();
   const { addToCart } = useCart();
   const { user } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showStickyCart, setShowStickyCart] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariantInfo | null>(null);
-  const addToCartRef = useRef<HTMLDivElement>(null);
   
   const { data: isInWishlist } = useIsInWishlist(product?.id || '');
   const { toggle: toggleWishlist, isPending: wishlistPending } = useToggleWishlist();
@@ -90,21 +90,18 @@ export default function ProductDetailPage() {
   const isSoldOut = currentStock <= 0;
   const currentSku = hasVariants && selectedVariant ? selectedVariant.sku : product?.sku;
 
-  // Handle sticky cart visibility
+  // Sticky purchase bar: only once the main Add to Bag has scrolled up out of view.
+  // Observed via state so a remounted purchase block is picked up again.
+  const [purchaseEl, setPurchaseEl] = useState<HTMLDivElement | null>(null);
   useEffect(() => {
+    if (!purchaseEl) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowStickyCart(!entry.isIntersecting);
-      },
+      ([entry]) => setShowStickyCart(!entry.isIntersecting && entry.boundingClientRect.top < 0),
       { threshold: 0 }
     );
-
-    if (addToCartRef.current) {
-      observer.observe(addToCartRef.current);
-    }
-
+    observer.observe(purchaseEl);
     return () => observer.disconnect();
-  }, [product]);
+  }, [purchaseEl]);
 
   const handleShare = async () => {
     if (navigator.share && product) {
@@ -171,7 +168,13 @@ export default function ProductDetailPage() {
     setQuantity(1);
   };
 
-  const filteredRelated = relatedProducts?.filter((p) => p.id !== product.id).slice(0, 4);
+  // Same family first, then the rest of the house, so the row is always full.
+  const sameFamily = relatedProducts?.filter((p) => p.id !== product.id) ?? [];
+  const filteredRelated = [
+    ...sameFamily,
+    ...(allProducts ?? []).filter((p) => p.id !== product.id && !sameFamily.some((f) => f.id === p.id)),
+  ].slice(0, 4);
+  const onlyFamily = filteredRelated.every((p) => sameFamily.some((f) => f.id === p.id));
 
   const splitNotes = (text: string) => text.split(/[,\n•|]+/).map((n) => n.trim().replace(/[.;]$/, '')).filter(Boolean);
   const noteList = product.notes ? splitNotes(product.notes) : [];
@@ -349,7 +352,7 @@ export default function ProductDetailPage() {
               )}
 
               {/* Quantity & Add to Bag */}
-              <div ref={addToCartRef} className="mt-8 space-y-4">
+              <div ref={setPurchaseEl} className="mt-8 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="label-caps text-[11px] text-muted-foreground">Quantity</span>
                   <AnimatePresence mode="wait">
@@ -488,12 +491,14 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Related Products */}
-        {filteredRelated && filteredRelated.length > 0 && (
+        {filteredRelated.length > 0 && (
           <section className="mt-24 md:mt-32">
             <div className="mb-10 flex items-end justify-between gap-6 border-b pb-6 md:mb-14">
               <div>
                 <p className="eyebrow mb-3 text-brass">You may also like</p>
-                <h2 className="display-md">From the same <em className="font-light">family</em></h2>
+                <h2 className="display-md">
+                  {onlyFamily ? <>From the same <em className="font-light">family</em></> : <>More from <em className="font-light">the house</em></>}
+                </h2>
               </div>
               {product.category && (
                 <Link to={`/collections/${product.category.slug}`} className="link-line hidden sm:inline-flex">View collection</Link>
