@@ -17,4 +17,4 @@ Disallow: /admin
 Disallow: /api/
 
 # Sitemap
-Sitemap: /sitemap.xml
+Sitemap: https://mystamoura.in/sitemap.xml
