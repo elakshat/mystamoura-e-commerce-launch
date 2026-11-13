@@ -273,9 +273,10 @@ function render(template, page) {
   }
   if (extraHead.length) html = html.replace('</head>', `  ${extraHead.join('\n  ')}\n</head>`);
 
-  // Crawlable content. createRoot().render() replaces #root's children when
-  // the app mounts, so shoppers see the normal React storefront.
-  const content = `<div class="seo-prerender" style="max-width:720px;margin:0 auto;padding:48px 20px;font-family:Jost,system-ui,sans-serif;color:#2b2622;background:#f6f2ea;line-height:1.6">${nav}<main>${page.body}</main>${footer}</div>`;
+  // Crawlable content, kept invisible so visitors see a blank page until the
+  // app loads (same as before). Crawlers read it from the HTML, and
+  // createRoot().render() replaces #root's children when the app mounts.
+  const content = `<div class="seo-prerender" style="visibility:hidden">${nav}<main>${page.body}</main>${footer}</div>`;
   html = html.replace(/<div id="root">\s*<\/div>/, `<div id="root">${content}</div>`);
   return html;
 }
