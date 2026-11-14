@@ -27,6 +27,11 @@ const BRAND_NAME = 'Myst Amoura';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 const INSTAGRAM_URL = 'https://www.instagram.com/mystamoura';
 
+// Delivery and returns, mirrored in Google Merchant Center. The fee and
+// free-delivery threshold are refreshed from site_settings at build time.
+const SHIPPING = { fee: 29, freeOver: 999, handlingDays: [1, 2], transitDays: [5, 7] };
+const RETURN_DAYS = 7;
+
 // ---------- env ----------
 function loadDotEnv() {
   const file = path.join(ROOT, '.env');
@@ -78,13 +83,19 @@ async function loadCatalog() {
     return JSON.parse(await readFile(process.env.SEO_MOCK_DATA, 'utf8'));
   }
   try {
-    const [products, categories] = await Promise.all([
+    const [products, categories, settings] = await Promise.all([
       supabaseGet(
         'products',
         'select=name,slug,description,notes,price,sale_price,currency,size,images,stock,sku,updated_at,category_id&is_visible=eq.true&order=created_at.desc',
       ),
       supabaseGet('categories', 'select=id,name,slug,description,image_url,updated_at&order=name.asc'),
+      supabaseGet('site_settings', 'select=key,value&key=eq.shipping').catch(() => []),
     ]);
+    const shipping = settings?.[0]?.value;
+    if (shipping && Number.isFinite(Number(shipping.base_price))) {
+      SHIPPING.fee = Number(shipping.base_price);
+      SHIPPING.freeOver = Number(shipping.free_threshold) || SHIPPING.freeOver;
+    }
     return { products, categories };
   } catch (err) {
     console.warn(`[seo] Could not load catalog (${err.message}); generating static pages only.`);
@@ -145,14 +156,14 @@ function staticPages(products, categories) {
       route: '/',
       title: `${SITE_NAME} (${BRAND_NAME}) | Luxury Perfumes & Parfums in India`,
       description:
-        'Mystamoura (Myst Amoura) crafts long-lasting luxury perfumes and parfums for him, her and unisex. Shop online in India with free shipping.',
+        'Mystamoura (Myst Amoura) crafts long-lasting luxury perfumes and parfums for him, her and unisex. Shop online in India, with free shipping on orders over ₹999.',
       jsonLd: [orgJsonLd, websiteJsonLd],
-      body: `<h1>${SITE_NAME} – Luxury Perfumes by ${BRAND_NAME}</h1><p>Long-lasting luxury perfumes and parfums for him, her and unisex, crafted in India. Free shipping across India.</p>${productList}${collectionList}`,
+      body: `<h1>${SITE_NAME} – Luxury Perfumes by ${BRAND_NAME}</h1><p>Long-lasting luxury perfumes and parfums for him, her and unisex, crafted in India. Free shipping across India on orders over ₹999.</p>${productList}${collectionList}`,
     },
     {
       route: '/products',
       title: `Shop All Perfumes | ${SITE_NAME}`,
-      description: 'Browse every Mystamoura perfume and parfum – luxury fragrances for men, women and unisex, with free shipping in India.',
+      description: 'Browse every Mystamoura perfume and parfum – luxury fragrances for men, women and unisex, with free shipping in India on orders over ₹999.',
       jsonLd: [breadcrumbs([['Home', '/'], ['Shop', '/products']])],
       body: `<h1>Shop all Mystamoura perfumes</h1>${productList || '<p>Browse our full collection of luxury fragrances.</p>'}${collectionList}`,
     },
@@ -169,7 +180,7 @@ function staticPages(products, categories) {
       description: 'Get in touch with Mystamoura for orders, fragrance advice, gifting and bulk enquiries.',
       body: `<h1>Contact ${SITE_NAME}</h1><p>Questions about an order, a fragrance or gifting? Reach out to us, or message us on <a href="${INSTAGRAM_URL}">Instagram</a>.</p>`,
     },
-    { route: '/shipping', title: `Shipping Policy | ${SITE_NAME}`, description: 'Mystamoura shipping policy – delivery times and free shipping across India.', body: `<h1>Shipping Policy</h1>` },
+    { route: '/shipping', title: `Shipping Policy | ${SITE_NAME}`, description: 'Mystamoura shipping policy – delivery times, rates and free shipping across India on orders over ₹999.', body: `<h1>Shipping Policy</h1>` },
     { route: '/refund', title: `Refund & Return Policy | ${SITE_NAME}`, description: 'Mystamoura refund, return and exchange policy.', body: `<h1>Refund &amp; Return Policy</h1>` },
     { route: '/privacy', title: `Privacy Policy | ${SITE_NAME}`, description: 'How Mystamoura collects, uses and protects your information.', body: `<h1>Privacy Policy</h1>` },
     { route: '/terms', title: `Terms & Conditions | ${SITE_NAME}`, description: 'Terms and conditions for shopping at Mystamoura.', body: `<h1>Terms &amp; Conditions</h1>` },
@@ -183,7 +194,7 @@ function productPage(p, categoriesById) {
   const images = (p.images || []).filter(Boolean).map(absUrl);
   const desc =
     clip(p.description) ||
-    `Buy ${p.name}${p.size ? ` ${p.size}` : ''} by Mystamoura – a long-lasting luxury fragrance. Free shipping in India.`;
+    `Buy ${p.name}${p.size ? ` ${p.size}` : ''} by Mystamoura – a long-lasting luxury fragrance. Free shipping in India on orders over ₹999.`;
   const url = `/products/${p.slug}`;
 
   const productJsonLd = {
@@ -192,7 +203,7 @@ function productPage(p, categoriesById) {
     name: p.name,
     description: clip(p.description, 500) || desc,
     image: images.length ? images : [DEFAULT_IMAGE],
-    brand: { '@type': 'Brand', name: SITE_NAME },
+    brand: { '@type': 'Brand', name: BRAND_NAME },
     ...(p.sku ? { sku: p.sku } : {}),
     ...(category ? { category: category.name } : {}),
     offers: {
@@ -206,6 +217,25 @@ function productPage(p, categoriesById) {
           : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: SITE_NAME },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: { '@type': 'MonetaryAmount', value: Number(price) >= SHIPPING.freeOver ? 0 : SHIPPING.fee, currency: 'INR' },
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IN' },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: SHIPPING.handlingDays[0], maxValue: SHIPPING.handlingDays[1], unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: SHIPPING.transitDays[0], maxValue: SHIPPING.transitDays[1], unitCode: 'DAY' },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'IN',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: RETURN_DAYS,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+        merchantReturnLink: `${SITE_URL}/refund`,
+      },
     },
   };
 
