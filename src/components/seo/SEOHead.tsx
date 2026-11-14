@@ -12,7 +12,8 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'Mystamoura';
 const DEFAULT_DESCRIPTION = 'Discover luxury fragrances at Mystamoura. Premium perfumes crafted with the finest ingredients for an unforgettable sensory experience.';
-const DEFAULT_IMAGE = '/og-image.jpg';
+const SITE_URL = 'https://mystamoura.in';
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export function SEOHead({
   title,
@@ -24,7 +25,8 @@ export function SEOHead({
   currency = 'INR',
 }: SEOHeadProps) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
-  const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  const currentUrl = url || (typeof window !== 'undefined' ? `${SITE_URL}${window.location.pathname}` : SITE_URL);
+  const imageUrl = /^https?:\/\//i.test(image) ? image : `${SITE_URL}/${image.replace(/^\//, '')}`;
 
   return (
     <Helmet>
@@ -38,7 +40,7 @@ export function SEOHead({
       <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
+      <meta property="og:image" content={imageUrl} />
       <meta property="og:site_name" content={SITE_NAME} />
 
       {/* Twitter */}
@@ -46,7 +48,7 @@ export function SEOHead({
       <meta property="twitter:url" content={currentUrl} />
       <meta property="twitter:title" content={fullTitle} />
       <meta property="twitter:description" content={description} />
-      <meta property="twitter:image" content={image} />
+      <meta property="twitter:image" content={imageUrl} />
 
       {/* Product-specific meta (for e-commerce) */}
       {type === 'product' && price && (
