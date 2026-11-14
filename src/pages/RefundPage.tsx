@@ -12,7 +12,8 @@ export default function RefundPage() {
           body: (
             <p>
               We want you to be completely satisfied with your purchase. If you are not happy with your order, you may return
-              it within 7 days of delivery for a full refund or exchange.
+              it within 7 days of delivery for a full refund or exchange. Return shipping is free: once your return is
+              approved, we will email you a return label.
             </p>
           ),
         },
