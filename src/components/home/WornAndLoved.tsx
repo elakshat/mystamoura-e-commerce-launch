@@ -62,7 +62,7 @@ export function WornAndLoved() {
           </p>
         </Reveal>
 
-        <div className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-px md:overflow-visible md:bg-border md:px-0 md:pb-0">
+        <div className="scrollbar-hide -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-px md:overflow-visible md:bg-border md:px-0 md:pb-0">
           {reviews.map((r, i) => (
             <Reveal key={r.id} delay={i * 0.1} className="w-[84%] shrink-0 snap-start border border-border bg-secondary md:w-auto md:border-0">
               <figure className="flex h-full flex-col px-6 py-8 md:px-10 md:py-6">
