@@ -74,8 +74,8 @@ export function Footer() {
         )}
 
         {/* Columns */}
-        <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-3 gap-x-5 gap-y-10 py-14 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
+          <div className="col-span-3 md:col-span-1">
             <Monogram className="h-14 w-14 text-xl text-brass-light" />
             <p className="mt-6 max-w-xs font-display text-xl italic leading-snug text-nuit-muted">
               {settings?.hero?.title && settings?.hero?.subtitle
@@ -106,7 +106,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {col.links.map((link) => (
                   <li key={link.to}>
-                    <Link to={link.to} className="text-[15px] text-nuit-foreground/85 transition-colors hover:text-brass-light">
+                    <Link to={link.to} className="text-[14px] text-nuit-foreground/85 transition-colors hover:text-brass-light md:text-[15px]">
                       {link.label}
                     </Link>
                   </li>

@@ -62,10 +62,10 @@ export function WornAndLoved() {
           </p>
         </Reveal>
 
-        <div className="grid gap-px bg-border md:grid-cols-3">
+        <div className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 md:mx-0 md:grid md:grid-cols-3 md:gap-px md:overflow-visible md:bg-border md:px-0 md:pb-0">
           {reviews.map((r, i) => (
-            <Reveal key={r.id} delay={i * 0.1} className="bg-secondary">
-              <figure className="flex h-full flex-col py-10 md:px-10 md:py-6">
+            <Reveal key={r.id} delay={i * 0.1} className="w-[84%] shrink-0 snap-start border border-border bg-secondary md:w-auto md:border-0">
+              <figure className="flex h-full flex-col px-6 py-8 md:px-10 md:py-6">
                 <Stars rating={r.rating} />
                 <blockquote className="mt-6 flex-1 font-display text-[28px] font-light italic leading-[1.2] md:text-[32px]">
                   “{r.content.trim()}”

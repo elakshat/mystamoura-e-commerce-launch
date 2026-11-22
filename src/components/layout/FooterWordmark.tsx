@@ -88,7 +88,7 @@ export function FooterWordmark() {
     const colour = (level: number) => {
       const t = level / (LEVELS - 1);
       const c = BASE.map((b, i) => Math.round(b + (LIGHT[i] - b) * t));
-      return `rgba(${c[0]},${c[1]},${c[2]},${0.36 + 0.6 * t})`;
+      return `rgba(${c[0]},${c[1]},${c[2]},${0.46 + 0.5 * t})`;
     };
     const fills = Array.from({ length: LEVELS }, (_, i) => colour(i));
 
