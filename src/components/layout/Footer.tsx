@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, ArrowRight } from 'lucide-react';
 import { useSettings } from '@/hooks/useSettings';
 import { Monogram } from '@/components/brand/Monogram';
+import { FooterWordmark } from './FooterWordmark';
 
 const columns = [
   {
@@ -117,11 +118,7 @@ export function Footer() {
       </div>
 
       {/* Oversized wordmark */}
-      <div className="relative z-[2] select-none px-2" aria-hidden="true">
-        <p className="brand-wordmark whitespace-nowrap text-center text-[10.4vw] font-light leading-[0.8] !tracking-[0.04em] text-nuit-foreground/[0.07]">
-          Myst Amoura
-        </p>
-      </div>
+      <FooterWordmark />
 
       <div className="container relative z-[2] mx-auto flex flex-col gap-2 border-t border-nuit-line px-5 py-6 text-xs text-nuit-muted md:flex-row md:items-center md:justify-between md:px-12">
         <p>© {new Date().getFullYear()} Mystamoura. All rights reserved.</p>
